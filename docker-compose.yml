@@ -1,0 +1,21 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: fairway_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: fairway
+      POSTGRES_PASSWORD: fairway_pass
+      POSTGRES_DB: fairway_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - fairway_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fairway -d fairway_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  fairway_pgdata:

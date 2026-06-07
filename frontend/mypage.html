@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>マイページ — FAIRWAY</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="common.js"></script>
+<style>
+  .page-hero{background:linear-gradient(135deg,var(--dark),var(--forest));padding:3rem 4rem 2rem;border-bottom:1px solid rgba(201,168,76,.15)}
+  .page-hero h1{font-family:var(--font-hd);font-size:3rem;letter-spacing:.1em;color:var(--cream)}
+  .page-hero h1 span{color:var(--gold)}
+  .mypage-layout{display:grid;grid-template-columns:220px 1fr;gap:2px;min-height:calc(100vh - 200px)}
+  @media(max-width:800px){.mypage-layout{grid-template-columns:1fr}}
+  /* SIDEBAR */
+  .mp-sidebar{background:var(--dark);padding:1.5rem 0;border-right:1px solid rgba(201,168,76,.1)}
+  @media(max-width:800px){.mp-sidebar{display:flex;overflow-x:auto;padding:.5rem;border-right:none;border-bottom:1px solid rgba(201,168,76,.1)}}
+  .mp-nav-btn{width:100%;padding:1rem 1.5rem;background:none;border:none;color:rgba(245,240,232,.5);font-family:var(--font-ja);font-size:.8rem;letter-spacing:.1em;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.7rem;transition:all .2s;border-left:3px solid transparent}
+  .mp-nav-btn:hover{color:var(--cream);background:rgba(201,168,76,.05)}
+  .mp-nav-btn.active{color:var(--gold);background:rgba(201,168,76,.06);border-left-color:var(--gold)}
+  @media(max-width:800px){.mp-nav-btn{width:auto;white-space:nowrap;border-left:none;border-bottom:3px solid transparent;padding:.7rem 1rem}.mp-nav-btn.active{border-left:none;border-bottom-color:var(--gold)}}
+  .mp-nav-icon{font-size:1.1rem}
+  /* CONTENT */
+  .mp-content{background:var(--black);padding:2.5rem 3rem}
+  @media(max-width:800px){.mp-content{padding:1.5rem}}
+  /* AUTH */
+  .auth-wrap{max-width:380px}
+  .auth-title{font-family:var(--font-en);font-size:2rem;font-weight:300;color:var(--cream);margin-bottom:.4rem}
+  .auth-sub{font-size:.78rem;color:var(--gray);margin-bottom:1.8rem;line-height:1.7}
+  .auth-form{display:flex;flex-direction:column;gap:.9rem}
+  .auth-input{background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.12);color:var(--cream);padding:.85rem 1rem;font-family:var(--font-ja);font-size:.85rem;outline:none;transition:border-color .2s;width:100%}
+  .auth-input:focus{border-color:rgba(201,168,76,.5)}
+  .auth-input::placeholder{color:rgba(245,240,232,.2)}
+  .auth-btn{padding:.9rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.85rem;font-weight:700;letter-spacing:.12em;border:none;cursor:pointer;transition:all .2s;width:100%}
+  .auth-btn:hover{background:var(--gold-lt)}
+  .auth-btn:disabled{opacity:.5;cursor:not-allowed}
+  .auth-switch{text-align:center;margin-top:1rem;font-size:.78rem;color:var(--gray)}
+  .auth-switch button{background:none;border:none;color:var(--gold);cursor:pointer;font-size:.78rem;font-family:var(--font-ja);text-decoration:underline}
+  .auth-error{background:rgba(192,57,43,.15);border:1px solid rgba(192,57,43,.4);color:#e07060;padding:.7rem 1rem;font-size:.78rem;margin-bottom:.8rem;display:none}
+  .auth-error.show{display:block}
+  /* USER CARD */
+  .user-card{background:linear-gradient(135deg,var(--forest),rgba(45,90,61,.4));padding:1.5rem;border:1px solid rgba(201,168,76,.15);margin-bottom:1.5rem;display:flex;align-items:center;gap:1.2rem}
+  .user-avatar{width:56px;height:56px;border-radius:50%;background:var(--gold);display:flex;align-items:center;justify-content:center;font-family:var(--font-hd);font-size:1.6rem;color:var(--black);flex-shrink:0}
+  .user-name{font-family:var(--font-en);font-size:1.2rem;color:var(--cream);margin-bottom:.2rem}
+  .user-email{font-size:.75rem;color:var(--gray)}
+  .user-since{font-size:.68rem;color:rgba(201,168,76,.6);margin-top:.2rem}
+  /* STATS */
+  .stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:rgba(201,168,76,.1);margin-bottom:2rem}
+  .stat-box{background:var(--dark);padding:1.2rem;text-align:center}
+  .stat-num{font-family:var(--font-hd);font-size:2rem;color:var(--gold-lt);line-height:1}
+  .stat-lbl{font-size:.65rem;letter-spacing:.1em;color:var(--gray);margin-top:.3rem}
+  /* SECTION TITLE */
+  .sec-title{font-family:var(--font-en);font-size:1.1rem;color:var(--cream);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid rgba(201,168,76,.1)}
+  /* PROFILE FORM */
+  .pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;max-width:540px}
+  @media(max-width:640px){.pf-grid{grid-template-columns:1fr}}
+  .pf-group{display:flex;flex-direction:column;gap:.35rem}
+  .pf-group.full{grid-column:1/-1}
+  .pf-label{font-size:.68rem;letter-spacing:.12em;color:rgba(245,240,232,.45)}
+  .pf-input{background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.1);color:var(--cream);padding:.65rem .85rem;font-family:var(--font-ja);font-size:.82rem;outline:none;transition:border-color .2s;width:100%}
+  .pf-input:focus{border-color:rgba(201,168,76,.45)}
+  .save-btn{padding:.8rem 2rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.82rem;font-weight:700;letter-spacing:.1em;border:none;cursor:pointer;transition:all .2s}
+  .save-btn:hover{background:var(--gold-lt)}
+  .logout-btn{margin-top:1rem;padding:.7rem 2rem;background:transparent;color:rgba(245,240,232,.35);font-family:var(--font-ja);font-size:.78rem;letter-spacing:.1em;border:1px solid rgba(245,240,232,.1);cursor:pointer;transition:all .2s}
+  .logout-btn:hover{border-color:var(--red);color:var(--red)}
+  /* ORDERS */
+  .order-card{border:1px solid rgba(201,168,76,.12);margin-bottom:1rem;overflow:hidden}
+  .order-hdr{padding:.9rem 1.1rem;background:rgba(26,51,32,.3);display:flex;align-items:center;justify-content:space-between;cursor:pointer;gap:1rem}
+  .order-hdr:hover{background:rgba(26,51,32,.5)}
+  .order-num{font-family:var(--font-hd);font-size:.95rem;letter-spacing:.15em;color:var(--gold)}
+  .order-date{font-size:.7rem;color:var(--gray);margin-top:.1rem}
+  .order-total{font-family:var(--font-en);font-size:1.1rem;color:var(--cream)}
+  .order-status{font-size:.65rem;letter-spacing:.1em;padding:.2rem .6rem;margin-top:.2rem;display:inline-block}
+  .status-delivered{background:rgba(45,90,61,.4);border:1px solid rgba(45,90,61,.6);color:#7ec8a0}
+  .status-shipped{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.3);color:var(--gold-lt)}
+  .status-processing{background:rgba(50,80,150,.15);border:1px solid rgba(80,120,200,.3);color:#89aaee}
+  .order-items-wrap{padding:1rem 1.1rem;border-top:1px solid rgba(201,168,76,.08);display:none}
+  .order-items-wrap.open{display:block}
+  .order-item{display:flex;align-items:center;gap:.7rem;padding:.4rem 0;border-bottom:1px solid rgba(245,240,232,.04)}
+  .order-item:last-child{border-bottom:none}
+  .oi-icon{font-size:1.3rem;width:32px;text-align:center}
+  .oi-info{flex:1}
+  .oi-name{font-size:.8rem;color:var(--cream)}
+  .oi-brand{font-size:.67rem;color:var(--gray)}
+  .oi-price{font-family:var(--font-en);font-size:.88rem;color:var(--gold-lt)}
+  .chevron{color:var(--gray);transition:transform .2s;flex-shrink:0}
+  .order-hdr.open .chevron{transform:rotate(180deg)}
+  /* WISHLIST */
+  .wish-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:1rem}
+  .wish-card{background:var(--forest);padding:1.2rem;position:relative;transition:transform .2s}
+  .wish-card:hover{transform:translateY(-3px)}
+  .wish-icon{font-size:3rem;text-align:center;margin-bottom:.7rem;display:block}
+  .wish-brand{font-size:.6rem;letter-spacing:.2em;color:var(--gold);margin-bottom:.2rem}
+  .wish-name{font-size:.88rem;color:var(--cream);margin-bottom:.3rem;font-family:var(--font-en)}
+  .wish-price{font-family:var(--font-en);font-size:1.05rem;color:var(--cream);margin-bottom:.8rem}
+  .wish-actions{display:flex;gap:.5rem}
+  .wish-add-btn{flex:1;padding:.5rem;background:var(--gold);color:var(--black);font-size:.72rem;font-weight:700;border:none;cursor:pointer;font-family:var(--font-ja);transition:background .2s}
+  .wish-add-btn:hover{background:var(--gold-lt)}
+  .wish-del-btn{padding:.5rem .7rem;background:transparent;border:1px solid rgba(245,240,232,.12);color:rgba(245,240,232,.4);font-size:.8rem;cursor:pointer;transition:all .2s}
+  .wish-del-btn:hover{border-color:var(--red);color:var(--red)}
+  /* REVIEWS */
+  .review-card{border:1px solid rgba(201,168,76,.1);padding:1rem;margin-bottom:.8rem;background:rgba(26,51,32,.2)}
+  .review-card-head{display:flex;align-items:center;gap:.8rem;margin-bottom:.6rem}
+  .review-product-icon{font-size:1.8rem;width:44px;text-align:center}
+  .review-product-name{font-size:.85rem;color:var(--cream)}
+  .review-date{font-size:.68rem;color:var(--gray);margin-top:.15rem}
+  .review-stars{color:var(--gold);font-size:.85rem;margin-bottom:.3rem}
+  .review-title{font-size:.85rem;color:var(--cream);font-weight:700;margin-bottom:.2rem}
+  .review-body{font-size:.78rem;color:rgba(245,240,232,.6);line-height:1.7}
+  .review-del-btn{background:none;border:none;color:rgba(245,240,232,.2);font-size:.75rem;cursor:pointer;margin-top:.5rem;transition:color .2s}
+  .review-del-btn:hover{color:var(--red)}
+  /* REVIEW FORM */
+  .review-form{background:rgba(26,51,32,.2);border:1px solid rgba(201,168,76,.1);padding:1.2rem;margin-bottom:1.5rem}
+  .review-form-title{font-size:.85rem;color:var(--cream);margin-bottom:1rem}
+  .star-select{display:flex;gap:.3rem;margin-bottom:.8rem;font-size:1.6rem;cursor:pointer}
+  .star-select span{color:rgba(245,240,232,.2);transition:color .1s}
+  .star-select span.on{color:var(--gold)}
+  .review-input{background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.12);color:var(--cream);padding:.7rem .9rem;font-family:var(--font-ja);font-size:.82rem;outline:none;transition:border-color .2s;width:100%;margin-bottom:.6rem}
+  .review-input:focus{border-color:rgba(201,168,76,.45)}
+  .review-textarea{background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.12);color:var(--cream);padding:.7rem .9rem;font-family:var(--font-ja);font-size:.82rem;outline:none;transition:border-color .2s;width:100%;resize:vertical;min-height:80px;margin-bottom:.8rem}
+  .review-textarea:focus{border-color:rgba(201,168,76,.45)}
+  .product-select{background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.12);color:var(--cream);padding:.7rem .9rem;font-family:var(--font-ja);font-size:.82rem;outline:none;width:100%;margin-bottom:.8rem;-webkit-appearance:none}
+  .product-select option{background:var(--dark)}
+  /* ADDRESSES */
+  .addr-card{border:1px solid rgba(201,168,76,.12);padding:1rem 1.2rem;margin-bottom:.7rem;position:relative;transition:border-color .25s}
+  .addr-card:hover{border-color:rgba(201,168,76,.28)}
+  .addr-card.default{border-color:rgba(201,168,76,.45);background:rgba(201,168,76,.04)}
+  .addr-label{display:flex;align-items:center;gap:.5rem;margin-bottom:.4rem}
+  .addr-label-text{font-family:var(--font-hd);font-size:.95rem;letter-spacing:.1em;color:var(--cream)}
+  .default-badge{font-size:.62rem;padding:.1rem .5rem;background:var(--gold);color:var(--black);font-weight:700}
+  .addr-body{font-size:.8rem;color:rgba(245,240,232,.7);line-height:1.8}
+  .addr-actions{display:flex;gap:.5rem;margin-top:.7rem}
+  .addr-btn{padding:.4rem .8rem;background:transparent;border:1px solid rgba(245,240,232,.12);color:rgba(245,240,232,.5);font-size:.72rem;cursor:pointer;font-family:var(--font-ja);transition:all .2s}
+  .addr-btn:hover{border-color:var(--gold);color:var(--gold)}
+  .addr-btn.del:hover{border-color:var(--red);color:var(--red)}
+  .addr-form{background:rgba(26,51,32,.2);border:1px solid rgba(201,168,76,.1);padding:1.2rem;margin-bottom:1.5rem}
+  .addr-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.7rem;margin-bottom:.8rem}
+  @media(max-width:640px){.addr-form-grid{grid-template-columns:1fr}}
+  .addr-input{background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.12);color:var(--cream);padding:.65rem .85rem;font-family:var(--font-ja);font-size:.82rem;outline:none;transition:border-color .2s;width:100%}
+  .addr-input:focus{border-color:rgba(201,168,76,.45)}
+  .addr-input::placeholder{color:rgba(245,240,232,.2)}
+  .addr-check-row{display:flex;align-items:center;gap:.5rem;margin-bottom:.8rem;font-size:.78rem;color:rgba(245,240,232,.6);cursor:pointer}
+  /* AI */
+  .ai-sub{font-size:.78rem;color:var(--gray);line-height:1.8;margin-bottom:1.2rem}
+  .ai-msgs{min-height:120px;max-height:300px;overflow-y:auto;display:flex;flex-direction:column;gap:.6rem;margin-bottom:.8rem}
+  .ai-msg{padding:.7rem .9rem;font-size:.78rem;line-height:1.7;max-width:88%}
+  .ai-msg.user{background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);color:var(--cream);align-self:flex-end}
+  .ai-msg.assistant{background:rgba(26,51,32,.4);border:1px solid rgba(45,90,61,.3);color:rgba(245,240,232,.85);align-self:flex-start}
+  .ai-msg.loading{opacity:.5;font-style:italic}
+  .ai-input-row{display:flex;gap:.5rem}
+  .ai-input{flex:1;background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.1);color:var(--cream);padding:.65rem .85rem;font-family:var(--font-ja);font-size:.8rem;outline:none;transition:border-color .2s}
+  .ai-input:focus{border-color:rgba(201,168,76,.4)}
+  .ai-input::placeholder{color:rgba(245,240,232,.2)}
+  .ai-send{padding:.65rem 1.1rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.78rem;font-weight:700;border:none;cursor:pointer;white-space:nowrap;transition:background .2s}
+  .ai-send:hover{background:var(--gold-lt)}
+  .ai-send:disabled{opacity:.4;cursor:not-allowed}
+  .ai-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem}
+  .ai-chip{padding:.35rem .7rem;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:var(--gold-lt);font-size:.7rem;cursor:pointer;font-family:var(--font-ja);transition:background .2s}
+  .ai-chip:hover{background:rgba(201,168,76,.18)}
+  /* empty state */
+  .empty{text-align:center;padding:3rem 1rem;color:var(--gray)}
+  .empty-icon{font-size:3rem;opacity:.3;margin-bottom:.8rem}
+  .empty p{font-size:.83rem}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">FAIR<span>WAY</span></a>
+  <ul class="nav-links"><li><a href="index.html">ショップ</a></li><li><a href="cart.html">カート</a></li></ul>
+  <div class="nav-right">
+    <a href="mypage.html" class="nav-btn active" id="mypageNavBtn"><span class="user-dot" id="userDot"></span>マイページ</a>
+    <a href="cart.html" class="nav-btn">🛒 カート <span class="cart-badge">0</span></a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <div class="page-hero">
+    <h1>MY PAGE <span>マイページ</span></h1>
+  </div>
+  <div class="mypage-layout">
+    <!-- SIDEBAR -->
+    <div class="mp-sidebar" id="mpSidebar">
+      <button class="mp-nav-btn active" id="nav-auth" onclick="switchTab('auth')"><span class="mp-nav-icon">🔑</span>ログイン</button>
+      <button class="mp-nav-btn" id="nav-profile" onclick="switchTab('profile')" style="display:none"><span class="mp-nav-icon">👤</span>プロフィール</button>
+      <button class="mp-nav-btn" id="nav-history" onclick="switchTab('history')" style="display:none"><span class="mp-nav-icon">📦</span>購入履歴</button>
+      <button class="mp-nav-btn" id="nav-wishlist" onclick="switchTab('wishlist')" style="display:none"><span class="mp-nav-icon">❤️</span>お気に入り</button>
+      <button class="mp-nav-btn" id="nav-reviews" onclick="switchTab('reviews')" style="display:none"><span class="mp-nav-icon">⭐</span>レビュー</button>
+      <button class="mp-nav-btn" id="nav-addresses" onclick="switchTab('addresses')" style="display:none"><span class="mp-nav-icon">🏠</span>住所管理</button>
+      <button class="mp-nav-btn" id="nav-ai" onclick="switchTab('ai')" style="display:none"><span class="mp-nav-icon">🤖</span>AIアドバイザー</button>
+    </div>
+    <!-- CONTENT -->
+    <div class="mp-content" id="mpContent"></div>
+  </div>
+</div>
+
+<script>
+const styleEl = document.createElement('style');
+styleEl.textContent = COMMON_CSS;
+document.head.appendChild(styleEl);
+
+let orderHistory = [];
+let wishlistData = [];
+let myReviews = [];
+let addresses = [];
+let aiMessages = [];
+let authMode = 'login';
+let reviewRating = 0;
+let editingAddressId = null;
+let showAddrForm = false;
+
+// ── TABS ──
+const TABS = ['auth','profile','history','wishlist','reviews','addresses','ai'];
+function switchTab(tab) {
+  TABS.forEach(t => {
+    const btn = document.getElementById('nav-'+t);
+    if (btn) btn.classList.toggle('active', t===tab);
+  });
+  const body = document.getElementById('mpContent');
+  if (tab==='auth' && currentUser) { doLogout(); return; }
+  if (tab==='auth') renderAuth(body);
+  else if (tab==='profile') renderProfile(body);
+  else if (tab==='history') renderHistory(body);
+  else if (tab==='wishlist') renderWishlist(body);
+  else if (tab==='reviews') renderReviews(body);
+  else if (tab==='addresses') renderAddresses(body);
+  else if (tab==='ai') renderAI(body);
+}
+
+function showLoggedInTabs() {
+  ['profile','history','wishlist','reviews','addresses','ai'].forEach(t => {
+    const btn = document.getElementById('nav-'+t);
+    if (btn) btn.style.display = '';
+  });
+  document.getElementById('nav-auth').textContent = '';
+  document.getElementById('nav-auth').innerHTML = '<span class="mp-nav-icon">🚪</span>ログアウト';
+  const dot = document.getElementById('userDot');
+  if (dot) dot.style.background = 'var(--gold)';
+  document.getElementById('mypageNavBtn').classList.add('logged-in');
+}
+
+function doLogout() {
+  token = null; currentUser = null; orderHistory = []; wishlistData = []; myReviews = []; addresses = []; aiMessages = [];
+  localStorage.removeItem('fw_token');
+  updateCartBadge();
+  ['profile','history','wishlist','reviews','addresses','ai'].forEach(t => {
+    const btn = document.getElementById('nav-'+t);
+    if (btn) { btn.style.display='none'; btn.classList.remove('active'); }
+  });
+  document.getElementById('nav-auth').innerHTML = '<span class="mp-nav-icon">🔑</span>ログイン';
+  document.getElementById('nav-auth').classList.add('active');
+  const dot = document.getElementById('userDot');
+  if (dot) dot.style.background = 'var(--gray)';
+  document.getElementById('mypageNavBtn').classList.remove('logged-in');
+  authMode = 'login';
+  renderAuth(document.getElementById('mpContent'));
+  showToast('ログアウトしました');
+}
+
+// ── AUTH ──
+function renderAuth(body) {
+  body.innerHTML = `
+    <div class="auth-wrap">
+      <h2 class="auth-title">${authMode==='login'?'ログイン':'アカウント作成'}</h2>
+      <p class="auth-sub">${authMode==='login'?'アカウントにログインして購入履歴・お気に入りを管理できます。':'新規アカウントを作成して、お買い物をより便利に。'}</p>
+      <div class="auth-error" id="authError"></div>
+      <div class="auth-form">
+        ${authMode==='register'?`<input class="auth-input" id="authName" type="text" placeholder="お名前（例：山田 太郎）">`:''}
+        <input class="auth-input" id="authEmail" type="email" placeholder="メールアドレス">
+        <input class="auth-input" id="authPass" type="password" placeholder="パスワード（6文字以上）">
+        ${authMode==='register'?`<input class="auth-input" id="authPass2" type="password" placeholder="パスワード（確認）">`:''}
+        <button class="auth-btn" id="authBtn" onclick="submitAuth()">${authMode==='login'?'ログイン':'アカウント作成'}</button>
+      </div>
+      <p class="auth-switch">${authMode==='login'?'アカウントをお持ちでない方は<button onclick="toggleAuth()">新規登録</button>':'すでにアカウントをお持ちの方は<button onclick="toggleAuth()">ログイン</button>'}</p>
+    </div>`;
+  document.getElementById('authEmail')?.addEventListener('keydown', e=>{if(e.key==='Enter')submitAuth();});
+}
+
+function toggleAuth() { authMode = authMode==='login'?'register':'login'; renderAuth(document.getElementById('mpContent')); }
+
+async function submitAuth() {
+  const btn=document.getElementById('authBtn');
+  const err=document.getElementById('authError');
+  const email=document.getElementById('authEmail')?.value.trim();
+  const pass=document.getElementById('authPass')?.value;
+  err.classList.remove('show');
+  if (!email||!pass){err.textContent='全項目を入力してください';err.classList.add('show');return;}
+  if (pass.length<6){err.textContent='パスワードは6文字以上で入力してください';err.classList.add('show');return;}
+  btn.disabled=true; btn.textContent='処理中...';
+  try {
+    let data;
+    if (authMode==='login') {
+      data = await api('POST','/api/auth/login',{email,password:pass});
+    } else {
+      const name=document.getElementById('authName')?.value.trim()||'';
+      const pass2=document.getElementById('authPass2')?.value;
+      if (!name){err.textContent='お名前を入力してください';err.classList.add('show');btn.disabled=false;btn.textContent='アカウント作成';return;}
+      if (pass!==pass2){err.textContent='パスワードが一致しません';err.classList.add('show');btn.disabled=false;btn.textContent='アカウント作成';return;}
+      data = await api('POST','/api/auth/register',{email,password:pass,name});
+    }
+    token=data.token; currentUser=data.user;
+    localStorage.setItem('fw_token',token);
+    await loadAllData();
+    showLoggedInTabs();
+    showToast(`ようこそ、${currentUser.name}さん`);
+    switchTab('profile');
+  } catch(e) {
+    err.textContent=e.message; err.classList.add('show');
+    btn.disabled=false; btn.textContent=authMode==='login'?'ログイン':'アカウント作成';
+  }
+}
+
+async function loadAllData() {
+  try { const r=await api('GET','/api/orders'); orderHistory=r; } catch{}
+  try { const r=await api('GET','/api/wishlist'); wishlistData=r.map(x=>x.product_id); } catch{}
+  try { const r=await api('GET','/api/reviews'); myReviews=r; } catch{}
+  try { const r=await api('GET','/api/addresses'); addresses=r; } catch{}
+}
+
+// ── PROFILE ──
+function renderProfile(body) {
+  if (!currentUser){switchTab('auth');return;}
+  const totalSpent=orderHistory.reduce((s,o)=>s+(o.total||0),0);
+  const totalItems=orderHistory.reduce((s,o)=>s+(Array.isArray(o.items)?o.items:JSON.parse(o.items||'[]')).reduce((ss,i)=>ss+i.qty,0),0);
+  const initials=(currentUser.name||'FW').slice(0,2);
+  const since=currentUser.created_at?new Date(currentUser.created_at).toLocaleDateString('ja-JP',{year:'numeric',month:'long'}):'—';
+  body.innerHTML=`
+    <div class="user-card">
+      <div class="user-avatar">${initials}</div>
+      <div><div class="user-name">${currentUser.name||'—'}</div><div class="user-email">${currentUser.email}</div><div class="user-since">会員登録：${since}</div></div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-box"><div class="stat-num">${orderHistory.length}</div><div class="stat-lbl">注文回数</div></div>
+      <div class="stat-box"><div class="stat-num">¥${Math.round(totalSpent/1000)}K</div><div class="stat-lbl">累計購入額</div></div>
+      <div class="stat-box"><div class="stat-num">${totalItems}</div><div class="stat-lbl">購入商品数</div></div>
+    </div>
+    <div class="sec-title">プロフィール編集</div>
+    <div class="pf-grid">
+      <div class="pf-group"><div class="pf-label">お名前</div><input class="pf-input" id="pf_name" value="${currentUser.name||''}"></div>
+      <div class="pf-group"><div class="pf-label">フリガナ</div><input class="pf-input" id="pf_kana" value="${currentUser.kana||''}"></div>
+      <div class="pf-group"><div class="pf-label">電話番号</div><input class="pf-input" id="pf_phone" value="${currentUser.phone||''}" placeholder="090-0000-0000"></div>
+      <div class="pf-group"><div class="pf-label">郵便番号</div><input class="pf-input" id="pf_zip" value="${currentUser.zip||''}" placeholder="123-4567"></div>
+      <div class="pf-group"><div class="pf-label">都道府県</div><input class="pf-input" id="pf_pref" value="${currentUser.pref||''}" placeholder="東京都"></div>
+      <div class="pf-group"><div class="pf-label">市区町村</div><input class="pf-input" id="pf_city" value="${currentUser.city||''}" placeholder="渋谷区"></div>
+      <div class="pf-group full"><div class="pf-label">番地・建物名</div><input class="pf-input" id="pf_addr" value="${currentUser.addr||''}" placeholder="○○町1-2-3 ○○マンション101"></div>
+    </div>
+    <button class="save-btn" onclick="saveProfile()">変更を保存する</button>
+    <br><button class="logout-btn" onclick="switchTab('auth')">ログアウト</button>`;
+}
+
+async function saveProfile() {
+  try {
+    currentUser=await api('PATCH','/api/profile',{name:document.getElementById('pf_name').value,kana:document.getElementById('pf_kana').value,phone:document.getElementById('pf_phone').value,zip:document.getElementById('pf_zip').value,pref:document.getElementById('pf_pref').value,city:document.getElementById('pf_city').value,addr:document.getElementById('pf_addr').value});
+    showToast('プロフィールを保存しました');
+    renderProfile(document.getElementById('mpContent'));
+  } catch(e){showToast('保存に失敗しました: '+e.message);}
+}
+
+// ── HISTORY ──
+function renderHistory(body) {
+  if (!currentUser){switchTab('auth');return;}
+  if (!orderHistory.length){body.innerHTML=`<div class="empty"><div class="empty-icon">📦</div><p>まだ購入履歴がありません</p></div>`;return;}
+  const stMap={delivered:{label:'配達完了',cls:'status-delivered'},shipped:{label:'配送中',cls:'status-shipped'},processing:{label:'処理中',cls:'status-processing'}};
+  body.innerHTML=orderHistory.map((o,i)=>{
+    const st=stMap[o.status]||stMap.processing;
+    const dt=new Date(o.created_at).toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'});
+    const items=Array.isArray(o.items)?o.items:JSON.parse(o.items||'[]');
+    return `<div class="order-card">
+      <div class="order-hdr" id="ohdr${i}" onclick="toggleOrder(${i})">
+        <div><div class="order-num">${o.order_number}</div><div class="order-date">${dt}</div></div>
+        <div style="text-align:right"><div class="order-total">¥${(o.total||0).toLocaleString()}</div><div class="order-status ${st.cls}">${st.label}</div></div>
+        <span class="chevron">▼</span>
+      </div>
+      <div class="order-items-wrap" id="owrap${i}">
+        ${items.map(it=>`<div class="order-item"><div class="oi-icon">${it.icon||'📦'}</div><div class="oi-info"><div class="oi-name">${it.name}</div><div class="oi-brand">${it.brand} · ${it.qty}点</div></div><div class="oi-price">¥${((it.price||0)*it.qty).toLocaleString()}</div></div>`).join('')}
+        <div style="padding-top:.7rem;font-size:.72rem;color:var(--gray)">お届け先：${o.shipping_address||'—'}</div>
+      </div>
+    </div>`;}).join('');
+}
+function toggleOrder(i){const w=document.getElementById('owrap'+i),h=document.getElementById('ohdr'+i);const o=w.classList.toggle('open');h.classList.toggle('open',o);}
+
+// ── WISHLIST ──
+function renderWishlist(body) {
+  if (!currentUser){switchTab('auth');return;}
+  if (!wishlistData.length){body.innerHTML=`<div class="empty"><div class="empty-icon">❤️</div><p>お気に入りがありません</p><p style="margin-top:.4rem;font-size:.72rem">商品ページの ♡ ボタンで追加できます</p></div>`;return;}
+  const items=wishlistData.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);
+  body.innerHTML=`<div class="wish-grid">${items.map(p=>`
+    <div class="wish-card">
+      <span class="wish-icon">${p.icon}</span>
+      <div class="wish-brand">${p.brand}</div>
+      <div class="wish-name">${p.name}</div>
+      <div class="wish-price">¥${p.price.toLocaleString()}<small style="font-size:.65rem;color:var(--gray);font-family:var(--font-ja)">（税込）</small></div>
+      <div class="wish-actions">
+        <button class="wish-add-btn" onclick="addToCart(${p.id});showToast('カートに追加しました')">🛒 カートへ</button>
+        <button class="wish-del-btn" onclick="removeWish(${p.id})">✕</button>
+      </div>
+    </div>`).join('')}</div>`;
+}
+async function removeWish(id){
+  try{await api('DELETE',`/api/wishlist/${id}`);wishlistData=wishlistData.filter(x=>x!==id);renderWishlist(document.getElementById('mpContent'));showToast('お気に入りから削除しました');}catch{}
+}
+
+// ── REVIEWS ──
+function renderReviews(body) {
+  if (!currentUser){switchTab('auth');return;}
+  body.innerHTML=`
+    <div class="review-form">
+      <div class="review-form-title">レビューを投稿する</div>
+      <select class="product-select" id="rv_product">
+        <option value="">商品を選択してください</option>
+        ${PRODUCTS.map(p=>`<option value="${p.id}">${p.name}（${p.brand}）</option>`).join('')}
+      </select>
+      <div style="margin-bottom:.6rem;font-size:.72rem;color:rgba(245,240,232,.5)">評価</div>
+      <div class="star-select" id="starSelect">
+        ${[1,2,3,4,5].map(n=>`<span onclick="setRating(${n})" id="star${n}">★</span>`).join('')}
+      </div>
+      <input class="review-input" id="rv_title" placeholder="タイトル（任意）">
+      <textarea class="review-textarea" id="rv_body" placeholder="レビュー本文（必須）"></textarea>
+      <button class="save-btn" onclick="submitReview()">投稿する</button>
+    </div>
+    <div class="sec-title">投稿したレビュー</div>
+    ${myReviews.length?myReviews.map(r=>{
+      const p=PRODUCTS.find(x=>x.id===r.product_id)||{icon:'📦',name:'不明な商品'};
+      const dt=new Date(r.created_at).toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'});
+      return `<div class="review-card">
+        <div class="review-card-head">
+          <div class="review-product-icon">${p.icon}</div>
+          <div><div class="review-product-name">${p.name}</div><div class="review-date">${dt}</div></div>
+        </div>
+        <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+        ${r.title?`<div class="review-title">${r.title}</div>`:''}
+        <div class="review-body">${r.body}</div>
+        <button class="review-del-btn" onclick="deleteReview(${r.id})">✕ 削除する</button>
+      </div>`;}).join(''):`<div class="empty"><div class="empty-icon">⭐</div><p>まだレビューがありません</p></div>`}`;
+  updateStars();
+}
+
+function setRating(n){reviewRating=n;updateStars();}
+function updateStars(){[1,2,3,4,5].forEach(n=>{const el=document.getElementById('star'+n);if(el)el.classList.toggle('on',n<=reviewRating);});}
+
+async function submitReview(){
+  const pid=parseInt(document.getElementById('rv_product').value);
+  const body=document.getElementById('rv_body').value.trim();
+  if(!pid){showToast('商品を選択してください');return;}
+  if(!reviewRating){showToast('評価を選択してください');return;}
+  if(!body){showToast('レビュー本文を入力してください');return;}
+  try{
+    const r=await api('POST','/api/reviews',{product_id:pid,rating:reviewRating,title:document.getElementById('rv_title').value||null,body});
+    const exist=myReviews.findIndex(x=>x.product_id===pid);
+    if(exist>=0)myReviews[exist]=r; else myReviews.unshift(r);
+    reviewRating=0;
+    renderReviews(document.getElementById('mpContent'));
+    showToast('レビューを投稿しました');
+  }catch(e){showToast('投稿に失敗しました: '+e.message);}
+}
+
+async function deleteReview(id){
+  try{await api('DELETE',`/api/reviews/${id}`);myReviews=myReviews.filter(x=>x.id!==id);renderReviews(document.getElementById('mpContent'));showToast('レビューを削除しました');}catch{}
+}
+
+// ── ADDRESSES ──
+function renderAddresses(body) {
+  if(!currentUser){switchTab('auth');return;}
+  body.innerHTML=`
+    <button class="save-btn" style="margin-bottom:1.2rem" onclick="showAddressForm()">＋ 新しい住所を追加</button>
+    <div id="addrFormWrap"></div>
+    <div class="sec-title">登録済み住所</div>
+    ${addresses.length?addresses.map(a=>`
+    <div class="addr-card ${a.is_default?'default':''}">
+      <div class="addr-label">
+        <span class="addr-label-text">${a.label}</span>
+        ${a.is_default?'<span class="default-badge">デフォルト</span>':''}
+      </div>
+      <div class="addr-body">
+        ${a.name}（${a.kana||'—'}）<br>
+        〒${a.zip} ${a.pref}${a.city}${a.addr}<br>
+        ${a.phone?`TEL: ${a.phone}`:''}
+      </div>
+      <div class="addr-actions">
+        ${!a.is_default?`<button class="addr-btn" onclick="setDefault(${a.id})">デフォルトに設定</button>`:''}
+        <button class="addr-btn del" onclick="deleteAddr(${a.id})">削除</button>
+      </div>
+    </div>`).join(''):`<div class="empty"><div class="empty-icon">🏠</div><p>住所が登録されていません</p></div>`}`;
+}
+
+function showAddressForm(){
+  const wrap=document.getElementById('addrFormWrap');
+  wrap.innerHTML=`
+    <div class="addr-form">
+      <div class="sec-title" style="margin-bottom:1rem">住所を追加</div>
+      <div class="addr-form-grid">
+        <div><div class="pf-label">ラベル</div><input class="addr-input" id="af_label" value="自宅" placeholder="自宅・会社など"></div>
+        <div><div class="pf-label">お名前 *</div><input class="addr-input" id="af_name" placeholder="山田 太郎"></div>
+        <div><div class="pf-label">フリガナ</div><input class="addr-input" id="af_kana" placeholder="ヤマダ タロウ"></div>
+        <div><div class="pf-label">電話番号</div><input class="addr-input" id="af_phone" placeholder="090-0000-0000"></div>
+        <div><div class="pf-label">郵便番号 *</div><input class="addr-input" id="af_zip" placeholder="123-4567"></div>
+        <div><div class="pf-label">都道府県 *</div><input class="addr-input" id="af_pref" placeholder="東京都"></div>
+        <div><div class="pf-label">市区町村 *</div><input class="addr-input" id="af_city" placeholder="渋谷区"></div>
+        <div><div class="pf-label">番地・建物名 *</div><input class="addr-input" id="af_addr" placeholder="○○町1-2-3"></div>
+      </div>
+      <label class="addr-check-row"><input type="checkbox" id="af_default"> デフォルト住所に設定する</label>
+      <div style="display:flex;gap:.7rem">
+        <button class="save-btn" onclick="saveAddr()">保存する</button>
+        <button class="addr-btn" onclick="document.getElementById('addrFormWrap').innerHTML=''">キャンセル</button>
+      </div>
+    </div>`;
+}
+
+async function saveAddr(){
+  const name=document.getElementById('af_name')?.value.trim();
+  const zip=document.getElementById('af_zip')?.value.trim();
+  const pref=document.getElementById('af_pref')?.value.trim();
+  const city=document.getElementById('af_city')?.value.trim();
+  const addr=document.getElementById('af_addr')?.value.trim();
+  if(!name||!zip||!pref||!city||!addr){showToast('必須項目を入力してください');return;}
+  try{
+    const r=await api('POST','/api/addresses',{label:document.getElementById('af_label').value||'自宅',name,kana:document.getElementById('af_kana').value,phone:document.getElementById('af_phone').value,zip,pref,city,addr,is_default:document.getElementById('af_default').checked});
+    if(r.is_default)addresses=addresses.map(a=>({...a,is_default:false}));
+    addresses.push(r);
+    renderAddresses(document.getElementById('mpContent'));
+    showToast('住所を追加しました');
+  }catch(e){showToast('保存に失敗しました: '+e.message);}
+}
+
+async function setDefault(id){
+  try{
+    await api('PATCH',`/api/addresses/${id}/set-default`);
+    addresses=addresses.map(a=>({...a,is_default:a.id===id}));
+    renderAddresses(document.getElementById('mpContent'));
+    showToast('デフォルト住所を変更しました');
+  }catch{}
+}
+
+async function deleteAddr(id){
+  try{
+    await api('DELETE',`/api/addresses/${id}`);
+    addresses=addresses.filter(a=>a.id!==id);
+    renderAddresses(document.getElementById('mpContent'));
+    showToast('住所を削除しました');
+  }catch{}
+}
+
+// ── AI ──
+function renderAI(body){
+  if(!currentUser){switchTab('auth');return;}
+  body.innerHTML=`
+    <p class="section-eyebrow" style="margin-bottom:.5rem">AIゴルフアドバイザー</p>
+    <p class="ai-sub">あなたの購入履歴をもとに、最適なゴルフ用品をご提案します。</p>
+    <div class="ai-msgs" id="aiMsgs">
+      <div class="ai-msg assistant">こんにちは、${currentUser.name}さん！ FAIRWAYのAIゴルフアドバイザーです。クラブ選びや用品のご相談など、何でもどうぞ。</div>
+    </div>
+    <div class="ai-input-row">
+      <input class="ai-input" id="aiInput" placeholder="例：飛距離を伸ばしたい" onkeydown="if(event.key==='Enter')sendAI()">
+      <button class="ai-send" id="aiSend" onclick="sendAI()">送信</button>
+    </div>
+    <div class="ai-chips">
+      ${['飛距離アップのコツは？','初心者向けクラブを教えて','おすすめのボールは？','スコア100切りのためには？'].map(q=>`<button class="ai-chip" onclick="document.getElementById('aiInput').value='${q}';sendAI()">${q}</button>`).join('')}
+    </div>`;
+  if(aiMessages.length){
+    const list=document.getElementById('aiMsgs');
+    list.innerHTML='';
+    aiMessages.forEach(m=>{const d=document.createElement('div');d.className='ai-msg '+m.role;d.textContent=m.content;list.appendChild(d);});
+    list.scrollTop=list.scrollHeight;
+  }
+}
+
+async function sendAI(){
+  const inp=document.getElementById('aiInput');
+  const btn=document.getElementById('aiSend');
+  const list=document.getElementById('aiMsgs');
+  if(!inp||!list)return;
+  const msg=inp.value.trim(); if(!msg)return;
+  inp.value=''; btn.disabled=true;
+  const ud=document.createElement('div');ud.className='ai-msg user';ud.textContent=msg;list.appendChild(ud);
+  const ld=document.createElement('div');ld.className='ai-msg assistant loading';ld.textContent='考え中...';list.appendChild(ld);
+  list.scrollTop=list.scrollHeight;
+  const hist=orderHistory.length?'購入履歴: '+orderHistory.map(o=>{const items=Array.isArray(o.items)?o.items:JSON.parse(o.items||'[]');return items.map(i=>i.name).join('、');}).join(' / '):'購入履歴はまだありません。';
+  const sys=`あなたはFAIRWAY（プレミアムゴルフストア）のAIアドバイザーです。\nユーザー名：${currentUser.name}\n${hist}\n取り扱い商品：${PRODUCTS.map(p=>`${p.name}（${p.brand}、¥${p.price.toLocaleString()}）`).join('、')}\nゴルフ専門家として日本語で回答してください。商品推薦時は具体的な商品名と価格を含めて。3〜5文以内で簡潔に。`;
+  aiMessages.push({role:'user',content:msg});
+  try{
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:aiMessages})});
+    const data=await res.json();
+    const reply=data.content?.[0]?.text||'すみません、もう一度お試しください。';
+    ld.classList.remove('loading');ld.textContent=reply;
+    aiMessages.push({role:'assistant',content:reply});
+  }catch{ld.textContent='エラーが発生しました。しばらくしてから再度お試しください。';}
+  btn.disabled=false; list.scrollTop=list.scrollHeight;
+}
+
+// ── INIT ──
+async function init(){
+  const styleEl=document.createElement('style');styleEl.textContent=COMMON_CSS;document.head.appendChild(styleEl);
+  await restoreSession();
+  updateCartBadge();
+  if(currentUser){
+    await loadAllData();
+    showLoggedInTabs();
+    switchTab('profile');
+  } else {
+    renderAuth(document.getElementById('mpContent'));
+  }
+}
+init();
+</script>
+</body>
+</html>

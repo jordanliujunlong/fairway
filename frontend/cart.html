@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>カート — FAIRWAY</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="common.js"></script>
+<style>
+  .page-hero{background:linear-gradient(135deg,var(--dark),var(--forest));padding:3rem 4rem 2rem;border-bottom:1px solid rgba(201,168,76,.15)}
+  .page-hero h1{font-family:var(--font-hd);font-size:3rem;letter-spacing:.1em;color:var(--cream)}
+  .page-hero h1 span{color:var(--gold)}
+  .cart-layout{display:grid;grid-template-columns:1fr 360px;gap:2rem;padding:3rem 4rem;align-items:start}
+  @media(max-width:900px){.cart-layout{grid-template-columns:1fr;padding:2rem 1.5rem}.page-hero{padding:2rem 1.5rem}}
+  /* cart items */
+  .cart-items-wrap{display:flex;flex-direction:column;gap:1px}
+  .cart-row{display:flex;gap:1.2rem;padding:1.5rem;background:var(--forest);align-items:center;transition:background .2s}
+  .cart-row:hover{background:rgba(26,51,32,.8)}
+  .ci-img{width:80px;height:80px;background:linear-gradient(135deg,var(--forest),var(--green));display:flex;align-items:center;justify-content:center;font-size:2.4rem;flex-shrink:0}
+  .ci-info{flex:1;min-width:0}
+  .ci-brand{font-size:.62rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:.2rem}
+  .ci-name{font-family:var(--font-en);font-size:1.05rem;color:var(--cream);margin-bottom:.5rem}
+  .ci-qty-row{display:flex;align-items:center;gap:.6rem}
+  .qty-btn{width:28px;height:28px;background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--cream);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  .qty-btn:hover{background:var(--gold);color:var(--black)}
+  .qty-num{font-size:.9rem;color:var(--cream);min-width:24px;text-align:center}
+  .ci-right{display:flex;flex-direction:column;align-items:flex-end;gap:.6rem;flex-shrink:0}
+  .ci-price{font-family:var(--font-en);font-size:1.2rem;color:var(--gold-lt)}
+  .ci-del{background:none;border:none;color:rgba(245,240,232,.2);font-size:.85rem;cursor:pointer;transition:color .2s}
+  .ci-del:hover{color:var(--red)}
+  .empty-state{text-align:center;padding:5rem 2rem;color:var(--gray)}
+  .empty-icon{font-size:4rem;opacity:.3;margin-bottom:1.2rem}
+  .empty-state p{font-size:.88rem;margin-bottom:1.5rem}
+  /* summary */
+  .cart-summary-box{background:var(--dark);border:1px solid rgba(201,168,76,.15);padding:1.8rem;position:sticky;top:90px}
+  .summary-title{font-family:var(--font-hd);font-size:1.3rem;letter-spacing:.12em;color:var(--cream);margin-bottom:1.5rem;padding-bottom:.8rem;border-bottom:1px solid rgba(201,168,76,.12)}
+  .summary-row{display:flex;justify-content:space-between;padding:.5rem 0;font-size:.82rem;color:var(--gray)}
+  .summary-row.total{border-top:1px solid rgba(201,168,76,.15);margin-top:.8rem;padding-top:1rem;color:var(--cream)}
+  .summary-row.total .val{font-family:var(--font-en);font-size:1.6rem;color:var(--cream)}
+  .free-ship-note{font-size:.72rem;color:var(--gold);text-align:center;margin:.8rem 0;padding:.5rem;border:1px solid rgba(201,168,76,.2);background:rgba(201,168,76,.05)}
+  .checkout-btn{width:100%;padding:1.1rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.9rem;font-weight:700;letter-spacing:.14em;border:none;cursor:pointer;transition:all .2s;margin-top:1rem;display:flex;align-items:center;justify-content:center;gap:.5rem}
+  .checkout-btn:hover{background:var(--gold-lt)}
+  .checkout-btn:disabled{opacity:.4;cursor:not-allowed}
+  .continue-btn{width:100%;padding:.8rem;background:transparent;color:rgba(245,240,232,.5);font-family:var(--font-ja);font-size:.82rem;letter-spacing:.1em;border:1px solid rgba(245,240,232,.15);cursor:pointer;transition:all .2s;margin-top:.6rem;text-align:center;display:block}
+  .continue-btn:hover{border-color:var(--gold);color:var(--gold)}
+  /* checkout steps */
+  .checkout-section{display:none;padding:3rem 4rem}
+  .checkout-section.active{display:block}
+  @media(max-width:900px){.checkout-section{padding:2rem 1.5rem}}
+  .step-bar{display:flex;margin-bottom:2.5rem}
+  .step{flex:1;padding:.6rem .3rem;text-align:center;font-size:.66rem;letter-spacing:.08em;color:rgba(245,240,232,.3);border-bottom:2px solid rgba(245,240,232,.1);transition:all .3s}
+  .step.active{color:var(--gold);border-bottom-color:var(--gold)}
+  .step.done{color:var(--gold-lt);border-bottom-color:rgba(201,168,76,.4)}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:600px}
+  @media(max-width:640px){.form-grid{grid-template-columns:1fr}}
+  .form-group{display:flex;flex-direction:column;gap:.4rem}
+  .form-group.full{grid-column:1/-1}
+  .form-group label{font-size:.72rem;letter-spacing:.1em;color:rgba(245,240,232,.55)}
+  .form-group label span{color:var(--gold)}
+  .form-group input,.form-group select{background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.12);color:var(--cream);padding:.75rem 1rem;font-family:var(--font-ja);font-size:.85rem;outline:none;transition:border-color .2s;-webkit-appearance:none;width:100%}
+  .form-group input:focus,.form-group select:focus{border-color:rgba(201,168,76,.5)}
+  .form-group input::placeholder{color:rgba(245,240,232,.2)}
+  .form-group select option{background:var(--dark)}
+  .form-group.has-error input,.form-group.has-error select{border-color:var(--red)}
+  .error-msg{font-size:.7rem;color:var(--red);margin-top:.2rem;display:none}
+  .form-group.has-error .error-msg{display:block}
+  .form-section-title{font-family:var(--font-en);font-size:1.15rem;color:var(--cream);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:1px solid rgba(201,168,76,.1)}
+  .form-actions{display:flex;gap:.8rem;margin-top:2rem}
+  .btn-back{padding:.9rem 2rem;background:rgba(245,240,232,.06);color:rgba(245,240,232,.6);border:1px solid rgba(245,240,232,.12);font-family:var(--font-ja);font-size:.82rem;cursor:pointer;transition:all .2s}
+  .btn-back:hover{background:rgba(245,240,232,.1)}
+  .btn-next{padding:.9rem 2rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.82rem;font-weight:700;border:none;cursor:pointer;transition:all .2s}
+  .btn-next:hover{background:var(--gold-lt)}
+  /* review */
+  .order-review-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem;max-width:600px}
+  .or-item{display:flex;align-items:center;gap:.8rem;padding:.8rem;background:rgba(26,51,32,.3);border:1px solid rgba(201,168,76,.08)}
+  .or-icon{font-size:1.5rem;width:40px;text-align:center;flex-shrink:0}
+  .or-name{font-size:.82rem;color:var(--cream)}
+  .or-qty{font-size:.7rem;color:var(--gray)}
+  .or-price{font-family:var(--font-en);font-size:1rem;color:var(--gold-lt);white-space:nowrap;margin-left:auto}
+  .review-total-box{display:flex;justify-content:space-between;padding:1rem;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);margin-bottom:1rem;max-width:600px}
+  .review-addr-box{font-size:.78rem;color:var(--gray);line-height:1.9;padding:1rem;background:rgba(26,51,32,.2);border:1px solid rgba(201,168,76,.08);margin-bottom:1.5rem;max-width:600px}
+  /* success */
+  .success-screen{text-align:center;padding:4rem 2rem;max-width:500px;margin:0 auto}
+  .success-icon{font-size:4.5rem;margin-bottom:1.2rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both}
+  @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
+  .success-title{font-family:var(--font-en);font-size:2rem;font-weight:300;color:var(--cream);margin-bottom:.8rem}
+  .order-num-box{font-family:var(--font-hd);font-size:1.1rem;color:var(--gold);letter-spacing:.2em;margin:1.2rem 0;padding:.8rem;border:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.05)}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="nav-logo">FAIR<span>WAY</span></a>
+  <ul class="nav-links">
+    <li><a href="index.html">ショップ</a></li>
+    <li><a href="mypage.html">マイページ</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="mypage.html" class="nav-btn" id="mypageNavBtn"><span class="user-dot" id="userDot"></span>マイページ</a>
+    <a href="cart.html" class="nav-btn active">🛒 カート <span class="cart-badge">0</span></a>
+  </div>
+</nav>
+
+<div class="page-wrap">
+  <!-- CART VIEW -->
+  <div id="cartView">
+    <div class="page-hero">
+      <h1>CART <span>カート</span></h1>
+    </div>
+    <div class="cart-layout">
+      <div id="cartItemsWrap"></div>
+      <div class="cart-summary-box">
+        <div class="summary-title">注文サマリー</div>
+        <div class="summary-row"><span>小計</span><span class="val" id="subtotal">¥0</span></div>
+        <div class="summary-row"><span>送料</span><span class="val" id="shipping">¥0</span></div>
+        <div class="free-ship-note" id="freeShipNote"></div>
+        <div class="summary-row total"><span>合計（税込）</span><span class="val" id="cartTotal">¥0</span></div>
+        <button class="checkout-btn" id="checkoutBtn" onclick="startCheckout()">レジへ進む →</button>
+        <a href="index.html" class="continue-btn">ショッピングを続ける</a>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT VIEW -->
+  <div id="checkoutView" style="display:none">
+    <div class="page-hero">
+      <h1>CHECKOUT <span>お会計</span></h1>
+    </div>
+    <div class="step-bar">
+      <div class="step active" id="si1">① 配送先</div>
+      <div class="step" id="si2">② 支払い</div>
+      <div class="step" id="si3">③ 確認</div>
+      <div class="step" id="si4">④ 完了</div>
+    </div>
+
+    <!-- STEP1 配送先 -->
+    <div class="checkout-section active" id="step1">
+      <div class="form-section-title">お届け先情報</div>
+      <div class="form-grid">
+        <div class="form-group"><label>お名前 <span>*</span></label><input id="s_name" placeholder="山田 太郎"><span class="error-msg">入力してください</span></div>
+        <div class="form-group"><label>フリガナ <span>*</span></label><input id="s_kana" placeholder="ヤマダ タロウ"><span class="error-msg">入力してください</span></div>
+        <div class="form-group"><label>電話番号 <span>*</span></label><input id="s_tel" type="tel" placeholder="090-0000-0000"><span class="error-msg">入力してください</span></div>
+        <div class="form-group"><label>郵便番号 <span>*</span></label><input id="s_zip" placeholder="123-4567"><span class="error-msg">入力してください</span></div>
+        <div class="form-group"><label>都道府県 <span>*</span></label>
+          <select id="s_pref"><option value="">選択してください</option><option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option><option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option><option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option><option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option><option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option><option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option><option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option></select>
+          <span class="error-msg">選択してください</span></div>
+        <div class="form-group"><label>市区町村 <span>*</span></label><input id="s_city" placeholder="渋谷区"><span class="error-msg">入力してください</span></div>
+        <div class="form-group full"><label>番地・建物名 <span>*</span></label><input id="s_addr" placeholder="○○町1-2-3 ○○マンション101"><span class="error-msg">入力してください</span></div>
+      </div>
+      <div class="form-actions"><button class="btn-next" onclick="goStep(2)">支払いへ →</button></div>
+    </div>
+
+    <!-- STEP2 支払い -->
+    <div class="checkout-section" id="step2">
+      <div class="form-section-title">お支払い方法</div>
+      <div class="form-grid">
+        <div class="form-group full"><label>お支払い方法 <span>*</span></label>
+          <select id="p_method" onchange="toggleCard()"><option value="">選択してください</option><option value="card">クレジットカード</option><option value="paypay">PayPay</option><option value="deferred">後払い（コンビニ）</option><option value="bank">銀行振込</option></select>
+          <span class="error-msg">選択してください</span></div>
+        <div class="form-group full" id="cardNum" style="display:none"><label>カード番号</label><input id="p_card" placeholder="0000 0000 0000 0000" maxlength="19" oninput="this.value=this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,19)"></div>
+        <div class="form-group" id="cardExp" style="display:none"><label>有効期限</label><input id="p_exp" placeholder="MM/YY" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'').replace(/^(.{2})/,'$1/').slice(0,5)"></div>
+        <div class="form-group" id="cardCvc" style="display:none"><label>CVC</label><input id="p_cvc" placeholder="123" maxlength="4"></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-back" onclick="goStep(1)">← 戻る</button>
+        <button class="btn-next" onclick="goStep(3)">確認へ →</button>
+      </div>
+    </div>
+
+    <!-- STEP3 確認 -->
+    <div class="checkout-section" id="step3">
+      <div class="form-section-title">ご注文内容の確認</div>
+      <div class="order-review-list" id="orderReview"></div>
+      <div class="review-total-box"><span style="font-size:.82rem;color:rgba(245,240,232,.6)">ご請求合計（税込）</span><span style="font-family:var(--font-en);font-size:1.4rem" id="reviewTotal"></span></div>
+      <div class="review-addr-box" id="reviewAddr"></div>
+      <div class="form-actions">
+        <button class="btn-back" onclick="goStep(2)">← 戻る</button>
+        <button class="btn-next" id="placeBtn" onclick="placeOrder()">注文を確定する ✓</button>
+      </div>
+    </div>
+
+    <!-- STEP4 完了 -->
+    <div class="checkout-section" id="step4">
+      <div class="success-screen">
+        <div class="success-icon">✅</div>
+        <h2 class="success-title">ご注文ありがとうございます</h2>
+        <p style="font-size:.83rem;color:var(--gray);line-height:1.9">ご注文を受け付けました。確認メールをお送りします。</p>
+        <div class="order-num-box" id="orderNumBox"></div>
+        <p style="font-size:.75rem;color:var(--gray)">通常2〜4営業日でのお届けとなります。</p>
+        <div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center">
+          <a href="index.html" class="btn-gold">ショッピングを続ける</a>
+          <a href="mypage.html" class="btn-ghost">購入履歴を見る</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const styleEl = document.createElement('style');
+styleEl.textContent = COMMON_CSS;
+document.head.appendChild(styleEl);
+
+let currentStep = 1;
+
+function renderCart() {
+  const sub = getCartTotal();
+  const cnt = getCartCount();
+  const ship = sub >= 10000 ? 0 : sub === 0 ? 0 : 880;
+  document.getElementById('subtotal').textContent = `¥${sub.toLocaleString()}`;
+  document.getElementById('shipping').textContent = ship === 0 && sub > 0 ? '無料' : ship === 0 ? '¥0' : `¥${ship.toLocaleString()}`;
+  document.getElementById('cartTotal').textContent = `¥${(sub + ship).toLocaleString()}`;
+  document.getElementById('checkoutBtn').disabled = cart.length === 0;
+  const note = document.getElementById('freeShipNote');
+  if (sub > 0 && sub < 10000) { note.textContent = `あと¥${(10000-sub).toLocaleString()}で送料無料！`; note.style.display=''; }
+  else note.style.display = 'none';
+  updateCartBadge();
+
+  const wrap = document.getElementById('cartItemsWrap');
+  if (!cart.length) {
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><p>カートに商品がありません</p><a href="index.html" class="btn-gold">ショッピングを始める</a></div>`;
+    return;
+  }
+  wrap.innerHTML = `<div class="cart-items-wrap">` + cart.map(i=>`
+    <div class="cart-row">
+      <div class="ci-img">${i.icon}</div>
+      <div class="ci-info">
+        <div class="ci-brand">${i.brand}</div>
+        <div class="ci-name">${i.name}</div>
+        <div class="ci-qty-row">
+          <button class="qty-btn" onclick="changeQty(${i.id},-1)">−</button>
+          <span class="qty-num">${i.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${i.id},1)">＋</button>
+        </div>
+      </div>
+      <div class="ci-right">
+        <div class="ci-price">¥${(i.price*i.qty).toLocaleString()}</div>
+        <button class="ci-del" onclick="removeItem(${i.id})">✕ 削除</button>
+      </div>
+    </div>`).join('') + `</div>`;
+}
+
+function changeQty(id, d) {
+  const item = cart.find(x=>x.id===id);
+  if (!item) return;
+  item.qty += d;
+  if (item.qty <= 0) cart = cart.filter(x=>x.id!==id);
+  saveCartLocal(); syncCartServer(); renderCart();
+}
+function removeItem(id) {
+  cart = cart.filter(x=>x.id!==id);
+  saveCartLocal(); syncCartServer(); renderCart();
+}
+
+function startCheckout() {
+  document.getElementById('cartView').style.display = 'none';
+  document.getElementById('checkoutView').style.display = 'block';
+  // プロフィールから住所を自動入力
+  if (currentUser) {
+    const set = (id,v) => { const el=document.getElementById(id); if(el&&v) el.value=v; };
+    set('s_name', currentUser.name); set('s_kana', currentUser.kana);
+    set('s_tel', currentUser.phone); set('s_zip', currentUser.zip);
+    set('s_pref', currentUser.pref); set('s_city', currentUser.city);
+    set('s_addr', currentUser.addr);
+  }
+}
+
+function toggleCard() {
+  const isCard = document.getElementById('p_method').value === 'card';
+  ['cardNum','cardExp','cardCvc'].forEach(id => document.getElementById(id).style.display = isCard?'':'none');
+}
+
+function validateStep(step) {
+  const req = { 1:['s_name','s_kana','s_tel','s_zip','s_pref','s_city','s_addr'], 2:['p_method'] };
+  if (!req[step]) return true;
+  let ok = true;
+  req[step].forEach(id => {
+    const el=document.getElementById(id); const g=el.closest('.form-group');
+    if (!el.value.trim()) { g.classList.add('has-error'); ok=false; } else g.classList.remove('has-error');
+  });
+  if (!ok) showToast('必須項目を入力してください');
+  return ok;
+}
+
+function goStep(n) {
+  if (n > currentStep && !validateStep(currentStep)) return;
+  if (n === 3) buildReview();
+  for (let i=1;i<=4;i++) {
+    document.getElementById(`step${i}`).classList.toggle('active', i===n);
+    const el=document.getElementById(`si${i}`);
+    el.className='step'+(i===n?' active':i<n?' done':'');
+  }
+  currentStep = n;
+  window.scrollTo(0,0);
+}
+
+function buildReview() {
+  const sub=getCartTotal(); const ship=sub>=10000?0:880;
+  document.getElementById('orderReview').innerHTML = cart.map(i=>`
+    <div class="or-item"><div class="or-icon">${i.icon}</div>
+    <div class="or-info"><div class="or-name">${i.name}</div><div class="or-qty">${i.brand} · ${i.qty}点</div></div>
+    <div class="or-price">¥${(i.price*i.qty).toLocaleString()}</div></div>`).join('');
+  document.getElementById('reviewTotal').textContent=`¥${(sub+ship).toLocaleString()}`;
+  const mmap={card:'クレジットカード',paypay:'PayPay',deferred:'後払い',bank:'銀行振込'};
+  document.getElementById('reviewAddr').innerHTML=`
+    <strong style="color:var(--cream)">お届け先</strong><br>
+    ${document.getElementById('s_name').value}（${document.getElementById('s_kana').value}）<br>
+    〒${document.getElementById('s_zip').value} ${document.getElementById('s_pref').value}${document.getElementById('s_city').value}${document.getElementById('s_addr').value}<br>
+    TEL: ${document.getElementById('s_tel').value} ／ 支払い: ${mmap[document.getElementById('p_method').value]||''}`;
+}
+
+async function placeOrder() {
+  const btn=document.getElementById('placeBtn');
+  btn.disabled=true; btn.textContent='処理中...';
+  const sub=getCartTotal(); const ship=sub>=10000?0:880;
+  const addr=`${document.getElementById('s_pref').value}${document.getElementById('s_city').value}${document.getElementById('s_addr').value}`;
+  const items=cart.map(i=>({id:i.id,icon:i.icon,name:i.name,brand:i.brand,qty:i.qty,price:i.price}));
+  try {
+    let orderNum;
+    if (token) {
+      const data=await api('POST','/api/orders',{items,total:sub+ship,shippingAddress:addr,paymentMethod:document.getElementById('p_method').value});
+      orderNum=data.order_number;
+    } else {
+      orderNum=`FW-${Date.now().toString().slice(-8)}`;
+    }
+    document.getElementById('orderNumBox').textContent=`注文番号 ${orderNum}`;
+    goStep(4);
+    cart=[]; saveCartLocal(); syncCartServer(); updateCartBadge();
+  } catch(e) {
+    showToast('注文処理に失敗しました: '+e.message);
+    btn.disabled=false; btn.textContent='注文を確定する ✓';
+  }
+}
+
+async function init() {
+  const styleEl=document.createElement('style'); styleEl.textContent=COMMON_CSS; document.head.appendChild(styleEl);
+  await restoreSession();
+  renderCart();
+}
+init();
+</script>
+</body>
+</html>

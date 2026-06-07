@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FAIRWAY — Premium Golf Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="common.js"></script>
+<style>
+  /* CSS変数はcommon.jsで注入 */
+  .hero{min-height:580px;height:82vh;max-height:780px;display:grid;grid-template-columns:1fr auto;align-items:center;position:relative;overflow:hidden;padding:0 4rem}
+  .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 65% 40%,rgba(45,90,61,.4) 0%,transparent 70%),linear-gradient(150deg,#050a06 0%,#0d1a0f 45%,#1a3320 100%)}
+  .hero-lines{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(rgba(201,168,76,1) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,1) 1px,transparent 1px);background-size:80px 80px}
+  .hero-content{position:relative;z-index:2;max-width:560px;animation:fadeUp .9s ease both;padding:6rem 0 4rem}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+  .hero-eyebrow{font-size:.68rem;letter-spacing:.3em;color:var(--gold);margin-bottom:.9rem;display:flex;align-items:center;gap:.8rem}
+  .hero-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
+  .hero-title{font-family:var(--font-hd);font-size:clamp(3.8rem,7vw,6rem);line-height:.9;letter-spacing:.04em;color:var(--cream);margin-bottom:.9rem}
+  .hero-title em{font-family:var(--font-en);font-style:italic;color:var(--gold-lt);font-size:.82em;display:block}
+  .hero-sub{font-size:.83rem;color:rgba(245,240,232,.55);line-height:1.9;max-width:380px;margin-bottom:2rem}
+  .hero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
+  .hero-deco{position:relative;z-index:2;padding:6rem 2rem 4rem 4rem;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:1.5rem;flex-shrink:0}
+  .hero-deco-num{font-family:var(--font-hd);font-size:clamp(6rem,12vw,11rem);line-height:1;color:rgba(201,168,76,.08);display:block;text-align:right}
+  .hero-deco-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .9rem;border:1px solid rgba(201,168,76,.18);background:rgba(26,51,32,.3);font-size:.7rem;letter-spacing:.1em;color:rgba(245,240,232,.55)}
+  .marquee-wrap{background:var(--gold);overflow:hidden;padding:.65rem 0}
+  .marquee-track{display:flex;animation:marquee 22s linear infinite;white-space:nowrap}
+  @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+  .marquee-item{font-family:var(--font-hd);font-size:.85rem;letter-spacing:.2em;color:var(--black);padding:0 2rem}
+  .marquee-item::after{content:'◆';font-size:.4rem;opacity:.5;margin-left:1.5rem}
+  .section{padding:6rem 4rem}
+  .section-eyebrow{font-size:.68rem;letter-spacing:.28em;color:var(--gold);margin-bottom:.8rem;display:flex;align-items:center;gap:.7rem}
+  .section-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
+  .section-title{font-family:var(--font-en);font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--cream);line-height:1.15;margin-bottom:.6rem}
+  .section-title em{font-style:italic;color:var(--gold-lt)}
+  .rule{width:50px;height:1px;background:var(--gold);margin-bottom:2.5rem}
+  .cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin-top:2rem}
+  .cat-card{position:relative;overflow:hidden;cursor:pointer;background:var(--forest);padding:2.5rem 1.5rem 1.8rem;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .3s}
+  .cat-card:hover{transform:translateY(-4px)}
+  .cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(45,90,61,.3),rgba(5,10,6,.7))}
+  .cat-emoji{position:absolute;top:1.5rem;left:50%;transform:translateX(-50%);font-size:2.8rem;transition:transform .3s}
+  .cat-card:hover .cat-emoji{transform:translateX(-50%) scale(1.15)}
+  .cat-name{font-family:var(--font-hd);font-size:1.3rem;letter-spacing:.12em;color:var(--cream);position:relative;z-index:1}
+  .cat-count{font-size:.68rem;letter-spacing:.1em;color:var(--gold);position:relative;z-index:1;margin-top:.2rem}
+  .cat-line{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
+  .cat-card:hover .cat-line{transform:scaleX(1)}
+  .products-bg{background:var(--dark)}
+  .filter-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.5rem}
+  .filter-btn{padding:.45rem 1.2rem;background:transparent;border:1px solid rgba(245,240,232,.12);color:rgba(245,240,232,.5);font-family:var(--font-ja);font-size:.75rem;letter-spacing:.1em;cursor:pointer;transition:all .2s}
+  .filter-btn.active,.filter-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.07)}
+  .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
+  .prod-card{background:var(--forest);transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
+  .prod-card:hover{transform:translateY(-5px);box-shadow:0 18px 48px rgba(0,0,0,.55)}
+  .prod-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:5.5rem;background:linear-gradient(135deg,var(--forest),var(--green));position:relative;overflow:hidden;cursor:pointer}
+  .prod-badge{position:absolute;top:.9rem;left:.9rem;padding:.2rem .65rem;font-size:.62rem;font-weight:700;letter-spacing:.1em}
+  .prod-badge.new-badge{background:var(--gold);color:var(--black)}
+  .prod-badge.sale-badge{background:var(--red);color:#fff}
+  .wish-btn{position:absolute;top:.8rem;right:.8rem;background:rgba(5,10,6,.6);border:1px solid rgba(201,168,76,.3);color:var(--cream);width:34px;height:34px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
+  .wish-btn:hover,.wish-btn.wished{background:var(--gold);color:var(--black);border-color:var(--gold)}
+  .prod-body{padding:1.2rem 1.3rem 1.3rem}
+  .prod-brand{font-size:.62rem;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:.35rem;cursor:pointer}
+  .prod-name{font-family:var(--font-en);font-size:1.05rem;font-weight:400;color:var(--cream);margin-bottom:.4rem;line-height:1.3;cursor:pointer}
+  .prod-desc{font-size:.73rem;color:var(--gray);line-height:1.7;margin-bottom:1rem;cursor:pointer}
+  .prod-foot{display:flex;align-items:center;justify-content:space-between}
+  .prod-price{font-family:var(--font-en);font-size:1.25rem;font-weight:600;color:var(--cream)}
+  .prod-price .orig{font-size:.78rem;color:var(--gray);text-decoration:line-through;margin-right:.4rem;font-family:var(--font-ja)}
+  .prod-price small{font-size:.65rem;color:var(--gray);font-family:var(--font-ja)}
+  .add-cart-btn{width:38px;height:38px;background:var(--gold);border:none;color:var(--black);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:700}
+  .add-cart-btn:hover{background:var(--gold-lt);transform:scale(1.1)}
+  /* Product Detail Modal */
+  .pd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:250;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
+  .pd-overlay.open{opacity:1;pointer-events:all}
+  .pd-modal{background:var(--dark);border:1px solid rgba(201,168,76,.18);width:100%;max-width:860px;max-height:92vh;overflow-y:auto;position:relative;display:grid;grid-template-columns:1fr 1fr;animation:modalIn .3s ease both}
+  @keyframes modalIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
+  @media(max-width:700px){.pd-modal{grid-template-columns:1fr}}
+  .pd-close{position:absolute;top:1rem;right:1rem;z-index:2;background:rgba(5,10,6,.7);border:1px solid rgba(201,168,76,.3);color:var(--cream);width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  .pd-close:hover{background:var(--gold);color:var(--black)}
+  .pd-gallery{background:linear-gradient(135deg,var(--forest),var(--green));display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;min-height:360px}
+  .pd-main-img{font-size:8rem;margin-bottom:1.5rem;transition:transform .3s;cursor:default}
+  .pd-main-img:hover{transform:scale(1.08)}
+  .pd-info{padding:2.5rem 2rem;display:flex;flex-direction:column;gap:.9rem;overflow-y:auto}
+  .pd-badge{padding:.2rem .7rem;font-size:.62rem;font-weight:700;letter-spacing:.1em}
+  .pd-badge.new{background:var(--gold);color:var(--black)}
+  .pd-badge.sale{background:var(--red);color:#fff}
+  .pd-badge.cat{background:rgba(201,168,76,.12);border:1px solid rgba(201,168,76,.3);color:var(--gold-lt)}
+  .pd-brand{font-size:.68rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase}
+  .pd-name{font-family:var(--font-en);font-size:1.7rem;font-weight:400;color:var(--cream);line-height:1.2}
+  .pd-stars{display:flex;align-items:center;gap:.4rem;font-size:.9rem;color:var(--gold)}
+  .pd-rating-num{font-size:.78rem;color:var(--gray)}
+  .pd-price-row{display:flex;align-items:baseline;gap:.8rem}
+  .pd-price{font-family:var(--font-en);font-size:2rem;font-weight:600;color:var(--cream)}
+  .pd-orig{font-size:.9rem;color:var(--gray);text-decoration:line-through}
+  .pd-tax{font-size:.72rem;color:var(--gray);font-family:var(--font-ja)}
+  .pd-desc-long{font-size:.82rem;color:rgba(245,240,232,.65);line-height:1.95;border-top:1px solid rgba(201,168,76,.1);border-bottom:1px solid rgba(201,168,76,.1);padding:.9rem 0}
+  .pd-specs{display:grid;grid-template-columns:auto 1fr;gap:.5rem 1.2rem;font-size:.78rem}
+  .pd-spec-key{color:var(--gold);white-space:nowrap}
+  .pd-spec-val{color:rgba(245,240,232,.7)}
+  .pd-qty-row{display:flex;align-items:center;gap:1rem}
+  .pd-qty-label{font-size:.72rem;letter-spacing:.1em;color:var(--gray)}
+  .pd-qty-ctrl{display:flex;align-items:center;gap:.5rem}
+  .pd-qty-btn{width:32px;height:32px;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.25);color:var(--cream);font-size:1.1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  .pd-qty-btn:hover{background:var(--gold);color:var(--black)}
+  .pd-qty-num{font-family:var(--font-en);font-size:1.1rem;min-width:28px;text-align:center}
+  .pd-add-btn{padding:1rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.88rem;font-weight:700;letter-spacing:.12em;border:none;cursor:pointer;transition:all .2s;width:100%}
+  .pd-add-btn:hover{background:var(--gold-lt)}
+  .pd-reviews{border-top:1px solid rgba(201,168,76,.1);padding-top:.9rem;display:flex;flex-direction:column;gap:.7rem}
+  .pd-review{padding:.7rem;background:rgba(26,51,32,.2);border-left:2px solid rgba(201,168,76,.3)}
+  .pd-review-head{display:flex;justify-content:space-between;margin-bottom:.3rem}
+  .pd-reviewer{font-size:.72rem;color:var(--gold-lt);font-weight:700}
+  .pd-review-date{font-size:.68rem;color:var(--gray)}
+  .pd-review-text{font-size:.78rem;color:rgba(245,240,232,.6);line-height:1.7}
+  /* brand banner */
+  .brand-banner{padding:5rem 4rem;background:linear-gradient(135deg,var(--forest),var(--green) 50%,var(--forest));position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+  .brand-banner::after{content:'FAIRWAY';position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:var(--font-hd);font-size:14rem;color:rgba(245,240,232,.025);line-height:1;pointer-events:none}
+  .brand-sub{font-family:var(--font-en);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:300;font-style:italic;color:var(--cream);line-height:1.3;margin-bottom:1rem}
+  .brand-text{font-size:.84rem;color:rgba(245,240,232,.62);line-height:2;margin-bottom:1.5rem}
+  .stats-row{display:flex;gap:2.5rem}
+  .stat-num{font-family:var(--font-hd);font-size:2.4rem;color:var(--gold-lt);line-height:1}
+  .stat-lbl{font-size:.68rem;letter-spacing:.12em;color:rgba(245,240,232,.45);margin-top:.2rem}
+  .brand-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+  .feat-item{padding:1.2rem;border:1px solid rgba(201,168,76,.15);background:rgba(5,10,6,.25);transition:border-color .3s}
+  .feat-item:hover{border-color:rgba(201,168,76,.4)}
+  .feat-icon{font-size:1.5rem;margin-bottom:.5rem}
+  .feat-title{font-family:var(--font-en);font-size:.95rem;color:var(--cream);margin-bottom:.2rem}
+  .feat-text{font-size:.73rem;color:var(--gray);line-height:1.7}
+  footer{background:var(--black);border-top:1px solid rgba(201,168,76,.1);padding:4rem 4rem 2rem}
+  .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem}
+  .footer-logo{font-family:var(--font-hd);font-size:2rem;letter-spacing:.15em;margin-bottom:.7rem}
+  .footer-logo span{color:var(--gold)}
+  .footer-desc{font-size:.78rem;color:var(--gray);line-height:1.9}
+  .footer-col h4{font-size:.65rem;letter-spacing:.25em;color:var(--gold);text-transform:uppercase;margin-bottom:1rem}
+  .footer-col ul{list-style:none}
+  .footer-col li{margin-bottom:.6rem}
+  .footer-col a{font-size:.78rem;color:var(--gray);transition:color .2s}
+  .footer-col a:hover{color:var(--cream)}
+  .footer-bottom{border-top:1px solid rgba(245,240,232,.05);padding-top:1.5rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+  .footer-copy{font-size:.7rem;color:rgba(245,240,232,.25)}
+  .pay-badges{display:flex;gap:.5rem}
+  .pay-badge{padding:.3rem .7rem;background:rgba(201,168,76,.1);border:1px solid rgba(201,168,76,.2);font-size:.65rem;color:var(--gold-lt)}
+  @media(max-width:1024px){.cat-grid{grid-template-columns:repeat(3,1fr)}.section{padding:4rem 1.5rem}.brand-banner{grid-template-columns:1fr;padding:3rem 1.5rem}.footer-grid{grid-template-columns:1fr 1fr;gap:2rem}.hero{padding:0 1.5rem;grid-template-columns:1fr}.hero-deco{display:none}}
+  @media(max-width:640px){.cat-grid{grid-template-columns:repeat(2,1fr)}.footer-grid{grid-template-columns:1fr}.brand-features{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">FAIR<span>WAY</span></a>
+  <ul class="nav-links">
+    <li><a href="#category">カテゴリ</a></li>
+    <li><a href="#products">商品一覧</a></li>
+    <li><a href="#about">ブランド</a></li>
+  </ul>
+  <div class="nav-right">
+    <a href="mypage.html" class="nav-btn" id="mypageNavBtn">
+      <span class="user-dot" id="userDot"></span>マイページ
+    </a>
+    <a href="cart.html" class="nav-btn">
+      🛒 カート <span class="cart-badge">0</span>
+    </a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-lines"></div>
+  <div class="hero-content">
+    <p class="hero-eyebrow">Premium Golf Equipment</p>
+    <h1 class="hero-title">YOUR<br><em>Perfect</em><br>GAME</h1>
+    <p class="hero-sub">プロ監修の厳選ゴルフ用品を。クラブ・ウェア・用品まで500点以上を取り揃えた日本最高峰のゴルフストア。</p>
+    <div class="hero-cta">
+      <a href="#products" class="btn-gold">今すぐショッピング →</a>
+      <a href="#category" class="btn-ghost">カテゴリを見る</a>
+    </div>
+  </div>
+  <div class="hero-deco">
+    <span class="hero-deco-num">500+</span>
+    <div style="display:flex;flex-direction:column;gap:.5rem">
+      <div class="hero-deco-item"><span>🏌️</span><span>クラブ · ボール · ウェア</span></div>
+      <div class="hero-deco-item"><span>🚚</span><span>¥10,000以上 送料無料</span></div>
+      <div class="hero-deco-item"><span>🏆</span><span>プロ監修フィッティング</span></div>
+    </div>
+  </div>
+</section>
+
+<div class="marquee-wrap"><div class="marquee-track">
+  <span class="marquee-item">¥10,000以上 送料無料</span><span class="marquee-item">30日間返品保証</span><span class="marquee-item">プロフィッティング対応</span><span class="marquee-item">500点以上の厳選アイテム</span><span class="marquee-item">NEW ARRIVALS</span>
+  <span class="marquee-item">¥10,000以上 送料無料</span><span class="marquee-item">30日間返品保証</span><span class="marquee-item">プロフィッティング対応</span><span class="marquee-item">500点以上の厳選アイテム</span><span class="marquee-item">NEW ARRIVALS</span>
+</div></div>
+
+<!-- CATEGORY -->
+<section class="section" id="category">
+  <p class="section-eyebrow">Shop by Category</p>
+  <h2 class="section-title">カテゴリ<em>から探す</em></h2>
+  <div class="rule"></div>
+  <div class="cat-grid">
+    <div class="cat-card" onclick="filterAndScroll('club')"><div class="cat-emoji">🏌️</div><div class="cat-line"></div><div class="cat-name">CLUBS</div><div class="cat-count">ゴルフクラブ · 128点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('ball')"><div class="cat-emoji">⛳</div><div class="cat-line"></div><div class="cat-name">BALLS</div><div class="cat-count">ゴルフボール · 64点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('wear')"><div class="cat-emoji">👕</div><div class="cat-line"></div><div class="cat-name">WEAR</div><div class="cat-count">ウェア · 210点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('bag')"><div class="cat-emoji">🎒</div><div class="cat-line"></div><div class="cat-name">BAGS</div><div class="cat-count">バッグ · 45点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('goods')"><div class="cat-emoji">🧤</div><div class="cat-line"></div><div class="cat-name">GOODS</div><div class="cat-count">小物・用品 · 98点</div></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="section products-bg" id="products">
+  <p class="section-eyebrow">Featured Products</p>
+  <h2 class="section-title">おすすめ<em>商品</em></h2>
+  <div class="rule"></div>
+  <div class="filter-row">
+    <button class="filter-btn active" onclick="setFilter('all',this)">すべて</button>
+    <button class="filter-btn" onclick="setFilter('club',this)">クラブ</button>
+    <button class="filter-btn" onclick="setFilter('ball',this)">ボール</button>
+    <button class="filter-btn" onclick="setFilter('wear',this)">ウェア</button>
+    <button class="filter-btn" onclick="setFilter('bag',this)">バッグ</button>
+    <button class="filter-btn" onclick="setFilter('goods',this)">小物</button>
+  </div>
+  <div class="products-grid" id="productsGrid"></div>
+</section>
+
+<!-- BRAND -->
+<div class="brand-banner" id="about">
+  <div>
+    <p class="section-eyebrow">About Fairway</p>
+    <h2 class="brand-sub">Crafted for the<br>Passionate Golfer</h2>
+    <p class="brand-text">FAIRWAYは、ゴルフへの情熱を持つすべての方のために生まれたプレミアムゴルフストアです。世界のトップブランドから厳選した500点以上の商品を、最高のサービスとともにお届けします。</p>
+    <div class="stats-row">
+      <div><div class="stat-num">500+</div><div class="stat-lbl">PRODUCTS</div></div>
+      <div><div class="stat-num">50+</div><div class="stat-lbl">BRANDS</div></div>
+      <div><div class="stat-num">10K+</div><div class="stat-lbl">CUSTOMERS</div></div>
+    </div>
+  </div>
+  <div class="brand-features">
+    <div class="feat-item"><div class="feat-icon">🚚</div><div class="feat-title">Free Shipping</div><p class="feat-text">¥10,000以上で全国送料無料。</p></div>
+    <div class="feat-item"><div class="feat-icon">🔄</div><div class="feat-title">30-Day Returns</div><p class="feat-text">未使用品30日以内の返品・交換。</p></div>
+    <div class="feat-item"><div class="feat-icon">🏆</div><div class="feat-title">Pro Fitting</div><p class="feat-text">プロ監修フィッティング対応。</p></div>
+    <div class="feat-item"><div class="feat-icon">🔒</div><div class="feat-title">Secure Payment</div><p class="feat-text">SSL暗号化・Stripe決済対応。</p></div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div><div class="footer-logo">FAIR<span>WAY</span></div><p class="footer-desc">ゴルフへの情熱を持つすべての方のための<br>プレミアムゴルフ用品専門ストア。</p></div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="#">クラブ</a></li><li><a href="#">ボール</a></li><li><a href="#">ウェア</a></li><li><a href="#">バッグ</a></li></ul></div>
+    <div class="footer-col"><h4>Support</h4><ul><li><a href="#">よくある質問</a></li><li><a href="#">配送について</a></li><li><a href="#">返品・交換</a></li></ul></div>
+    <div class="footer-col"><h4>Account</h4><ul><li><a href="mypage.html">マイページ</a></li><li><a href="cart.html">カート</a></li></ul></div>
+  </div>
+  <div class="footer-bottom">
+    <p class="footer-copy">© 2026 FAIRWAY Premium Golf Store.</p>
+    <div class="pay-badges"><span class="pay-badge">VISA</span><span class="pay-badge">Mastercard</span><span class="pay-badge">PayPay</span></div>
+  </div>
+</footer>
+
+<!-- PRODUCT DETAIL MODAL -->
+<div class="pd-overlay" id="pdOverlay" onclick="closePD(event)">
+  <div class="pd-modal">
+    <button class="pd-close" onclick="closePDModal()">✕</button>
+    <div class="pd-gallery">
+      <div class="pd-main-img" id="pdMainImg"></div>
+    </div>
+    <div class="pd-info">
+      <div style="display:flex;gap:.5rem;flex-wrap:wrap" id="pdBadges"></div>
+      <div class="pd-brand" id="pdBrand"></div>
+      <div class="pd-name" id="pdName"></div>
+      <div class="pd-stars" id="pdStars"></div>
+      <div class="pd-price-row">
+        <span class="pd-orig" id="pdOrig" style="display:none"></span>
+        <span class="pd-price" id="pdPrice"></span>
+        <span class="pd-tax">（税込）</span>
+      </div>
+      <div class="pd-desc-long" id="pdDescLong"></div>
+      <div class="pd-specs" id="pdSpecs"></div>
+      <div class="pd-qty-row">
+        <span class="pd-qty-label">数量</span>
+        <div class="pd-qty-ctrl">
+          <button class="pd-qty-btn" onclick="pdQty=Math.max(1,pdQty-1);document.getElementById('pdQtyNum').textContent=pdQty">−</button>
+          <span class="pd-qty-num" id="pdQtyNum">1</span>
+          <button class="pd-qty-btn" onclick="pdQty++;document.getElementById('pdQtyNum').textContent=pdQty">＋</button>
+        </div>
+      </div>
+      <button class="pd-add-btn" id="pdAddBtn">🛒 カートに追加</button>
+      <div class="pd-reviews" id="pdReviews"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// CSS変数を注入
+const style = document.createElement('style');
+style.textContent = COMMON_CSS;
+document.head.appendChild(style);
+
+let wishlist = [];
+let pdQty = 1;
+const catLabel = {club:'クラブ',ball:'ボール',wear:'ウェア',bag:'バッグ',goods:'小物'};
+
+function renderProducts(filter='all') {
+  const list = filter==='all' ? PRODUCTS : PRODUCTS.filter(p=>p.cat===filter);
+  document.getElementById('productsGrid').innerHTML = list.map(p=>`
+    <div class="prod-card">
+      <div class="prod-img" onclick="openPD(${p.id})">
+        ${p.badge?`<div class="prod-badge ${p.badge==='SALE'?'sale-badge':'new-badge'}">${p.badge}</div>`:''}
+        <button class="wish-btn ${wishlist.includes(p.id)?'wished':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">♡</button>
+        <span>${p.icon}</span>
+      </div>
+      <div class="prod-body">
+        <div class="prod-brand" onclick="openPD(${p.id})">${p.brand}</div>
+        <div class="prod-name" onclick="openPD(${p.id})">${p.name}</div>
+        <div class="prod-desc" onclick="openPD(${p.id})">${p.desc}</div>
+        <div class="prod-foot">
+          <div class="prod-price">
+            ${p.origPrice?`<span class="orig">¥${p.origPrice.toLocaleString()}</span>`:''}
+            ¥${p.price.toLocaleString()}<small>（税込）</small>
+          </div>
+          <button class="add-cart-btn" onclick="addToCart(${p.id})">+</button>
+        </div>
+      </div>
+    </div>`).join('');
+}
+
+function setFilter(cat,btn) {
+  renderProducts(cat);
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+}
+function filterAndScroll(cat) {
+  renderProducts(cat);
+  const map={club:'クラブ',ball:'ボール',wear:'ウェア',bag:'バッグ',goods:'小物'};
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.textContent===map[cat]));
+  document.getElementById('products').scrollIntoView({behavior:'smooth'});
+}
+
+async function toggleWish(id, btn) {
+  if (!token) { showToast('ログインしてください'); window.location.href='mypage.html'; return; }
+  const wished = wishlist.includes(id);
+  try {
+    if (wished) { await api('DELETE',`/api/wishlist/${id}`); wishlist=wishlist.filter(x=>x!==id); btn.classList.remove('wished'); showToast('お気に入りから削除しました'); }
+    else { await api('POST',`/api/wishlist/${id}`); wishlist.push(id); btn.classList.add('wished'); showToast('お気に入りに追加しました ♡'); }
+  } catch { showToast('ログインしてください'); }
+}
+
+function openPD(id) {
+  const p = PRODUCTS.find(x=>x.id===id);
+  if (!p) return;
+  pdQty = 1;
+  document.getElementById('pdQtyNum').textContent = 1;
+  const badges = [];
+  if (p.badge==='NEW') badges.push(`<span class="pd-badge new">NEW</span>`);
+  if (p.badge==='SALE') badges.push(`<span class="pd-badge sale">SALE</span>`);
+  badges.push(`<span class="pd-badge cat">${catLabel[p.cat]}</span>`);
+  document.getElementById('pdBadges').innerHTML = badges.join('');
+  document.getElementById('pdBrand').textContent = p.brand;
+  document.getElementById('pdName').textContent = p.name;
+  document.getElementById('pdDescLong').textContent = p.descLong||p.desc;
+  const orig=document.getElementById('pdOrig');
+  if (p.origPrice){orig.style.display='';orig.textContent=`¥${p.origPrice.toLocaleString()}`;}else orig.style.display='none';
+  document.getElementById('pdPrice').textContent=`¥${p.price.toLocaleString()}`;
+  let stars='';for(let i=0;i<5;i++) stars+=`<span>${i<Math.floor(p.rating)?'★':'☆'}</span>`;
+  stars+=`<span class="pd-rating-num">${p.rating}(${p.reviews?.length||0}件)</span>`;
+  document.getElementById('pdStars').innerHTML=stars;
+  document.getElementById('pdSpecs').innerHTML=(p.specs||[]).map(([k,v])=>`<span class="pd-spec-key">${k}</span><span class="pd-spec-val">${v}</span>`).join('');
+  document.getElementById('pdMainImg').textContent=p.icon;
+  document.getElementById('pdReviews').innerHTML=(p.reviews||[]).map(rv=>`
+    <div class="pd-review"><div class="pd-review-head"><span class="pd-reviewer">${rv.user}</span><span class="pd-review-date">${rv.date}</span></div>
+    <div style="color:var(--gold);font-size:.8rem">★★★★★</div><div class="pd-review-text">${rv.text}</div></div>`).join('');
+  document.getElementById('pdAddBtn').onclick=()=>{addToCart(id,pdQty);closePDModal();};
+  document.getElementById('pdOverlay').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closePDModal(){document.getElementById('pdOverlay').classList.remove('open');document.body.style.overflow='';}
+function closePD(e){if(e.target.id==='pdOverlay')closePDModal();}
+
+window.addEventListener('scroll',()=>{
+  document.querySelector('nav').style.padding=window.scrollY>60?'.7rem 3rem':'1.1rem 3rem';
+});
+
+async function init() {
+  const styleEl = document.createElement('style');
+  styleEl.textContent = COMMON_CSS;
+  document.head.appendChild(styleEl);
+  await restoreSession();
+  if (token) {
+    try { const rows=await api('GET','/api/wishlist'); wishlist=rows.map(r=>r.product_id); } catch{}
+  }
+  renderProducts();
+  updateCartBadge();
+}
+init();
+</script>
+</body>
+</html>
