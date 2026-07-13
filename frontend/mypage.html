@@ -12,7 +12,6 @@
   .page-hero h1 span{color:var(--gold)}
   .mypage-layout{display:grid;grid-template-columns:220px 1fr;gap:2px;min-height:calc(100vh - 200px)}
   @media(max-width:800px){.mypage-layout{grid-template-columns:1fr}}
-  /* SIDEBAR */
   .mp-sidebar{background:var(--dark);padding:1.5rem 0;border-right:1px solid rgba(201,168,76,.1)}
   @media(max-width:800px){.mp-sidebar{display:flex;overflow-x:auto;padding:.5rem;border-right:none;border-bottom:1px solid rgba(201,168,76,.1)}}
   .mp-nav-btn{width:100%;padding:1rem 1.5rem;background:none;border:none;color:rgba(245,240,232,.5);font-family:var(--font-ja);font-size:.8rem;letter-spacing:.1em;cursor:pointer;text-align:left;display:flex;align-items:center;gap:.7rem;transition:all .2s;border-left:3px solid transparent}
@@ -20,9 +19,14 @@
   .mp-nav-btn.active{color:var(--gold);background:rgba(201,168,76,.06);border-left-color:var(--gold)}
   @media(max-width:800px){.mp-nav-btn{width:auto;white-space:nowrap;border-left:none;border-bottom:3px solid transparent;padding:.7rem 1rem}.mp-nav-btn.active{border-left:none;border-bottom-color:var(--gold)}}
   .mp-nav-icon{font-size:1.1rem}
-  /* CONTENT */
   .mp-content{background:var(--black);padding:2.5rem 3rem}
   @media(max-width:800px){.mp-content{padding:1.5rem}}
+  /* Language Toggle */
+  .lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(201,168,76,.35);overflow:hidden;flex-shrink:0}
+  .lang-btn{padding:.4rem .7rem;background:none;border:none;color:rgba(245,240,232,.45);font-family:var(--font-ja);font-size:.7rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;line-height:1}
+  .lang-btn.active{background:var(--gold);color:var(--black);font-weight:700}
+  .lang-btn:not(.active):hover{color:var(--gold);background:rgba(201,168,76,.08)}
+  .lang-divider{width:1px;height:16px;background:rgba(201,168,76,.3);flex-shrink:0}
   /* AUTH */
   .auth-wrap{max-width:380px}
   .auth-title{font-family:var(--font-en);font-size:2rem;font-weight:300;color:var(--cream);margin-bottom:.4rem}
@@ -49,7 +53,6 @@
   .stat-box{background:var(--dark);padding:1.2rem;text-align:center}
   .stat-num{font-family:var(--font-hd);font-size:2rem;color:var(--gold-lt);line-height:1}
   .stat-lbl{font-size:.65rem;letter-spacing:.1em;color:var(--gray);margin-top:.3rem}
-  /* SECTION TITLE */
   .sec-title{font-family:var(--font-en);font-size:1.1rem;color:var(--cream);margin-bottom:1rem;padding-bottom:.6rem;border-bottom:1px solid rgba(201,168,76,.1)}
   /* PROFILE FORM */
   .pf-grid{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-bottom:1.2rem;max-width:540px}
@@ -157,7 +160,6 @@
   .ai-chips{display:flex;gap:.4rem;flex-wrap:wrap;margin-top:.7rem}
   .ai-chip{padding:.35rem .7rem;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);color:var(--gold-lt);font-size:.7rem;cursor:pointer;font-family:var(--font-ja);transition:background .2s}
   .ai-chip:hover{background:rgba(201,168,76,.18)}
-  /* empty state */
   .empty{text-align:center;padding:3rem 1rem;color:var(--gray)}
   .empty-icon{font-size:3rem;opacity:.3;margin-bottom:.8rem}
   .empty p{font-size:.83rem}
@@ -166,34 +168,489 @@
 <body>
 <nav>
   <a href="index.html" class="nav-logo">FAIR<span>WAY</span></a>
-  <ul class="nav-links"><li><a href="index.html">ショップ</a></li><li><a href="cart.html">カート</a></li></ul>
+  <ul class="nav-links">
+    <li><a href="index.html" data-i18n="nav.shop">ショップ</a></li>
+    <li><a href="cart.html" data-i18n="nav.cart">カート</a></li>
+  </ul>
   <div class="nav-right">
-    <a href="mypage.html" class="nav-btn active" id="mypageNavBtn"><span class="user-dot" id="userDot"></span>マイページ</a>
-    <a href="cart.html" class="nav-btn">🛒 カート <span class="cart-badge">0</span></a>
+    <!-- Language Toggle -->
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="langJP" onclick="setLang('ja')">JP</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" id="langEN" onclick="setLang('en')">EN</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" id="langZH" onclick="setLang('zh')">中文</button>
+    </div>
+    <a href="mypage.html" class="nav-btn active" id="mypageNavBtn">
+      <span class="user-dot" id="userDot"></span><span data-i18n="nav.mypage">マイページ</span>
+    </a>
+    <a href="cart.html" class="nav-btn">🛒 <span data-i18n="nav.cart">カート</span> <span class="cart-badge">0</span></a>
   </div>
 </nav>
 
 <div class="page-wrap">
   <div class="page-hero">
-    <h1>MY PAGE <span>マイページ</span></h1>
+    <h1>MY PAGE <span data-i18n="hero.sub">マイページ</span></h1>
   </div>
   <div class="mypage-layout">
-    <!-- SIDEBAR -->
     <div class="mp-sidebar" id="mpSidebar">
-      <button class="mp-nav-btn active" id="nav-auth" onclick="switchTab('auth')"><span class="mp-nav-icon">🔑</span>ログイン</button>
-      <button class="mp-nav-btn" id="nav-profile" onclick="switchTab('profile')" style="display:none"><span class="mp-nav-icon">👤</span>プロフィール</button>
-      <button class="mp-nav-btn" id="nav-history" onclick="switchTab('history')" style="display:none"><span class="mp-nav-icon">📦</span>購入履歴</button>
-      <button class="mp-nav-btn" id="nav-wishlist" onclick="switchTab('wishlist')" style="display:none"><span class="mp-nav-icon">❤️</span>お気に入り</button>
-      <button class="mp-nav-btn" id="nav-reviews" onclick="switchTab('reviews')" style="display:none"><span class="mp-nav-icon">⭐</span>レビュー</button>
-      <button class="mp-nav-btn" id="nav-addresses" onclick="switchTab('addresses')" style="display:none"><span class="mp-nav-icon">🏠</span>住所管理</button>
-      <button class="mp-nav-btn" id="nav-ai" onclick="switchTab('ai')" style="display:none"><span class="mp-nav-icon">🤖</span>AIアドバイザー</button>
+      <button class="mp-nav-btn active" id="nav-auth" onclick="switchTab('auth')"><span class="mp-nav-icon">🔑</span><span data-i18n="tab.login">ログイン</span></button>
+      <button class="mp-nav-btn" id="nav-profile" onclick="switchTab('profile')" style="display:none"><span class="mp-nav-icon">👤</span><span data-i18n="tab.profile">プロフィール</span></button>
+      <button class="mp-nav-btn" id="nav-history" onclick="switchTab('history')" style="display:none"><span class="mp-nav-icon">📦</span><span data-i18n="tab.history">購入履歴</span></button>
+      <button class="mp-nav-btn" id="nav-wishlist" onclick="switchTab('wishlist')" style="display:none"><span class="mp-nav-icon">❤️</span><span data-i18n="tab.wishlist">お気に入り</span></button>
+      <button class="mp-nav-btn" id="nav-reviews" onclick="switchTab('reviews')" style="display:none"><span class="mp-nav-icon">⭐</span><span data-i18n="tab.reviews">レビュー</span></button>
+      <button class="mp-nav-btn" id="nav-addresses" onclick="switchTab('addresses')" style="display:none"><span class="mp-nav-icon">🏠</span><span data-i18n="tab.addresses">住所管理</span></button>
+      <button class="mp-nav-btn" id="nav-ai" onclick="switchTab('ai')" style="display:none"><span class="mp-nav-icon">🤖</span><span data-i18n="tab.ai">AIアドバイザー</span></button>
     </div>
-    <!-- CONTENT -->
     <div class="mp-content" id="mpContent"></div>
   </div>
 </div>
 
 <script>
+// ── i18n ──
+const I18N = {
+  ja: {
+    'nav.shop':       'ショップ',
+    'nav.cart':       'カート',
+    'nav.mypage':     'マイページ',
+    'hero.sub':       'マイページ',
+    'tab.login':      'ログイン',
+    'tab.logout':     'ログアウト',
+    'tab.profile':    'プロフィール',
+    'tab.history':    '購入履歴',
+    'tab.wishlist':   'お気に入り',
+    'tab.reviews':    'レビュー',
+    'tab.addresses':  '住所管理',
+    'tab.ai':         'AIアドバイザー',
+    // Auth
+    'auth.loginTitle':   'ログイン',
+    'auth.regTitle':     'アカウント作成',
+    'auth.loginSub':     'アカウントにログインして購入履歴・お気に入りを管理できます。',
+    'auth.regSub':       '新規アカウントを作成して、お買い物をより便利に。',
+    'auth.name':         'お名前（例：山田 太郎）',
+    'auth.email':        'メールアドレス',
+    'auth.pass':         'パスワード（6文字以上）',
+    'auth.pass2':        'パスワード（確認）',
+    'auth.loginBtn':     'ログイン',
+    'auth.regBtn':       'アカウント作成',
+    'auth.toReg':        'アカウントをお持ちでない方は',
+    'auth.toLogin':      'すでにアカウントをお持ちの方は',
+    'auth.regLink':      '新規登録',
+    'auth.loginLink':    'ログイン',
+    'auth.err.empty':    '全項目を入力してください',
+    'auth.err.short':    'パスワードは6文字以上で入力してください',
+    'auth.err.name':     'お名前を入力してください',
+    'auth.err.pass':     'パスワードが一致しません',
+    'auth.processing':   '処理中...',
+    // Profile
+    'pf.editTitle':   'プロフィール編集',
+    'pf.name':        'お名前',
+    'pf.kana':        'フリガナ',
+    'pf.phone':       '電話番号',
+    'pf.zip':         '郵便番号',
+    'pf.pref':        '都道府県',
+    'pf.city':        '市区町村',
+    'pf.addr':        '番地・建物名',
+    'pf.save':        '変更を保存する',
+    'pf.logout':      'ログアウト',
+    'pf.since':       '会員登録：',
+    'pf.orders':      '注文回数',
+    'pf.spent':       '累計購入額',
+    'pf.items':       '購入商品数',
+    'pf.saved':       'プロフィールを保存しました',
+    'pf.saveFail':    '保存に失敗しました: ',
+    // History
+    'hist.empty':     'まだ購入履歴がありません',
+    'hist.delivered': '配達完了',
+    'hist.shipped':   '配送中',
+    'hist.processing':'処理中',
+    'hist.ship_to':   'お届け先：',
+    // Wishlist
+    'wish.empty1':    'お気に入りがありません',
+    'wish.empty2':    '商品ページの ♡ ボタンで追加できます',
+    'wish.cartBtn':   '🛒 カートへ',
+    'wish.added':     'カートに追加しました',
+    'wish.removed':   'お気に入りから削除しました',
+    // Reviews
+    'rv.formTitle':   'レビューを投稿する',
+    'rv.select':      '商品を選択してください',
+    'rv.ratingLbl':   '評価',
+    'rv.titlePh':     'タイトル（任意）',
+    'rv.bodyPh':      'レビュー本文（必須）',
+    'rv.submit':      '投稿する',
+    'rv.myTitle':     '投稿したレビュー',
+    'rv.empty':       'まだレビューがありません',
+    'rv.delete':      '✕ 削除する',
+    'rv.noProduct':   '商品を選択してください',
+    'rv.noRating':    '評価を選択してください',
+    'rv.noBody':      'レビュー本文を入力してください',
+    'rv.submitted':   'レビューを投稿しました',
+    'rv.submitFail':  '投稿に失敗しました: ',
+    'rv.deleted':     'レビューを削除しました',
+    'rv.unknown':     '不明な商品',
+    // Addresses
+    'addr.addBtn':    '＋ 新しい住所を追加',
+    'addr.listTitle': '登録済み住所',
+    'addr.empty':     '住所が登録されていません',
+    'addr.formTitle': '住所を追加',
+    'addr.label':     'ラベル',
+    'addr.labelPh':   '自宅・会社など',
+    'addr.labelDef':  '自宅',
+    'addr.name':      'お名前 *',
+    'addr.namePh':    '山田 太郎',
+    'addr.kana':      'フリガナ',
+    'addr.kanaPh':    'ヤマダ タロウ',
+    'addr.phone':     '電話番号',
+    'addr.phonePh':   '090-0000-0000',
+    'addr.zip':       '郵便番号 *',
+    'addr.zipPh':     '123-4567',
+    'addr.pref':      '都道府県 *',
+    'addr.prefPh':    '東京都',
+    'addr.city':      '市区町村 *',
+    'addr.cityPh':    '渋谷区',
+    'addr.addr':      '番地・建物名 *',
+    'addr.addrPh':    '○○町1-2-3',
+    'addr.default':   'デフォルトに設定する',
+    'addr.save':      '保存する',
+    'addr.cancel':    'キャンセル',
+    'addr.setDef':    'デフォルトに設定',
+    'addr.defBadge':  'デフォルト',
+    'addr.del':       '削除',
+    'addr.added':     '住所を追加しました',
+    'addr.saveFail':  '保存に失敗しました: ',
+    'addr.defSet':    'デフォルト住所を変更しました',
+    'addr.deleted':   '住所を削除しました',
+    'addr.required':  '必須項目を入力してください',
+    'addr.tel':       'TEL: ',
+    // AI
+    'ai.title':       'AIゴルフアドバイザー',
+    'ai.sub':         'あなたの購入履歴をもとに、最適なゴルフ用品をご提案します。',
+    'ai.greeting':    'こんにちは、%sさん！ FAIRWAYのAIゴルフアドバイザーです。クラブ選びや用品のご相談など、何でもどうぞ。',
+    'ai.ph':          '例：飛距離を伸ばしたい',
+    'ai.send':        '送信',
+    'ai.thinking':    '考え中...',
+    'ai.error':       'エラーが発生しました。しばらくしてから再度お試しください。',
+    'ai.retry':       'すみません、もう一度お試しください。',
+    'ai.chips':       ['飛距離アップのコツは？','初心者向けクラブを教えて','おすすめのボールは？','スコア100切りのためには？'],
+    'ai.sysHist':     '購入履歴: ',
+    'ai.sysNoHist':   '購入履歴はまだありません。',
+    'ai.sysPrompt':   'あなたはFAIRWAY（プレミアムゴルフストア）のAIアドバイザーです。\nユーザー名：%name\n%hist\n取り扱い商品：%products\nゴルフ専門家として日本語で回答してください。商品推薦時は具体的な商品名と価格を含めて。3〜5文以内で簡潔に。',
+    // Toast
+    'toast.loggedOut':'ログアウトしました',
+    'toast.welcome':  'ようこそ、%sさん',
+    'toast.cartAdded':'カートに追加しました',
+  },
+  en: {
+    'nav.shop':       'Shop',
+    'nav.cart':       'Cart',
+    'nav.mypage':     'My Page',
+    'hero.sub':       'My Page',
+    'tab.login':      'Login',
+    'tab.logout':     'Logout',
+    'tab.profile':    'Profile',
+    'tab.history':    'Order History',
+    'tab.wishlist':   'Wishlist',
+    'tab.reviews':    'Reviews',
+    'tab.addresses':  'Addresses',
+    'tab.ai':         'AI Advisor',
+    // Auth
+    'auth.loginTitle':   'Login',
+    'auth.regTitle':     'Create Account',
+    'auth.loginSub':     'Log in to manage your order history and wishlist.',
+    'auth.regSub':       'Create a new account to shop more conveniently.',
+    'auth.name':         'Full Name (e.g. John Smith)',
+    'auth.email':        'Email Address',
+    'auth.pass':         'Password (6+ characters)',
+    'auth.pass2':        'Confirm Password',
+    'auth.loginBtn':     'Login',
+    'auth.regBtn':       'Create Account',
+    'auth.toReg':        "Don't have an account?",
+    'auth.toLogin':      'Already have an account?',
+    'auth.regLink':      'Register',
+    'auth.loginLink':    'Login',
+    'auth.err.empty':    'Please fill in all fields',
+    'auth.err.short':    'Password must be at least 6 characters',
+    'auth.err.name':     'Please enter your name',
+    'auth.err.pass':     'Passwords do not match',
+    'auth.processing':   'Processing...',
+    // Profile
+    'pf.editTitle':   'Edit Profile',
+    'pf.name':        'Full Name',
+    'pf.kana':        'Furigana',
+    'pf.phone':       'Phone Number',
+    'pf.zip':         'Postal Code',
+    'pf.pref':        'Prefecture',
+    'pf.city':        'City',
+    'pf.addr':        'Street Address',
+    'pf.save':        'Save Changes',
+    'pf.logout':      'Logout',
+    'pf.since':       'Member since: ',
+    'pf.orders':      'Orders',
+    'pf.spent':       'Total Spent',
+    'pf.items':       'Items Purchased',
+    'pf.saved':       'Profile saved',
+    'pf.saveFail':    'Failed to save: ',
+    // History
+    'hist.empty':     'No order history yet',
+    'hist.delivered': 'Delivered',
+    'hist.shipped':   'Shipped',
+    'hist.processing':'Processing',
+    'hist.ship_to':   'Ship to: ',
+    // Wishlist
+    'wish.empty1':    'Your wishlist is empty',
+    'wish.empty2':    'Tap ♡ on any product to add it',
+    'wish.cartBtn':   '🛒 Add to Cart',
+    'wish.added':     'Added to cart',
+    'wish.removed':   'Removed from wishlist',
+    // Reviews
+    'rv.formTitle':   'Write a Review',
+    'rv.select':      'Select a product',
+    'rv.ratingLbl':   'Rating',
+    'rv.titlePh':     'Title (optional)',
+    'rv.bodyPh':      'Review (required)',
+    'rv.submit':      'Submit',
+    'rv.myTitle':     'My Reviews',
+    'rv.empty':       'No reviews yet',
+    'rv.delete':      '✕ Delete',
+    'rv.noProduct':   'Please select a product',
+    'rv.noRating':    'Please select a rating',
+    'rv.noBody':      'Please write a review',
+    'rv.submitted':   'Review submitted',
+    'rv.submitFail':  'Failed to submit: ',
+    'rv.deleted':     'Review deleted',
+    'rv.unknown':     'Unknown product',
+    // Addresses
+    'addr.addBtn':    '＋ Add New Address',
+    'addr.listTitle': 'Saved Addresses',
+    'addr.empty':     'No addresses saved',
+    'addr.formTitle': 'Add Address',
+    'addr.label':     'Label',
+    'addr.labelPh':   'Home, Office, etc.',
+    'addr.labelDef':  'Home',
+    'addr.name':      'Full Name *',
+    'addr.namePh':    'John Smith',
+    'addr.kana':      'Furigana',
+    'addr.kanaPh':    '',
+    'addr.phone':     'Phone Number',
+    'addr.phonePh':   '090-0000-0000',
+    'addr.zip':       'Postal Code *',
+    'addr.zipPh':     '123-4567',
+    'addr.pref':      'Prefecture *',
+    'addr.prefPh':    'Tokyo',
+    'addr.city':      'City *',
+    'addr.cityPh':    'Shibuya',
+    'addr.addr':      'Street Address *',
+    'addr.addrPh':    '1-2-3 Example St.',
+    'addr.default':   'Set as default address',
+    'addr.save':      'Save',
+    'addr.cancel':    'Cancel',
+    'addr.setDef':    'Set as Default',
+    'addr.defBadge':  'Default',
+    'addr.del':       'Delete',
+    'addr.added':     'Address added',
+    'addr.saveFail':  'Failed to save: ',
+    'addr.defSet':    'Default address updated',
+    'addr.deleted':   'Address deleted',
+    'addr.required':  'Please fill in required fields',
+    'addr.tel':       'TEL: ',
+    // AI
+    'ai.title':       'AI Golf Advisor',
+    'ai.sub':         'Get personalized golf equipment recommendations based on your purchase history.',
+    'ai.greeting':    'Hello, %s! I\'m FAIRWAY\'s AI Golf Advisor. Ask me anything about club selection, equipment, or improving your game.',
+    'ai.ph':          'e.g. How can I increase my driving distance?',
+    'ai.send':        'Send',
+    'ai.thinking':    'Thinking...',
+    'ai.error':       'An error occurred. Please try again.',
+    'ai.retry':       'Sorry, please try again.',
+    'ai.chips':       ['How to increase distance?','Best clubs for beginners','Recommend a golf ball','Tips to break 100?'],
+    'ai.sysHist':     'Purchase history: ',
+    'ai.sysNoHist':   'No purchase history yet.',
+    'ai.sysPrompt':   'You are an AI advisor for FAIRWAY (a premium golf store).\nUser: %name\n%hist\nProducts: %products\nRespond as a golf expert in English. Include specific product names and prices when recommending. Keep responses to 3–5 sentences.',
+    // Toast
+    'toast.loggedOut':'Logged out',
+    'toast.welcome':  'Welcome, %s',
+    'toast.cartAdded':'Added to cart',
+  },
+  zh: {
+    'nav.shop':       '商店',
+    'nav.cart':       '购物车',
+    'nav.mypage':     '我的页面',
+    'hero.sub':       '我的页面',
+    'tab.login':      '登录',
+    'tab.logout':     '退出登录',
+    'tab.profile':    '个人资料',
+    'tab.history':    '订单记录',
+    'tab.wishlist':   '收藏夹',
+    'tab.reviews':    '评价',
+    'tab.addresses':  '地址管理',
+    'tab.ai':         'AI顾问',
+    // Auth
+    'auth.loginTitle':   '登录',
+    'auth.regTitle':     '创建账户',
+    'auth.loginSub':     '登录账户，管理您的订单记录与收藏夹。',
+    'auth.regSub':       '创建新账户，享受更便捷的购物体验。',
+    'auth.name':         '姓名（例：张 伟）',
+    'auth.email':        '电子邮箱',
+    'auth.pass':         '密码（6位以上）',
+    'auth.pass2':        '确认密码',
+    'auth.loginBtn':     '登录',
+    'auth.regBtn':       '创建账户',
+    'auth.toReg':        '还没有账户？',
+    'auth.toLogin':      '已有账户？',
+    'auth.regLink':      '立即注册',
+    'auth.loginLink':    '去登录',
+    'auth.err.empty':    '请填写所有项目',
+    'auth.err.short':    '密码至少需要6个字符',
+    'auth.err.name':     '请输入您的姓名',
+    'auth.err.pass':     '两次密码输入不一致',
+    'auth.processing':   '处理中...',
+    // Profile
+    'pf.editTitle':   '编辑个人资料',
+    'pf.name':        '姓名',
+    'pf.kana':        '假名',
+    'pf.phone':       '电话号码',
+    'pf.zip':         '邮政编码',
+    'pf.pref':        '都道府县',
+    'pf.city':        '市区町村',
+    'pf.addr':        '详细地址',
+    'pf.save':        '保存更改',
+    'pf.logout':      '退出登录',
+    'pf.since':       '注册时间：',
+    'pf.orders':      '订单数',
+    'pf.spent':       '累计消费',
+    'pf.items':       '购买商品数',
+    'pf.saved':       '个人资料已保存',
+    'pf.saveFail':    '保存失败：',
+    // History
+    'hist.empty':     '暂无订单记录',
+    'hist.delivered': '已送达',
+    'hist.shipped':   '配送中',
+    'hist.processing':'处理中',
+    'hist.ship_to':   '收货地址：',
+    // Wishlist
+    'wish.empty1':    '收藏夹为空',
+    'wish.empty2':    '点击商品页面的 ♡ 按钮即可添加',
+    'wish.cartBtn':   '🛒 加入购物车',
+    'wish.added':     '已加入购物车',
+    'wish.removed':   '已从收藏夹中删除',
+    // Reviews
+    'rv.formTitle':   '发表评价',
+    'rv.select':      '请选择商品',
+    'rv.ratingLbl':   '评分',
+    'rv.titlePh':     '标题（选填）',
+    'rv.bodyPh':      '评价内容（必填）',
+    'rv.submit':      '提交',
+    'rv.myTitle':     '我的评价',
+    'rv.empty':       '暂无评价',
+    'rv.delete':      '✕ 删除',
+    'rv.noProduct':   '请选择商品',
+    'rv.noRating':    '请选择评分',
+    'rv.noBody':      '请填写评价内容',
+    'rv.submitted':   '评价已提交',
+    'rv.submitFail':  '提交失败：',
+    'rv.deleted':     '评价已删除',
+    'rv.unknown':     '未知商品',
+    // Addresses
+    'addr.addBtn':    '＋ 添加新地址',
+    'addr.listTitle': '已保存地址',
+    'addr.empty':     '暂无保存地址',
+    'addr.formTitle': '添加地址',
+    'addr.label':     '标签',
+    'addr.labelPh':   '家、公司等',
+    'addr.labelDef':  '家',
+    'addr.name':      '姓名 *',
+    'addr.namePh':    '张 伟',
+    'addr.kana':      '假名',
+    'addr.kanaPh':    '',
+    'addr.phone':     '电话号码',
+    'addr.phonePh':   '090-0000-0000',
+    'addr.zip':       '邮政编码 *',
+    'addr.zipPh':     '123-4567',
+    'addr.pref':      '都道府县 *',
+    'addr.prefPh':    '东京都',
+    'addr.city':      '市区町村 *',
+    'addr.cityPh':    '涩谷区',
+    'addr.addr':      '详细地址 *',
+    'addr.addrPh':    '○○町1-2-3',
+    'addr.default':   '设为默认地址',
+    'addr.save':      '保存',
+    'addr.cancel':    '取消',
+    'addr.setDef':    '设为默认',
+    'addr.defBadge':  '默认',
+    'addr.del':       '删除',
+    'addr.added':     '地址已添加',
+    'addr.saveFail':  '保存失败：',
+    'addr.defSet':    '默认地址已更新',
+    'addr.deleted':   '地址已删除',
+    'addr.required':  '请填写必填项目',
+    'addr.tel':       '电话：',
+    // AI
+    'ai.title':       'AI高尔夫顾问',
+    'ai.sub':         '根据您的购买记录，为您推荐最适合的高尔夫用品。',
+    'ai.greeting':    '您好，%s！我是FAIRWAY的AI高尔夫顾问。欢迎随时咨询球杆选择或用品问题。',
+    'ai.ph':          '例：如何增加飞行距离？',
+    'ai.send':        '发送',
+    'ai.thinking':    '思考中...',
+    'ai.error':       '发生错误，请稍后再试。',
+    'ai.retry':       '抱歉，请重试。',
+    'ai.chips':       ['如何增加飞行距离？','适合初学者的球杆推荐','推荐什么高尔夫球？','打破100杆的技巧？'],
+    'ai.sysHist':     '购买记录：',
+    'ai.sysNoHist':   '暂无购买记录。',
+    'ai.sysPrompt':   '您是FAIRWAY（顶级高尔夫商店）的AI顾问。\n用户：%name\n%hist\n商品：%products\n请用中文作为高尔夫专家进行回答。推荐商品时请包含具体商品名称和价格。回答请控制在3至5句以内。',
+    // Toast
+    'toast.loggedOut':'已退出登录',
+    'toast.welcome':  '欢迎，%s',
+    'toast.cartAdded':'已加入购物车',
+  }
+};
+
+let currentLang = localStorage.getItem('fw_lang') || 'ja';
+
+function t(key, ...args) {
+  let val = I18N[currentLang]?.[key] ?? I18N['ja'][key] ?? key;
+  args.forEach(a => { val = val.replace('%s', a); });
+  return val;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('fw_lang', lang);
+  document.documentElement.lang = lang;
+  document.getElementById('langJP').classList.toggle('active', lang === 'ja');
+  document.getElementById('langEN').classList.toggle('active', lang === 'en');
+  document.getElementById('langZH').classList.toggle('active', lang === 'zh');
+  // Translate static data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = I18N[lang][key];
+    if (val !== undefined) el.innerHTML = val;
+  });
+  // Update logout/login label in sidebar
+  if (currentUser) {
+    const authBtn = document.getElementById('nav-auth');
+    if (authBtn) authBtn.innerHTML = `<span class="mp-nav-icon">🚪</span>${t('tab.logout')}`;
+  }
+  // Re-render current tab
+  const activeTab = document.querySelector('.mp-nav-btn.active');
+  if (activeTab) {
+    const tabId = activeTab.id.replace('nav-', '');
+    if (tabId !== 'auth') {
+      const body = document.getElementById('mpContent');
+      if (tabId === 'profile') renderProfile(body);
+      else if (tabId === 'history') renderHistory(body);
+      else if (tabId === 'wishlist') renderWishlist(body);
+      else if (tabId === 'reviews') renderReviews(body);
+      else if (tabId === 'addresses') renderAddresses(body);
+      else if (tabId === 'ai') renderAI(body);
+    } else {
+      renderAuth(document.getElementById('mpContent'));
+    }
+  }
+  const titles = {ja:'マイページ — FAIRWAY', en:'My Page — FAIRWAY', zh:'我的页面 — FAIRWAY'};
+  document.title = titles[lang] || titles.ja;
+}
+
+// ── inject CSS ──
 const styleEl = document.createElement('style');
 styleEl.textContent = COMMON_CSS;
 document.head.appendChild(styleEl);
@@ -205,15 +662,13 @@ let addresses = [];
 let aiMessages = [];
 let authMode = 'login';
 let reviewRating = 0;
-let editingAddressId = null;
-let showAddrForm = false;
 
 // ── TABS ──
 const TABS = ['auth','profile','history','wishlist','reviews','addresses','ai'];
 function switchTab(tab) {
-  TABS.forEach(t => {
-    const btn = document.getElementById('nav-'+t);
-    if (btn) btn.classList.toggle('active', t===tab);
+  TABS.forEach(t2 => {
+    const btn = document.getElementById('nav-'+t2);
+    if (btn) btn.classList.toggle('active', t2===tab);
   });
   const body = document.getElementById('mpContent');
   if (tab==='auth' && currentUser) { doLogout(); return; }
@@ -227,12 +682,12 @@ function switchTab(tab) {
 }
 
 function showLoggedInTabs() {
-  ['profile','history','wishlist','reviews','addresses','ai'].forEach(t => {
-    const btn = document.getElementById('nav-'+t);
+  ['profile','history','wishlist','reviews','addresses','ai'].forEach(t2 => {
+    const btn = document.getElementById('nav-'+t2);
     if (btn) btn.style.display = '';
   });
-  document.getElementById('nav-auth').textContent = '';
-  document.getElementById('nav-auth').innerHTML = '<span class="mp-nav-icon">🚪</span>ログアウト';
+  const authBtn = document.getElementById('nav-auth');
+  authBtn.innerHTML = `<span class="mp-nav-icon">🚪</span>${t('tab.logout')}`;
   const dot = document.getElementById('userDot');
   if (dot) dot.style.background = 'var(--gold)';
   document.getElementById('mypageNavBtn').classList.add('logged-in');
@@ -242,128 +697,146 @@ function doLogout() {
   token = null; currentUser = null; orderHistory = []; wishlistData = []; myReviews = []; addresses = []; aiMessages = [];
   localStorage.removeItem('fw_token');
   updateCartBadge();
-  ['profile','history','wishlist','reviews','addresses','ai'].forEach(t => {
-    const btn = document.getElementById('nav-'+t);
+  ['profile','history','wishlist','reviews','addresses','ai'].forEach(t2 => {
+    const btn = document.getElementById('nav-'+t2);
     if (btn) { btn.style.display='none'; btn.classList.remove('active'); }
   });
-  document.getElementById('nav-auth').innerHTML = '<span class="mp-nav-icon">🔑</span>ログイン';
+  document.getElementById('nav-auth').innerHTML = `<span class="mp-nav-icon">🔑</span>${t('tab.login')}`;
   document.getElementById('nav-auth').classList.add('active');
   const dot = document.getElementById('userDot');
   if (dot) dot.style.background = 'var(--gray)';
   document.getElementById('mypageNavBtn').classList.remove('logged-in');
   authMode = 'login';
   renderAuth(document.getElementById('mpContent'));
-  showToast('ログアウトしました');
+  showToast(t('toast.loggedOut'));
 }
 
 // ── AUTH ──
 function renderAuth(body) {
+  const isLogin = authMode === 'login';
   body.innerHTML = `
     <div class="auth-wrap">
-      <h2 class="auth-title">${authMode==='login'?'ログイン':'アカウント作成'}</h2>
-      <p class="auth-sub">${authMode==='login'?'アカウントにログインして購入履歴・お気に入りを管理できます。':'新規アカウントを作成して、お買い物をより便利に。'}</p>
+      <h2 class="auth-title">${t(isLogin ? 'auth.loginTitle' : 'auth.regTitle')}</h2>
+      <p class="auth-sub">${t(isLogin ? 'auth.loginSub' : 'auth.regSub')}</p>
       <div class="auth-error" id="authError"></div>
       <div class="auth-form">
-        ${authMode==='register'?`<input class="auth-input" id="authName" type="text" placeholder="お名前（例：山田 太郎）">`:''}
-        <input class="auth-input" id="authEmail" type="email" placeholder="メールアドレス">
-        <input class="auth-input" id="authPass" type="password" placeholder="パスワード（6文字以上）">
-        ${authMode==='register'?`<input class="auth-input" id="authPass2" type="password" placeholder="パスワード（確認）">`:''}
-        <button class="auth-btn" id="authBtn" onclick="submitAuth()">${authMode==='login'?'ログイン':'アカウント作成'}</button>
+        ${!isLogin ? `<input class="auth-input" id="authName" type="text" placeholder="${t('auth.name')}">` : ''}
+        <input class="auth-input" id="authEmail" type="email" placeholder="${t('auth.email')}">
+        <input class="auth-input" id="authPass" type="password" placeholder="${t('auth.pass')}">
+        ${!isLogin ? `<input class="auth-input" id="authPass2" type="password" placeholder="${t('auth.pass2')}">` : ''}
+        <button class="auth-btn" id="authBtn" onclick="submitAuth()">${t(isLogin ? 'auth.loginBtn' : 'auth.regBtn')}</button>
       </div>
-      <p class="auth-switch">${authMode==='login'?'アカウントをお持ちでない方は<button onclick="toggleAuth()">新規登録</button>':'すでにアカウントをお持ちの方は<button onclick="toggleAuth()">ログイン</button>'}</p>
+      <p class="auth-switch">${t(isLogin ? 'auth.toReg' : 'auth.toLogin')}<button onclick="toggleAuth()">${t(isLogin ? 'auth.regLink' : 'auth.loginLink')}</button></p>
     </div>`;
-  document.getElementById('authEmail')?.addEventListener('keydown', e=>{if(e.key==='Enter')submitAuth();});
+  document.getElementById('authEmail')?.addEventListener('keydown', e => { if(e.key==='Enter') submitAuth(); });
 }
 
-function toggleAuth() { authMode = authMode==='login'?'register':'login'; renderAuth(document.getElementById('mpContent')); }
+function toggleAuth() { authMode = authMode==='login' ? 'register' : 'login'; renderAuth(document.getElementById('mpContent')); }
 
 async function submitAuth() {
-  const btn=document.getElementById('authBtn');
-  const err=document.getElementById('authError');
-  const email=document.getElementById('authEmail')?.value.trim();
-  const pass=document.getElementById('authPass')?.value;
+  const btn = document.getElementById('authBtn');
+  const err = document.getElementById('authError');
+  const email = document.getElementById('authEmail')?.value.trim();
+  const pass = document.getElementById('authPass')?.value;
   err.classList.remove('show');
-  if (!email||!pass){err.textContent='全項目を入力してください';err.classList.add('show');return;}
-  if (pass.length<6){err.textContent='パスワードは6文字以上で入力してください';err.classList.add('show');return;}
-  btn.disabled=true; btn.textContent='処理中...';
+  if (!email || !pass) { err.textContent = t('auth.err.empty'); err.classList.add('show'); return; }
+  if (pass.length < 6) { err.textContent = t('auth.err.short'); err.classList.add('show'); return; }
+  btn.disabled = true; btn.textContent = t('auth.processing');
   try {
     let data;
-    if (authMode==='login') {
-      data = await api('POST','/api/auth/login',{email,password:pass});
+    if (authMode === 'login') {
+      data = await api('POST', '/api/auth/login', {email, password: pass});
     } else {
-      const name=document.getElementById('authName')?.value.trim()||'';
-      const pass2=document.getElementById('authPass2')?.value;
-      if (!name){err.textContent='お名前を入力してください';err.classList.add('show');btn.disabled=false;btn.textContent='アカウント作成';return;}
-      if (pass!==pass2){err.textContent='パスワードが一致しません';err.classList.add('show');btn.disabled=false;btn.textContent='アカウント作成';return;}
-      data = await api('POST','/api/auth/register',{email,password:pass,name});
+      const name = document.getElementById('authName')?.value.trim() || '';
+      const pass2 = document.getElementById('authPass2')?.value;
+      if (!name) { err.textContent = t('auth.err.name'); err.classList.add('show'); btn.disabled=false; btn.textContent=t('auth.regBtn'); return; }
+      if (pass !== pass2) { err.textContent = t('auth.err.pass'); err.classList.add('show'); btn.disabled=false; btn.textContent=t('auth.regBtn'); return; }
+      data = await api('POST', '/api/auth/register', {email, password: pass, name});
     }
-    token=data.token; currentUser=data.user;
-    localStorage.setItem('fw_token',token);
+    token = data.token; currentUser = data.user;
+    localStorage.setItem('fw_token', token);
     await loadAllData();
     showLoggedInTabs();
-    showToast(`ようこそ、${currentUser.name}さん`);
+    showToast(t('toast.welcome', currentUser.name));
     switchTab('profile');
   } catch(e) {
-    err.textContent=e.message; err.classList.add('show');
-    btn.disabled=false; btn.textContent=authMode==='login'?'ログイン':'アカウント作成';
+    err.textContent = e.message; err.classList.add('show');
+    btn.disabled = false; btn.textContent = t(authMode==='login' ? 'auth.loginBtn' : 'auth.regBtn');
   }
 }
 
 async function loadAllData() {
-  try { const r=await api('GET','/api/orders'); orderHistory=r; } catch{}
-  try { const r=await api('GET','/api/wishlist'); wishlistData=r.map(x=>x.product_id); } catch{}
-  try { const r=await api('GET','/api/reviews'); myReviews=r; } catch{}
-  try { const r=await api('GET','/api/addresses'); addresses=r; } catch{}
+  try { const r = await api('GET', '/api/orders'); orderHistory = r; } catch{}
+  try { const r = await api('GET', '/api/wishlist'); wishlistData = r.map(x => x.product_id); } catch{}
+  try { const r = await api('GET', '/api/reviews'); myReviews = r; } catch{}
+  try { const r = await api('GET', '/api/addresses'); addresses = r; } catch{}
 }
 
 // ── PROFILE ──
 function renderProfile(body) {
-  if (!currentUser){switchTab('auth');return;}
-  const totalSpent=orderHistory.reduce((s,o)=>s+(o.total||0),0);
-  const totalItems=orderHistory.reduce((s,o)=>s+(Array.isArray(o.items)?o.items:JSON.parse(o.items||'[]')).reduce((ss,i)=>ss+i.qty,0),0);
-  const initials=(currentUser.name||'FW').slice(0,2);
-  const since=currentUser.created_at?new Date(currentUser.created_at).toLocaleDateString('ja-JP',{year:'numeric',month:'long'}):'—';
-  body.innerHTML=`
+  if (!currentUser) { switchTab('auth'); return; }
+  const totalSpent = orderHistory.reduce((s,o) => s+(o.total||0), 0);
+  const totalItems = orderHistory.reduce((s,o) => s+(Array.isArray(o.items)?o.items:JSON.parse(o.items||'[]')).reduce((ss,i) => ss+i.qty, 0), 0);
+  const initials = (currentUser.name||'FW').slice(0,2);
+  const localeMap = {ja:'ja-JP', en:'en-US', zh:'zh-CN'};
+  const since = currentUser.created_at ? new Date(currentUser.created_at).toLocaleDateString(localeMap[currentLang]||'ja-JP', {year:'numeric',month:'long'}) : '—';
+  body.innerHTML = `
     <div class="user-card">
       <div class="user-avatar">${initials}</div>
-      <div><div class="user-name">${currentUser.name||'—'}</div><div class="user-email">${currentUser.email}</div><div class="user-since">会員登録：${since}</div></div>
+      <div><div class="user-name">${currentUser.name||'—'}</div><div class="user-email">${currentUser.email}</div><div class="user-since">${t('pf.since')}${since}</div></div>
     </div>
     <div class="stats-grid">
-      <div class="stat-box"><div class="stat-num">${orderHistory.length}</div><div class="stat-lbl">注文回数</div></div>
-      <div class="stat-box"><div class="stat-num">¥${Math.round(totalSpent/1000)}K</div><div class="stat-lbl">累計購入額</div></div>
-      <div class="stat-box"><div class="stat-num">${totalItems}</div><div class="stat-lbl">購入商品数</div></div>
+      <div class="stat-box"><div class="stat-num">${orderHistory.length}</div><div class="stat-lbl">${t('pf.orders')}</div></div>
+      <div class="stat-box"><div class="stat-num">¥${Math.round(totalSpent/1000)}K</div><div class="stat-lbl">${t('pf.spent')}</div></div>
+      <div class="stat-box"><div class="stat-num">${totalItems}</div><div class="stat-lbl">${t('pf.items')}</div></div>
     </div>
-    <div class="sec-title">プロフィール編集</div>
+    <div class="sec-title">${t('pf.editTitle')}</div>
     <div class="pf-grid">
-      <div class="pf-group"><div class="pf-label">お名前</div><input class="pf-input" id="pf_name" value="${currentUser.name||''}"></div>
-      <div class="pf-group"><div class="pf-label">フリガナ</div><input class="pf-input" id="pf_kana" value="${currentUser.kana||''}"></div>
-      <div class="pf-group"><div class="pf-label">電話番号</div><input class="pf-input" id="pf_phone" value="${currentUser.phone||''}" placeholder="090-0000-0000"></div>
-      <div class="pf-group"><div class="pf-label">郵便番号</div><input class="pf-input" id="pf_zip" value="${currentUser.zip||''}" placeholder="123-4567"></div>
-      <div class="pf-group"><div class="pf-label">都道府県</div><input class="pf-input" id="pf_pref" value="${currentUser.pref||''}" placeholder="東京都"></div>
-      <div class="pf-group"><div class="pf-label">市区町村</div><input class="pf-input" id="pf_city" value="${currentUser.city||''}" placeholder="渋谷区"></div>
-      <div class="pf-group full"><div class="pf-label">番地・建物名</div><input class="pf-input" id="pf_addr" value="${currentUser.addr||''}" placeholder="○○町1-2-3 ○○マンション101"></div>
+      <div class="pf-group"><div class="pf-label">${t('pf.name')}</div><input class="pf-input" id="pf_name" value="${currentUser.name||''}"></div>
+      <div class="pf-group"><div class="pf-label">${t('pf.kana')}</div><input class="pf-input" id="pf_kana" value="${currentUser.kana||''}"></div>
+      <div class="pf-group"><div class="pf-label">${t('pf.phone')}</div><input class="pf-input" id="pf_phone" value="${currentUser.phone||''}" placeholder="090-0000-0000"></div>
+      <div class="pf-group"><div class="pf-label">${t('pf.zip')}</div><input class="pf-input" id="pf_zip" value="${currentUser.zip||''}" placeholder="123-4567"></div>
+      <div class="pf-group"><div class="pf-label">${t('pf.pref')}</div><input class="pf-input" id="pf_pref" value="${currentUser.pref||''}"></div>
+      <div class="pf-group"><div class="pf-label">${t('pf.city')}</div><input class="pf-input" id="pf_city" value="${currentUser.city||''}"></div>
+      <div class="pf-group full"><div class="pf-label">${t('pf.addr')}</div><input class="pf-input" id="pf_addr" value="${currentUser.addr||''}"></div>
     </div>
-    <button class="save-btn" onclick="saveProfile()">変更を保存する</button>
-    <br><button class="logout-btn" onclick="switchTab('auth')">ログアウト</button>`;
+    <button class="save-btn" onclick="saveProfile()">${t('pf.save')}</button>
+    <br><button class="logout-btn" onclick="switchTab('auth')">${t('pf.logout')}</button>`;
 }
 
 async function saveProfile() {
   try {
-    currentUser=await api('PATCH','/api/profile',{name:document.getElementById('pf_name').value,kana:document.getElementById('pf_kana').value,phone:document.getElementById('pf_phone').value,zip:document.getElementById('pf_zip').value,pref:document.getElementById('pf_pref').value,city:document.getElementById('pf_city').value,addr:document.getElementById('pf_addr').value});
-    showToast('プロフィールを保存しました');
+    currentUser = await api('PATCH', '/api/profile', {
+      name: document.getElementById('pf_name').value,
+      kana: document.getElementById('pf_kana').value,
+      phone: document.getElementById('pf_phone').value,
+      zip: document.getElementById('pf_zip').value,
+      pref: document.getElementById('pf_pref').value,
+      city: document.getElementById('pf_city').value,
+      addr: document.getElementById('pf_addr').value
+    });
+    showToast(t('pf.saved'));
     renderProfile(document.getElementById('mpContent'));
-  } catch(e){showToast('保存に失敗しました: '+e.message);}
+  } catch(e) { showToast(t('pf.saveFail') + e.message); }
 }
 
 // ── HISTORY ──
 function renderHistory(body) {
-  if (!currentUser){switchTab('auth');return;}
-  if (!orderHistory.length){body.innerHTML=`<div class="empty"><div class="empty-icon">📦</div><p>まだ購入履歴がありません</p></div>`;return;}
-  const stMap={delivered:{label:'配達完了',cls:'status-delivered'},shipped:{label:'配送中',cls:'status-shipped'},processing:{label:'処理中',cls:'status-processing'}};
-  body.innerHTML=orderHistory.map((o,i)=>{
-    const st=stMap[o.status]||stMap.processing;
-    const dt=new Date(o.created_at).toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'});
-    const items=Array.isArray(o.items)?o.items:JSON.parse(o.items||'[]');
+  if (!currentUser) { switchTab('auth'); return; }
+  if (!orderHistory.length) {
+    body.innerHTML = `<div class="empty"><div class="empty-icon">📦</div><p>${t('hist.empty')}</p></div>`;
+    return;
+  }
+  const stMap = {
+    delivered: {label: t('hist.delivered'), cls:'status-delivered'},
+    shipped:   {label: t('hist.shipped'),   cls:'status-shipped'},
+    processing:{label: t('hist.processing'),cls:'status-processing'}
+  };
+  body.innerHTML = orderHistory.map((o,i) => {
+    const st = stMap[o.status] || stMap.processing;
+    const locMap = {ja:'ja-JP', en:'en-US', zh:'zh-CN'};
+    const dt = new Date(o.created_at).toLocaleDateString(locMap[currentLang]||'ja-JP', {year:'numeric',month:'long',day:'numeric'});
+    const items = Array.isArray(o.items) ? o.items : JSON.parse(o.items||'[]');
     return `<div class="order-card">
       <div class="order-hdr" id="ohdr${i}" onclick="toggleOrder(${i})">
         <div><div class="order-num">${o.order_number}</div><div class="order-date">${dt}</div></div>
@@ -371,227 +844,272 @@ function renderHistory(body) {
         <span class="chevron">▼</span>
       </div>
       <div class="order-items-wrap" id="owrap${i}">
-        ${items.map(it=>`<div class="order-item"><div class="oi-icon">${it.icon||'📦'}</div><div class="oi-info"><div class="oi-name">${it.name}</div><div class="oi-brand">${it.brand} · ${it.qty}点</div></div><div class="oi-price">¥${((it.price||0)*it.qty).toLocaleString()}</div></div>`).join('')}
-        <div style="padding-top:.7rem;font-size:.72rem;color:var(--gray)">お届け先：${o.shipping_address||'—'}</div>
+        ${items.map(it => `<div class="order-item"><div class="oi-icon">${it.icon||'📦'}</div><div class="oi-info"><div class="oi-name">${it.name}</div><div class="oi-brand">${it.brand} · ${it.qty}${currentLang==='en'?' pcs':currentLang==='zh'?'件':'点'}</div></div><div class="oi-price">¥${((it.price||0)*it.qty).toLocaleString()}</div></div>`).join('')}
+        <div style="padding-top:.7rem;font-size:.72rem;color:var(--gray)">${t('hist.ship_to')}${o.shipping_address||'—'}</div>
       </div>
-    </div>`;}).join('');
+    </div>`;
+  }).join('');
 }
-function toggleOrder(i){const w=document.getElementById('owrap'+i),h=document.getElementById('ohdr'+i);const o=w.classList.toggle('open');h.classList.toggle('open',o);}
+function toggleOrder(i) {
+  const w = document.getElementById('owrap'+i), h = document.getElementById('ohdr'+i);
+  const o = w.classList.toggle('open'); h.classList.toggle('open', o);
+}
 
 // ── WISHLIST ──
 function renderWishlist(body) {
-  if (!currentUser){switchTab('auth');return;}
-  if (!wishlistData.length){body.innerHTML=`<div class="empty"><div class="empty-icon">❤️</div><p>お気に入りがありません</p><p style="margin-top:.4rem;font-size:.72rem">商品ページの ♡ ボタンで追加できます</p></div>`;return;}
-  const items=wishlistData.map(id=>PRODUCTS.find(p=>p.id===id)).filter(Boolean);
-  body.innerHTML=`<div class="wish-grid">${items.map(p=>`
+  if (!currentUser) { switchTab('auth'); return; }
+  if (!wishlistData.length) {
+    body.innerHTML = `<div class="empty"><div class="empty-icon">❤️</div><p>${t('wish.empty1')}</p><p style="margin-top:.4rem;font-size:.72rem">${t('wish.empty2')}</p></div>`;
+    return;
+  }
+  const items = wishlistData.map(id => PRODUCTS.find(p => p.id===id)).filter(Boolean);
+  body.innerHTML = `<div class="wish-grid">${items.map(p => `
     <div class="wish-card">
       <span class="wish-icon">${p.icon}</span>
       <div class="wish-brand">${p.brand}</div>
       <div class="wish-name">${p.name}</div>
-      <div class="wish-price">¥${p.price.toLocaleString()}<small style="font-size:.65rem;color:var(--gray);font-family:var(--font-ja)">（税込）</small></div>
+      <div class="wish-price">¥${p.price.toLocaleString()}<small style="font-size:.65rem;color:var(--gray);font-family:var(--font-ja)">${currentLang==='en'?' (tax incl.)':currentLang==='zh'?'（含税）':'（税込）'}</small></div>
       <div class="wish-actions">
-        <button class="wish-add-btn" onclick="addToCart(${p.id});showToast('カートに追加しました')">🛒 カートへ</button>
+        <button class="wish-add-btn" onclick="addToCart(${p.id});showToast('${t('wish.added')}')">${t('wish.cartBtn')}</button>
         <button class="wish-del-btn" onclick="removeWish(${p.id})">✕</button>
       </div>
     </div>`).join('')}</div>`;
 }
-async function removeWish(id){
-  try{await api('DELETE',`/api/wishlist/${id}`);wishlistData=wishlistData.filter(x=>x!==id);renderWishlist(document.getElementById('mpContent'));showToast('お気に入りから削除しました');}catch{}
+async function removeWish(id) {
+  try {
+    await api('DELETE', `/api/wishlist/${id}`);
+    wishlistData = wishlistData.filter(x => x!==id);
+    renderWishlist(document.getElementById('mpContent'));
+    showToast(t('wish.removed'));
+  } catch{}
 }
 
 // ── REVIEWS ──
 function renderReviews(body) {
-  if (!currentUser){switchTab('auth');return;}
-  body.innerHTML=`
+  if (!currentUser) { switchTab('auth'); return; }
+  body.innerHTML = `
     <div class="review-form">
-      <div class="review-form-title">レビューを投稿する</div>
+      <div class="review-form-title">${t('rv.formTitle')}</div>
       <select class="product-select" id="rv_product">
-        <option value="">商品を選択してください</option>
-        ${PRODUCTS.map(p=>`<option value="${p.id}">${p.name}（${p.brand}）</option>`).join('')}
+        <option value="">${t('rv.select')}</option>
+        ${PRODUCTS.map(p => `<option value="${p.id}">${p.name}（${p.brand}）</option>`).join('')}
       </select>
-      <div style="margin-bottom:.6rem;font-size:.72rem;color:rgba(245,240,232,.5)">評価</div>
+      <div style="margin-bottom:.6rem;font-size:.72rem;color:rgba(245,240,232,.5)">${t('rv.ratingLbl')}</div>
       <div class="star-select" id="starSelect">
-        ${[1,2,3,4,5].map(n=>`<span onclick="setRating(${n})" id="star${n}">★</span>`).join('')}
+        ${[1,2,3,4,5].map(n => `<span onclick="setRating(${n})" id="star${n}">★</span>`).join('')}
       </div>
-      <input class="review-input" id="rv_title" placeholder="タイトル（任意）">
-      <textarea class="review-textarea" id="rv_body" placeholder="レビュー本文（必須）"></textarea>
-      <button class="save-btn" onclick="submitReview()">投稿する</button>
+      <input class="review-input" id="rv_title" placeholder="${t('rv.titlePh')}">
+      <textarea class="review-textarea" id="rv_body" placeholder="${t('rv.bodyPh')}"></textarea>
+      <button class="save-btn" onclick="submitReview()">${t('rv.submit')}</button>
     </div>
-    <div class="sec-title">投稿したレビュー</div>
-    ${myReviews.length?myReviews.map(r=>{
-      const p=PRODUCTS.find(x=>x.id===r.product_id)||{icon:'📦',name:'不明な商品'};
-      const dt=new Date(r.created_at).toLocaleDateString('ja-JP',{year:'numeric',month:'long',day:'numeric'});
+    <div class="sec-title">${t('rv.myTitle')}</div>
+    ${myReviews.length ? myReviews.map(r => {
+      const p = PRODUCTS.find(x => x.id===r.product_id) || {icon:'📦', name: t('rv.unknown')};
+      const rvLocMap = {ja:'ja-JP', en:'en-US', zh:'zh-CN'};
+      const dt = new Date(r.created_at).toLocaleDateString(rvLocMap[currentLang]||'ja-JP', {year:'numeric',month:'long',day:'numeric'});
       return `<div class="review-card">
         <div class="review-card-head">
           <div class="review-product-icon">${p.icon}</div>
           <div><div class="review-product-name">${p.name}</div><div class="review-date">${dt}</div></div>
         </div>
         <div class="review-stars">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
-        ${r.title?`<div class="review-title">${r.title}</div>`:''}
+        ${r.title ? `<div class="review-title">${r.title}</div>` : ''}
         <div class="review-body">${r.body}</div>
-        <button class="review-del-btn" onclick="deleteReview(${r.id})">✕ 削除する</button>
-      </div>`;}).join(''):`<div class="empty"><div class="empty-icon">⭐</div><p>まだレビューがありません</p></div>`}`;
+        <button class="review-del-btn" onclick="deleteReview(${r.id})">${t('rv.delete')}</button>
+      </div>`;
+    }).join('') : `<div class="empty"><div class="empty-icon">⭐</div><p>${t('rv.empty')}</p></div>`}`;
   updateStars();
 }
 
-function setRating(n){reviewRating=n;updateStars();}
-function updateStars(){[1,2,3,4,5].forEach(n=>{const el=document.getElementById('star'+n);if(el)el.classList.toggle('on',n<=reviewRating);});}
+function setRating(n) { reviewRating = n; updateStars(); }
+function updateStars() { [1,2,3,4,5].forEach(n => { const el = document.getElementById('star'+n); if(el) el.classList.toggle('on', n<=reviewRating); }); }
 
-async function submitReview(){
-  const pid=parseInt(document.getElementById('rv_product').value);
-  const body=document.getElementById('rv_body').value.trim();
-  if(!pid){showToast('商品を選択してください');return;}
-  if(!reviewRating){showToast('評価を選択してください');return;}
-  if(!body){showToast('レビュー本文を入力してください');return;}
-  try{
-    const r=await api('POST','/api/reviews',{product_id:pid,rating:reviewRating,title:document.getElementById('rv_title').value||null,body});
-    const exist=myReviews.findIndex(x=>x.product_id===pid);
-    if(exist>=0)myReviews[exist]=r; else myReviews.unshift(r);
-    reviewRating=0;
+async function submitReview() {
+  const pid = parseInt(document.getElementById('rv_product').value);
+  const body = document.getElementById('rv_body').value.trim();
+  if (!pid) { showToast(t('rv.noProduct')); return; }
+  if (!reviewRating) { showToast(t('rv.noRating')); return; }
+  if (!body) { showToast(t('rv.noBody')); return; }
+  try {
+    const r = await api('POST', '/api/reviews', {product_id: pid, rating: reviewRating, title: document.getElementById('rv_title').value||null, body});
+    const exist = myReviews.findIndex(x => x.product_id===pid);
+    if (exist >= 0) myReviews[exist] = r; else myReviews.unshift(r);
+    reviewRating = 0;
     renderReviews(document.getElementById('mpContent'));
-    showToast('レビューを投稿しました');
-  }catch(e){showToast('投稿に失敗しました: '+e.message);}
+    showToast(t('rv.submitted'));
+  } catch(e) { showToast(t('rv.submitFail') + e.message); }
 }
 
-async function deleteReview(id){
-  try{await api('DELETE',`/api/reviews/${id}`);myReviews=myReviews.filter(x=>x.id!==id);renderReviews(document.getElementById('mpContent'));showToast('レビューを削除しました');}catch{}
+async function deleteReview(id) {
+  try {
+    await api('DELETE', `/api/reviews/${id}`);
+    myReviews = myReviews.filter(x => x.id!==id);
+    renderReviews(document.getElementById('mpContent'));
+    showToast(t('rv.deleted'));
+  } catch{}
 }
 
 // ── ADDRESSES ──
 function renderAddresses(body) {
-  if(!currentUser){switchTab('auth');return;}
-  body.innerHTML=`
-    <button class="save-btn" style="margin-bottom:1.2rem" onclick="showAddressForm()">＋ 新しい住所を追加</button>
+  if (!currentUser) { switchTab('auth'); return; }
+  body.innerHTML = `
+    <button class="save-btn" style="margin-bottom:1.2rem" onclick="showAddressForm()">${t('addr.addBtn')}</button>
     <div id="addrFormWrap"></div>
-    <div class="sec-title">登録済み住所</div>
-    ${addresses.length?addresses.map(a=>`
+    <div class="sec-title">${t('addr.listTitle')}</div>
+    ${addresses.length ? addresses.map(a => `
     <div class="addr-card ${a.is_default?'default':''}">
       <div class="addr-label">
         <span class="addr-label-text">${a.label}</span>
-        ${a.is_default?'<span class="default-badge">デフォルト</span>':''}
+        ${a.is_default ? `<span class="default-badge">${t('addr.defBadge')}</span>` : ''}
       </div>
       <div class="addr-body">
-        ${a.name}（${a.kana||'—'}）<br>
+        ${a.name}${a.kana ? `（${a.kana}）` : ''}<br>
         〒${a.zip} ${a.pref}${a.city}${a.addr}<br>
-        ${a.phone?`TEL: ${a.phone}`:''}
+        ${a.phone ? `${t('addr.tel')}${a.phone}` : ''}
       </div>
       <div class="addr-actions">
-        ${!a.is_default?`<button class="addr-btn" onclick="setDefault(${a.id})">デフォルトに設定</button>`:''}
-        <button class="addr-btn del" onclick="deleteAddr(${a.id})">削除</button>
+        ${!a.is_default ? `<button class="addr-btn" onclick="setDefault(${a.id})">${t('addr.setDef')}</button>` : ''}
+        <button class="addr-btn del" onclick="deleteAddr(${a.id})">${t('addr.del')}</button>
       </div>
-    </div>`).join(''):`<div class="empty"><div class="empty-icon">🏠</div><p>住所が登録されていません</p></div>`}`;
+    </div>`).join('') : `<div class="empty"><div class="empty-icon">🏠</div><p>${t('addr.empty')}</p></div>`}`;
 }
 
-function showAddressForm(){
-  const wrap=document.getElementById('addrFormWrap');
-  wrap.innerHTML=`
+function showAddressForm() {
+  const wrap = document.getElementById('addrFormWrap');
+  wrap.innerHTML = `
     <div class="addr-form">
-      <div class="sec-title" style="margin-bottom:1rem">住所を追加</div>
+      <div class="sec-title" style="margin-bottom:1rem">${t('addr.formTitle')}</div>
       <div class="addr-form-grid">
-        <div><div class="pf-label">ラベル</div><input class="addr-input" id="af_label" value="自宅" placeholder="自宅・会社など"></div>
-        <div><div class="pf-label">お名前 *</div><input class="addr-input" id="af_name" placeholder="山田 太郎"></div>
-        <div><div class="pf-label">フリガナ</div><input class="addr-input" id="af_kana" placeholder="ヤマダ タロウ"></div>
-        <div><div class="pf-label">電話番号</div><input class="addr-input" id="af_phone" placeholder="090-0000-0000"></div>
-        <div><div class="pf-label">郵便番号 *</div><input class="addr-input" id="af_zip" placeholder="123-4567"></div>
-        <div><div class="pf-label">都道府県 *</div><input class="addr-input" id="af_pref" placeholder="東京都"></div>
-        <div><div class="pf-label">市区町村 *</div><input class="addr-input" id="af_city" placeholder="渋谷区"></div>
-        <div><div class="pf-label">番地・建物名 *</div><input class="addr-input" id="af_addr" placeholder="○○町1-2-3"></div>
+        <div><div class="pf-label">${t('addr.label')}</div><input class="addr-input" id="af_label" value="${t('addr.labelDef')}" placeholder="${t('addr.labelPh')}"></div>
+        <div><div class="pf-label">${t('addr.name')}</div><input class="addr-input" id="af_name" placeholder="${t('addr.namePh')}"></div>
+        <div><div class="pf-label">${t('addr.kana')}</div><input class="addr-input" id="af_kana" placeholder="${t('addr.kanaPh')}"></div>
+        <div><div class="pf-label">${t('addr.phone')}</div><input class="addr-input" id="af_phone" placeholder="${t('addr.phonePh')}"></div>
+        <div><div class="pf-label">${t('addr.zip')}</div><input class="addr-input" id="af_zip" placeholder="${t('addr.zipPh')}"></div>
+        <div><div class="pf-label">${t('addr.pref')}</div><input class="addr-input" id="af_pref" placeholder="${t('addr.prefPh')}"></div>
+        <div><div class="pf-label">${t('addr.city')}</div><input class="addr-input" id="af_city" placeholder="${t('addr.cityPh')}"></div>
+        <div><div class="pf-label">${t('addr.addr')}</div><input class="addr-input" id="af_addr" placeholder="${t('addr.addrPh')}"></div>
       </div>
-      <label class="addr-check-row"><input type="checkbox" id="af_default"> デフォルト住所に設定する</label>
+      <label class="addr-check-row"><input type="checkbox" id="af_default"> ${t('addr.default')}</label>
       <div style="display:flex;gap:.7rem">
-        <button class="save-btn" onclick="saveAddr()">保存する</button>
-        <button class="addr-btn" onclick="document.getElementById('addrFormWrap').innerHTML=''">キャンセル</button>
+        <button class="save-btn" onclick="saveAddr()">${t('addr.save')}</button>
+        <button class="addr-btn" onclick="document.getElementById('addrFormWrap').innerHTML=''">${t('addr.cancel')}</button>
       </div>
     </div>`;
 }
 
-async function saveAddr(){
-  const name=document.getElementById('af_name')?.value.trim();
-  const zip=document.getElementById('af_zip')?.value.trim();
-  const pref=document.getElementById('af_pref')?.value.trim();
-  const city=document.getElementById('af_city')?.value.trim();
-  const addr=document.getElementById('af_addr')?.value.trim();
-  if(!name||!zip||!pref||!city||!addr){showToast('必須項目を入力してください');return;}
-  try{
-    const r=await api('POST','/api/addresses',{label:document.getElementById('af_label').value||'自宅',name,kana:document.getElementById('af_kana').value,phone:document.getElementById('af_phone').value,zip,pref,city,addr,is_default:document.getElementById('af_default').checked});
-    if(r.is_default)addresses=addresses.map(a=>({...a,is_default:false}));
+async function saveAddr() {
+  const name = document.getElementById('af_name')?.value.trim();
+  const zip  = document.getElementById('af_zip')?.value.trim();
+  const pref = document.getElementById('af_pref')?.value.trim();
+  const city = document.getElementById('af_city')?.value.trim();
+  const addr = document.getElementById('af_addr')?.value.trim();
+  if (!name||!zip||!pref||!city||!addr) { showToast(t('addr.required')); return; }
+  try {
+    const r = await api('POST', '/api/addresses', {
+      label: document.getElementById('af_label').value || t('addr.labelDef'),
+      name, kana: document.getElementById('af_kana').value,
+      phone: document.getElementById('af_phone').value,
+      zip, pref, city, addr,
+      is_default: document.getElementById('af_default').checked
+    });
+    if (r.is_default) addresses = addresses.map(a => ({...a, is_default: false}));
     addresses.push(r);
     renderAddresses(document.getElementById('mpContent'));
-    showToast('住所を追加しました');
-  }catch(e){showToast('保存に失敗しました: '+e.message);}
+    showToast(t('addr.added'));
+  } catch(e) { showToast(t('addr.saveFail') + e.message); }
 }
 
-async function setDefault(id){
-  try{
-    await api('PATCH',`/api/addresses/${id}/set-default`);
-    addresses=addresses.map(a=>({...a,is_default:a.id===id}));
+async function setDefault(id) {
+  try {
+    await api('PATCH', `/api/addresses/${id}/set-default`);
+    addresses = addresses.map(a => ({...a, is_default: a.id===id}));
     renderAddresses(document.getElementById('mpContent'));
-    showToast('デフォルト住所を変更しました');
-  }catch{}
+    showToast(t('addr.defSet'));
+  } catch{}
 }
 
-async function deleteAddr(id){
-  try{
-    await api('DELETE',`/api/addresses/${id}`);
-    addresses=addresses.filter(a=>a.id!==id);
+async function deleteAddr(id) {
+  try {
+    await api('DELETE', `/api/addresses/${id}`);
+    addresses = addresses.filter(a => a.id!==id);
     renderAddresses(document.getElementById('mpContent'));
-    showToast('住所を削除しました');
-  }catch{}
+    showToast(t('addr.deleted'));
+  } catch{}
 }
 
 // ── AI ──
-function renderAI(body){
-  if(!currentUser){switchTab('auth');return;}
-  body.innerHTML=`
-    <p class="section-eyebrow" style="margin-bottom:.5rem">AIゴルフアドバイザー</p>
-    <p class="ai-sub">あなたの購入履歴をもとに、最適なゴルフ用品をご提案します。</p>
+function renderAI(body) {
+  if (!currentUser) { switchTab('auth'); return; }
+  const chips = t('ai.chips');
+  body.innerHTML = `
+    <p class="section-eyebrow" style="margin-bottom:.5rem">${t('ai.title')}</p>
+    <p class="ai-sub">${t('ai.sub')}</p>
     <div class="ai-msgs" id="aiMsgs">
-      <div class="ai-msg assistant">こんにちは、${currentUser.name}さん！ FAIRWAYのAIゴルフアドバイザーです。クラブ選びや用品のご相談など、何でもどうぞ。</div>
+      <div class="ai-msg assistant">${t('ai.greeting', currentUser.name)}</div>
     </div>
     <div class="ai-input-row">
-      <input class="ai-input" id="aiInput" placeholder="例：飛距離を伸ばしたい" onkeydown="if(event.key==='Enter')sendAI()">
-      <button class="ai-send" id="aiSend" onclick="sendAI()">送信</button>
+      <input class="ai-input" id="aiInput" placeholder="${t('ai.ph')}" onkeydown="if(event.key==='Enter')sendAI()">
+      <button class="ai-send" id="aiSend" onclick="sendAI()">${t('ai.send')}</button>
     </div>
     <div class="ai-chips">
-      ${['飛距離アップのコツは？','初心者向けクラブを教えて','おすすめのボールは？','スコア100切りのためには？'].map(q=>`<button class="ai-chip" onclick="document.getElementById('aiInput').value='${q}';sendAI()">${q}</button>`).join('')}
+      ${chips.map(q => `<button class="ai-chip" onclick="document.getElementById('aiInput').value='${q}';sendAI()">${q}</button>`).join('')}
     </div>`;
-  if(aiMessages.length){
-    const list=document.getElementById('aiMsgs');
-    list.innerHTML='';
-    aiMessages.forEach(m=>{const d=document.createElement('div');d.className='ai-msg '+m.role;d.textContent=m.content;list.appendChild(d);});
-    list.scrollTop=list.scrollHeight;
+  if (aiMessages.length) {
+    const list = document.getElementById('aiMsgs');
+    list.innerHTML = '';
+    aiMessages.forEach(m => { const d = document.createElement('div'); d.className='ai-msg '+m.role; d.textContent=m.content; list.appendChild(d); });
+    list.scrollTop = list.scrollHeight;
   }
 }
 
-async function sendAI(){
-  const inp=document.getElementById('aiInput');
-  const btn=document.getElementById('aiSend');
-  const list=document.getElementById('aiMsgs');
-  if(!inp||!list)return;
-  const msg=inp.value.trim(); if(!msg)return;
-  inp.value=''; btn.disabled=true;
-  const ud=document.createElement('div');ud.className='ai-msg user';ud.textContent=msg;list.appendChild(ud);
-  const ld=document.createElement('div');ld.className='ai-msg assistant loading';ld.textContent='考え中...';list.appendChild(ld);
-  list.scrollTop=list.scrollHeight;
-  const hist=orderHistory.length?'購入履歴: '+orderHistory.map(o=>{const items=Array.isArray(o.items)?o.items:JSON.parse(o.items||'[]');return items.map(i=>i.name).join('、');}).join(' / '):'購入履歴はまだありません。';
-  const sys=`あなたはFAIRWAY（プレミアムゴルフストア）のAIアドバイザーです。\nユーザー名：${currentUser.name}\n${hist}\n取り扱い商品：${PRODUCTS.map(p=>`${p.name}（${p.brand}、¥${p.price.toLocaleString()}）`).join('、')}\nゴルフ専門家として日本語で回答してください。商品推薦時は具体的な商品名と価格を含めて。3〜5文以内で簡潔に。`;
-  aiMessages.push({role:'user',content:msg});
-  try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:aiMessages})});
-    const data=await res.json();
-    const reply=data.content?.[0]?.text||'すみません、もう一度お試しください。';
-    ld.classList.remove('loading');ld.textContent=reply;
-    aiMessages.push({role:'assistant',content:reply});
-  }catch{ld.textContent='エラーが発生しました。しばらくしてから再度お試しください。';}
-  btn.disabled=false; list.scrollTop=list.scrollHeight;
+async function sendAI() {
+  const inp = document.getElementById('aiInput');
+  const btn = document.getElementById('aiSend');
+  const list = document.getElementById('aiMsgs');
+  if (!inp||!list) return;
+  const msg = inp.value.trim(); if (!msg) return;
+  inp.value = ''; btn.disabled = true;
+  const ud = document.createElement('div'); ud.className='ai-msg user'; ud.textContent=msg; list.appendChild(ud);
+  const ld = document.createElement('div'); ld.className='ai-msg assistant loading'; ld.textContent=t('ai.thinking'); list.appendChild(ld);
+  list.scrollTop = list.scrollHeight;
+
+  const histStr = orderHistory.length
+    ? t('ai.sysHist') + orderHistory.map(o => { const items=Array.isArray(o.items)?o.items:JSON.parse(o.items||'[]'); return items.map(i=>i.name).join('、'); }).join(' / ')
+    : t('ai.sysNoHist');
+  const sys = t('ai.sysPrompt')
+    .replace('%name', currentUser.name)
+    .replace('%hist', histStr)
+    .replace('%products', PRODUCTS.map(p=>`${p.name}（${p.brand}、¥${p.price.toLocaleString()}）`).join('、'));
+
+  aiMessages.push({role:'user', content: msg});
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({model:'claude-sonnet-4-6', max_tokens:1000, system:sys, messages:aiMessages})
+    });
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || t('ai.retry');
+    ld.classList.remove('loading'); ld.textContent = reply;
+    aiMessages.push({role:'assistant', content: reply});
+  } catch { ld.textContent = t('ai.error'); }
+  btn.disabled = false; list.scrollTop = list.scrollHeight;
 }
 
 // ── INIT ──
-async function init(){
-  const styleEl=document.createElement('style');styleEl.textContent=COMMON_CSS;document.head.appendChild(styleEl);
+async function init() {
   await restoreSession();
   updateCartBadge();
-  if(currentUser){
+  // Apply saved language first
+  document.getElementById('langJP').classList.toggle('active', currentLang==='ja');
+  document.getElementById('langEN').classList.toggle('active', currentLang==='en');
+  document.getElementById('langZH').classList.toggle('active', currentLang==='zh');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = I18N[currentLang][key];
+    if (val !== undefined) el.innerHTML = val;
+  });
+  if (currentUser) {
     await loadAllData();
     showLoggedInTabs();
     switchTab('profile');

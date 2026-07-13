@@ -12,6 +12,12 @@
   .page-hero h1 span{color:var(--gold)}
   .cart-layout{display:grid;grid-template-columns:1fr 360px;gap:2rem;padding:3rem 4rem;align-items:start}
   @media(max-width:900px){.cart-layout{grid-template-columns:1fr;padding:2rem 1.5rem}.page-hero{padding:2rem 1.5rem}}
+  /* Language Toggle */
+  .lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(201,168,76,.35);overflow:hidden;flex-shrink:0}
+  .lang-btn{padding:.4rem .7rem;background:none;border:none;color:rgba(245,240,232,.45);font-family:var(--font-ja);font-size:.7rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;line-height:1}
+  .lang-btn.active{background:var(--gold);color:var(--black);font-weight:700}
+  .lang-btn:not(.active):hover{color:var(--gold);background:rgba(201,168,76,.08)}
+  .lang-divider{width:1px;height:16px;background:rgba(201,168,76,.3);flex-shrink:0}
   /* cart items */
   .cart-items-wrap{display:flex;flex-direction:column;gap:1px}
   .cart-row{display:flex;gap:1.2rem;padding:1.5rem;background:var(--forest);align-items:center;transition:background .2s}
@@ -47,11 +53,12 @@
   .checkout-section{display:none;padding:3rem 4rem}
   .checkout-section.active{display:block}
   @media(max-width:900px){.checkout-section{padding:2rem 1.5rem}}
-  .step-bar{display:flex;margin-bottom:2.5rem}
+  .step-bar{display:flex;margin-bottom:2.5rem;padding:0 4rem}
+  @media(max-width:900px){.step-bar{padding:0 1.5rem}}
   .step{flex:1;padding:.6rem .3rem;text-align:center;font-size:.66rem;letter-spacing:.08em;color:rgba(245,240,232,.3);border-bottom:2px solid rgba(245,240,232,.1);transition:all .3s}
   .step.active{color:var(--gold);border-bottom-color:var(--gold)}
   .step.done{color:var(--gold-lt);border-bottom-color:rgba(201,168,76,.4)}
-  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:600px}
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;max-width:640px}
   @media(max-width:640px){.form-grid{grid-template-columns:1fr}}
   .form-group{display:flex;flex-direction:column;gap:.4rem}
   .form-group.full{grid-column:1/-1}
@@ -65,20 +72,28 @@
   .error-msg{font-size:.7rem;color:var(--red);margin-top:.2rem;display:none}
   .form-group.has-error .error-msg{display:block}
   .form-section-title{font-family:var(--font-en);font-size:1.15rem;color:var(--cream);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:1px solid rgba(201,168,76,.1)}
+  /* Shipping zone toggle */
+  .ship-zone-row{display:flex;gap:.5rem;margin-bottom:1.5rem;max-width:640px}
+  .ship-zone-btn{flex:1;padding:.7rem;background:transparent;border:1px solid rgba(245,240,232,.12);color:rgba(245,240,232,.45);font-family:var(--font-ja);font-size:.78rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.4rem}
+  .ship-zone-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.07)}
+  .ship-zone-btn:hover:not(.active){border-color:rgba(201,168,76,.3);color:rgba(245,240,232,.7)}
+  /* Intl shipping note */
+  .intl-note{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.18);padding:.9rem 1.1rem;font-size:.78rem;color:rgba(245,240,232,.65);line-height:1.8;margin-bottom:1.2rem;max-width:640px}
+  .intl-note strong{color:var(--gold-lt)}
   .form-actions{display:flex;gap:.8rem;margin-top:2rem}
   .btn-back{padding:.9rem 2rem;background:rgba(245,240,232,.06);color:rgba(245,240,232,.6);border:1px solid rgba(245,240,232,.12);font-family:var(--font-ja);font-size:.82rem;cursor:pointer;transition:all .2s}
   .btn-back:hover{background:rgba(245,240,232,.1)}
   .btn-next{padding:.9rem 2rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.82rem;font-weight:700;border:none;cursor:pointer;transition:all .2s}
   .btn-next:hover{background:var(--gold-lt)}
   /* review */
-  .order-review-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem;max-width:600px}
+  .order-review-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem;max-width:640px}
   .or-item{display:flex;align-items:center;gap:.8rem;padding:.8rem;background:rgba(26,51,32,.3);border:1px solid rgba(201,168,76,.08)}
   .or-icon{font-size:1.5rem;width:40px;text-align:center;flex-shrink:0}
   .or-name{font-size:.82rem;color:var(--cream)}
   .or-qty{font-size:.7rem;color:var(--gray)}
   .or-price{font-family:var(--font-en);font-size:1rem;color:var(--gold-lt);white-space:nowrap;margin-left:auto}
-  .review-total-box{display:flex;justify-content:space-between;padding:1rem;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);margin-bottom:1rem;max-width:600px}
-  .review-addr-box{font-size:.78rem;color:var(--gray);line-height:1.9;padding:1rem;background:rgba(26,51,32,.2);border:1px solid rgba(201,168,76,.08);margin-bottom:1.5rem;max-width:600px}
+  .review-total-box{display:flex;justify-content:space-between;padding:1rem;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);margin-bottom:1rem;max-width:640px}
+  .review-addr-box{font-size:.78rem;color:var(--gray);line-height:1.9;padding:1rem;background:rgba(26,51,32,.2);border:1px solid rgba(201,168,76,.08);margin-bottom:1.5rem;max-width:640px}
   /* success */
   .success-screen{text-align:center;padding:4rem 2rem;max-width:500px;margin:0 auto}
   .success-icon{font-size:4.5rem;margin-bottom:1.2rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both}
@@ -91,12 +106,19 @@
 <nav>
   <a href="index.html" class="nav-logo">FAIR<span>WAY</span></a>
   <ul class="nav-links">
-    <li><a href="index.html">ショップ</a></li>
-    <li><a href="mypage.html">マイページ</a></li>
+    <li><a href="index.html" data-i18n="nav.shop">ショップ</a></li>
+    <li><a href="mypage.html" data-i18n="nav.mypage">マイページ</a></li>
   </ul>
   <div class="nav-right">
-    <a href="mypage.html" class="nav-btn" id="mypageNavBtn"><span class="user-dot" id="userDot"></span>マイページ</a>
-    <a href="cart.html" class="nav-btn active">🛒 カート <span class="cart-badge">0</span></a>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="langJP" onclick="setLang('ja')">JP</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" id="langEN" onclick="setLang('en')">EN</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" id="langZH" onclick="setLang('zh')">中文</button>
+    </div>
+    <a href="mypage.html" class="nav-btn" id="mypageNavBtn"><span class="user-dot" id="userDot"></span><span data-i18n="nav.mypage">マイページ</span></a>
+    <a href="cart.html" class="nav-btn active">🛒 <span data-i18n="nav.cart">カート</span> <span class="cart-badge">0</span></a>
   </div>
 </nav>
 
@@ -104,18 +126,18 @@
   <!-- CART VIEW -->
   <div id="cartView">
     <div class="page-hero">
-      <h1>CART <span>カート</span></h1>
+      <h1>CART <span data-i18n="hero.cartSub">カート</span></h1>
     </div>
     <div class="cart-layout">
       <div id="cartItemsWrap"></div>
       <div class="cart-summary-box">
-        <div class="summary-title">注文サマリー</div>
-        <div class="summary-row"><span>小計</span><span class="val" id="subtotal">¥0</span></div>
-        <div class="summary-row"><span>送料</span><span class="val" id="shipping">¥0</span></div>
+        <div class="summary-title" data-i18n="summary.title">注文サマリー</div>
+        <div class="summary-row"><span data-i18n="summary.subtotal">小計</span><span class="val" id="subtotal">¥0</span></div>
+        <div class="summary-row"><span data-i18n="summary.shipping">送料</span><span class="val" id="shipping">¥0</span></div>
         <div class="free-ship-note" id="freeShipNote"></div>
-        <div class="summary-row total"><span>合計（税込）</span><span class="val" id="cartTotal">¥0</span></div>
-        <button class="checkout-btn" id="checkoutBtn" onclick="startCheckout()">レジへ進む →</button>
-        <a href="index.html" class="continue-btn">ショッピングを続ける</a>
+        <div class="summary-row total"><span data-i18n="summary.total">合計（税込）</span><span class="val" id="cartTotal">¥0</span></div>
+        <button class="checkout-btn" id="checkoutBtn" onclick="startCheckout()"><span data-i18n="summary.checkoutBtn">レジへ進む →</span></button>
+        <a href="index.html" class="continue-btn" data-i18n="summary.continueBtn">ショッピングを続ける</a>
       </div>
     </div>
   </div>
@@ -123,58 +145,142 @@
   <!-- CHECKOUT VIEW -->
   <div id="checkoutView" style="display:none">
     <div class="page-hero">
-      <h1>CHECKOUT <span>お会計</span></h1>
+      <h1>CHECKOUT <span data-i18n="hero.checkoutSub">お会計</span></h1>
     </div>
     <div class="step-bar">
-      <div class="step active" id="si1">① 配送先</div>
-      <div class="step" id="si2">② 支払い</div>
-      <div class="step" id="si3">③ 確認</div>
-      <div class="step" id="si4">④ 完了</div>
+      <div class="step active" id="si1" data-i18n="step.1">① 配送先</div>
+      <div class="step" id="si2" data-i18n="step.2">② 支払い</div>
+      <div class="step" id="si3" data-i18n="step.3">③ 確認</div>
+      <div class="step" id="si4" data-i18n="step.4">④ 完了</div>
     </div>
 
     <!-- STEP1 配送先 -->
     <div class="checkout-section active" id="step1">
-      <div class="form-section-title">お届け先情報</div>
-      <div class="form-grid">
-        <div class="form-group"><label>お名前 <span>*</span></label><input id="s_name" placeholder="山田 太郎"><span class="error-msg">入力してください</span></div>
-        <div class="form-group"><label>フリガナ <span>*</span></label><input id="s_kana" placeholder="ヤマダ タロウ"><span class="error-msg">入力してください</span></div>
-        <div class="form-group"><label>電話番号 <span>*</span></label><input id="s_tel" type="tel" placeholder="090-0000-0000"><span class="error-msg">入力してください</span></div>
-        <div class="form-group"><label>郵便番号 <span>*</span></label><input id="s_zip" placeholder="123-4567"><span class="error-msg">入力してください</span></div>
-        <div class="form-group"><label>都道府県 <span>*</span></label>
-          <select id="s_pref"><option value="">選択してください</option><option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option><option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option><option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option><option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option><option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option><option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option><option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option></select>
-          <span class="error-msg">選択してください</span></div>
-        <div class="form-group"><label>市区町村 <span>*</span></label><input id="s_city" placeholder="渋谷区"><span class="error-msg">入力してください</span></div>
-        <div class="form-group full"><label>番地・建物名 <span>*</span></label><input id="s_addr" placeholder="○○町1-2-3 ○○マンション101"><span class="error-msg">入力してください</span></div>
+      <div class="form-section-title" data-i18n="step1.title">お届け先情報</div>
+
+      <!-- 国内 / 海外 切り替え -->
+      <div class="ship-zone-row" id="shipZoneRow">
+        <button class="ship-zone-btn active" id="zoneDomestic" onclick="setZone('domestic')">
+          🇯🇵 <span data-i18n="zone.domestic">国内（日本）</span>
+        </button>
+        <button class="ship-zone-btn" id="zoneIntl" onclick="setZone('intl')">
+          🌏 <span data-i18n="zone.intl">海外（International）</span>
+        </button>
       </div>
-      <div class="form-actions"><button class="btn-next" onclick="goStep(2)">支払いへ →</button></div>
+
+      <!-- 海外配送注記 -->
+      <div class="intl-note" id="intlNote" style="display:none" data-i18n="intl.note">
+        ⚠️ <strong>海外配送について：</strong>別途国際送料（¥3,500〜）・関税・輸入税が発生する場合があります。配送日数は通常7〜14営業日です。
+      </div>
+
+      <!-- DOMESTIC FORM -->
+      <div id="formDomestic">
+        <div class="form-grid">
+          <div class="form-group"><label data-i18n="f.name">お名前 <span>*</span></label><input id="s_name" placeholder="山田 太郎"><span class="error-msg" data-i18n="err.required">入力してください</span></div>
+          <div class="form-group"><label data-i18n="f.kana">フリガナ <span>*</span></label><input id="s_kana" placeholder="ヤマダ タロウ"><span class="error-msg" data-i18n="err.required">入力してください</span></div>
+          <div class="form-group"><label data-i18n="f.tel">電話番号 <span>*</span></label><input id="s_tel" type="tel" placeholder="090-0000-0000"><span class="error-msg" data-i18n="err.required">入力してください</span></div>
+          <div class="form-group"><label data-i18n="f.zip">郵便番号 <span>*</span></label><input id="s_zip" placeholder="123-4567"><span class="error-msg" data-i18n="err.required">入力してください</span></div>
+          <div class="form-group">
+            <label data-i18n="f.pref">都道府県 <span>*</span></label>
+            <select id="s_pref"><option value="" data-i18n="f.prefPh">選択してください</option><option>北海道</option><option>青森県</option><option>岩手県</option><option>宮城県</option><option>秋田県</option><option>山形県</option><option>福島県</option><option>茨城県</option><option>栃木県</option><option>群馬県</option><option>埼玉県</option><option>千葉県</option><option>東京都</option><option>神奈川県</option><option>新潟県</option><option>富山県</option><option>石川県</option><option>福井県</option><option>山梨県</option><option>長野県</option><option>岐阜県</option><option>静岡県</option><option>愛知県</option><option>三重県</option><option>滋賀県</option><option>京都府</option><option>大阪府</option><option>兵庫県</option><option>奈良県</option><option>和歌山県</option><option>鳥取県</option><option>島根県</option><option>岡山県</option><option>広島県</option><option>山口県</option><option>徳島県</option><option>香川県</option><option>愛媛県</option><option>高知県</option><option>福岡県</option><option>佐賀県</option><option>長崎県</option><option>熊本県</option><option>大分県</option><option>宮崎県</option><option>鹿児島県</option><option>沖縄県</option></select>
+            <span class="error-msg" data-i18n="err.select">選択してください</span>
+          </div>
+          <div class="form-group"><label data-i18n="f.city">市区町村 <span>*</span></label><input id="s_city" placeholder="渋谷区"><span class="error-msg" data-i18n="err.required">入力してください</span></div>
+          <div class="form-group full"><label data-i18n="f.addr">番地・建物名 <span>*</span></label><input id="s_addr" placeholder="○○町1-2-3 ○○マンション101"><span class="error-msg" data-i18n="err.required">入力してください</span></div>
+        </div>
+      </div>
+
+      <!-- INTERNATIONAL FORM -->
+      <div id="formIntl" style="display:none">
+        <div class="form-grid">
+          <div class="form-group"><label data-i18n="fi.name">Full Name <span>*</span></label><input id="i_name" placeholder="John Smith"><span class="error-msg" data-i18n="err.required">Required</span></div>
+          <div class="form-group"><label data-i18n="fi.tel">Phone Number <span>*</span></label><input id="i_tel" type="tel" placeholder="+1 000-000-0000"><span class="error-msg" data-i18n="err.required">Required</span></div>
+          <div class="form-group full">
+            <label data-i18n="fi.country">Country / Region <span>*</span></label>
+            <select id="i_country">
+              <option value="" data-i18n="fi.countryPh">Select country</option>
+              <optgroup label="Asia">
+                <option value="CN">🇨🇳 China / 中国</option>
+                <option value="KR">🇰🇷 South Korea / 韓国</option>
+                <option value="TW">🇹🇼 Taiwan / 台湾</option>
+                <option value="HK">🇭🇰 Hong Kong / 香港</option>
+                <option value="SG">🇸🇬 Singapore / シンガポール</option>
+                <option value="TH">🇹🇭 Thailand / タイ</option>
+                <option value="MY">🇲🇾 Malaysia / マレーシア</option>
+                <option value="ID">🇮🇩 Indonesia / インドネシア</option>
+                <option value="PH">🇵🇭 Philippines / フィリピン</option>
+                <option value="VN">🇻🇳 Vietnam / ベトナム</option>
+                <option value="IN">🇮🇳 India / インド</option>
+              </optgroup>
+              <optgroup label="Oceania">
+                <option value="AU">🇦🇺 Australia / オーストラリア</option>
+                <option value="NZ">🇳🇿 New Zealand / ニュージーランド</option>
+              </optgroup>
+              <optgroup label="North America">
+                <option value="US">🇺🇸 United States / アメリカ</option>
+                <option value="CA">🇨🇦 Canada / カナダ</option>
+              </optgroup>
+              <optgroup label="Europe">
+                <option value="GB">🇬🇧 United Kingdom / イギリス</option>
+                <option value="DE">🇩🇪 Germany / ドイツ</option>
+                <option value="FR">🇫🇷 France / フランス</option>
+                <option value="IT">🇮🇹 Italy / イタリア</option>
+                <option value="ES">🇪🇸 Spain / スペイン</option>
+                <option value="NL">🇳🇱 Netherlands / オランダ</option>
+                <option value="SE">🇸🇪 Sweden / スウェーデン</option>
+                <option value="CH">🇨🇭 Switzerland / スイス</option>
+              </optgroup>
+              <optgroup label="Middle East">
+                <option value="AE">🇦🇪 UAE / アラブ首長国連邦</option>
+                <option value="SA">🇸🇦 Saudi Arabia / サウジアラビア</option>
+              </optgroup>
+            </select>
+            <span class="error-msg" data-i18n="err.select">Required</span>
+          </div>
+          <div class="form-group"><label data-i18n="fi.state">State / Province</label><input id="i_state" placeholder="California"></div>
+          <div class="form-group"><label data-i18n="fi.zip">Postal Code <span>*</span></label><input id="i_zip" placeholder="12345"><span class="error-msg" data-i18n="err.required">Required</span></div>
+          <div class="form-group"><label data-i18n="fi.city">City <span>*</span></label><input id="i_city" placeholder="Los Angeles"><span class="error-msg" data-i18n="err.required">Required</span></div>
+          <div class="form-group full"><label data-i18n="fi.addr">Street Address <span>*</span></label><input id="i_addr" placeholder="123 Main St, Apt 4B"><span class="error-msg" data-i18n="err.required">Required</span></div>
+        </div>
+      </div>
+
+      <div class="form-actions"><button class="btn-next" id="step1Next" onclick="goStep(2)" data-i18n="btn.toPayment">支払いへ →</button></div>
     </div>
 
     <!-- STEP2 支払い -->
     <div class="checkout-section" id="step2">
-      <div class="form-section-title">お支払い方法</div>
+      <div class="form-section-title" data-i18n="step2.title">お支払い方法</div>
       <div class="form-grid">
-        <div class="form-group full"><label>お支払い方法 <span>*</span></label>
-          <select id="p_method" onchange="toggleCard()"><option value="">選択してください</option><option value="card">クレジットカード</option><option value="paypay">PayPay</option><option value="deferred">後払い（コンビニ）</option><option value="bank">銀行振込</option></select>
-          <span class="error-msg">選択してください</span></div>
-        <div class="form-group full" id="cardNum" style="display:none"><label>カード番号</label><input id="p_card" placeholder="0000 0000 0000 0000" maxlength="19" oninput="this.value=this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,19)"></div>
-        <div class="form-group" id="cardExp" style="display:none"><label>有効期限</label><input id="p_exp" placeholder="MM/YY" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'').replace(/^(.{2})/,'$1/').slice(0,5)"></div>
+        <div class="form-group full">
+          <label data-i18n="f.payment">お支払い方法 <span>*</span></label>
+          <select id="p_method" onchange="toggleCard()">
+            <option value="" data-i18n="f.paymentPh">選択してください</option>
+            <option value="card" data-i18n="pay.card">クレジットカード</option>
+            <option value="paypay">PayPay</option>
+            <option value="deferred" data-i18n="pay.deferred">後払い（コンビニ）</option>
+            <option value="bank" data-i18n="pay.bank">銀行振込</option>
+          </select>
+          <span class="error-msg" data-i18n="err.select">選択してください</span>
+        </div>
+        <div class="form-group full" id="cardNum" style="display:none"><label data-i18n="pay.cardNum">カード番号</label><input id="p_card" placeholder="0000 0000 0000 0000" maxlength="19" oninput="this.value=this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,19)"></div>
+        <div class="form-group" id="cardExp" style="display:none"><label data-i18n="pay.cardExp">有効期限</label><input id="p_exp" placeholder="MM/YY" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'').replace(/^(.{2})/,'$1/').slice(0,5)"></div>
         <div class="form-group" id="cardCvc" style="display:none"><label>CVC</label><input id="p_cvc" placeholder="123" maxlength="4"></div>
       </div>
       <div class="form-actions">
-        <button class="btn-back" onclick="goStep(1)">← 戻る</button>
-        <button class="btn-next" onclick="goStep(3)">確認へ →</button>
+        <button class="btn-back" onclick="goStep(1)" data-i18n="btn.back">← 戻る</button>
+        <button class="btn-next" onclick="goStep(3)" data-i18n="btn.toConfirm">確認へ →</button>
       </div>
     </div>
 
     <!-- STEP3 確認 -->
     <div class="checkout-section" id="step3">
-      <div class="form-section-title">ご注文内容の確認</div>
+      <div class="form-section-title" data-i18n="step3.title">ご注文内容の確認</div>
       <div class="order-review-list" id="orderReview"></div>
-      <div class="review-total-box"><span style="font-size:.82rem;color:rgba(245,240,232,.6)">ご請求合計（税込）</span><span style="font-family:var(--font-en);font-size:1.4rem" id="reviewTotal"></span></div>
+      <div class="review-total-box"><span style="font-size:.82rem;color:rgba(245,240,232,.6)" data-i18n="summary.total">ご請求合計（税込）</span><span style="font-family:var(--font-en);font-size:1.4rem" id="reviewTotal"></span></div>
       <div class="review-addr-box" id="reviewAddr"></div>
       <div class="form-actions">
-        <button class="btn-back" onclick="goStep(2)">← 戻る</button>
-        <button class="btn-next" id="placeBtn" onclick="placeOrder()">注文を確定する ✓</button>
+        <button class="btn-back" onclick="goStep(2)" data-i18n="btn.back">← 戻る</button>
+        <button class="btn-next" id="placeBtn" onclick="placeOrder()" data-i18n="btn.placeOrder">注文を確定する ✓</button>
       </div>
     </div>
 
@@ -182,13 +288,13 @@
     <div class="checkout-section" id="step4">
       <div class="success-screen">
         <div class="success-icon">✅</div>
-        <h2 class="success-title">ご注文ありがとうございます</h2>
-        <p style="font-size:.83rem;color:var(--gray);line-height:1.9">ご注文を受け付けました。確認メールをお送りします。</p>
+        <h2 class="success-title" data-i18n="success.title">ご注文ありがとうございます</h2>
+        <p style="font-size:.83rem;color:var(--gray);line-height:1.9" data-i18n="success.body">ご注文を受け付けました。確認メールをお送りします。</p>
         <div class="order-num-box" id="orderNumBox"></div>
-        <p style="font-size:.75rem;color:var(--gray)">通常2〜4営業日でのお届けとなります。</p>
+        <p style="font-size:.75rem;color:var(--gray)" data-i18n="success.delivery">通常2〜4営業日でのお届けとなります。</p>
         <div style="margin-top:2rem;display:flex;gap:1rem;justify-content:center">
-          <a href="index.html" class="btn-gold">ショッピングを続ける</a>
-          <a href="mypage.html" class="btn-ghost">購入履歴を見る</a>
+          <a href="index.html" class="btn-gold" data-i18n="success.continueShopping">ショッピングを続ける</a>
+          <a href="mypage.html" class="btn-ghost" data-i18n="success.viewHistory">購入履歴を見る</a>
         </div>
       </div>
     </div>
@@ -196,31 +302,261 @@
 </div>
 
 <script>
+// ── i18n ──
+const I18N = {
+  ja: {
+    'nav.shop':             'ショップ',
+    'nav.mypage':           'マイページ',
+    'nav.cart':             'カート',
+    'hero.cartSub':         'カート',
+    'hero.checkoutSub':     'お会計',
+    'summary.title':        '注文サマリー',
+    'summary.subtotal':     '小計',
+    'summary.shipping':     '送料',
+    'summary.total':        '合計（税込）',
+    'summary.checkoutBtn':  'レジへ進む →',
+    'summary.continueBtn':  'ショッピングを続ける',
+    'summary.free':         '無料',
+    'summary.freeNote':     'あと¥%sで送料無料！',
+    'cart.empty':           'カートに商品がありません',
+    'cart.startShopping':   'ショッピングを始める',
+    'cart.delete':          '✕ 削除',
+    'step.1': '① 配送先', 'step.2': '② 支払い', 'step.3': '③ 確認', 'step.4': '④ 完了',
+    'step1.title':          'お届け先情報',
+    'step2.title':          'お支払い方法',
+    'step3.title':          'ご注文内容の確認',
+    'zone.domestic':        '国内（日本）',
+    'zone.intl':            '海外（International）',
+    'intl.note':            '⚠️ <strong>海外配送について：</strong>別途国際送料（¥3,500〜）・関税・輸入税が発生する場合があります。配送日数は通常7〜14営業日です。',
+    'intl.shipping':        '国際送料',
+    'intl.eta':             '7〜14営業日',
+    // Domestic fields
+    'f.name':   'お名前', 'f.kana': 'フリガナ', 'f.tel': '電話番号',
+    'f.zip':    '郵便番号', 'f.pref': '都道府県', 'f.prefPh': '選択してください',
+    'f.city':   '市区町村', 'f.addr': '番地・建物名',
+    'f.payment':'お支払い方法', 'f.paymentPh': '選択してください',
+    // Intl fields
+    'fi.name':    'お名前（ローマ字）', 'fi.tel': '電話番号（国番号含む）',
+    'fi.country': '国 / 地域', 'fi.countryPh': '国を選択してください',
+    'fi.state':   '州 / 省', 'fi.zip': '郵便番号 / ZIP',
+    'fi.city':    '市区町村', 'fi.addr': '番地・建物名',
+    // Payment
+    'pay.card':     'クレジットカード', 'pay.deferred': '後払い（コンビニ）', 'pay.bank': '銀行振込',
+    'pay.cardNum':  'カード番号', 'pay.cardExp': '有効期限',
+    // Errors
+    'err.required': '入力してください', 'err.select': '選択してください', 'err.fill': '必須項目を入力してください',
+    // Buttons
+    'btn.toPayment': '支払いへ →', 'btn.toConfirm': '確認へ →',
+    'btn.back': '← 戻る', 'btn.placeOrder': '注文を確定する ✓',
+    // Review
+    'review.shipTo': 'お届け先：', 'review.payment': '支払い：', 'review.processing': '処理中...',
+    // Success
+    'success.title':            'ご注文ありがとうございます',
+    'success.body':             'ご注文を受け付けました。確認メールをお送りします。',
+    'success.delivery':         '通常2〜4営業日でのお届けとなります。',
+    'success.deliveryIntl':     '海外配送：通常7〜14営業日でのお届けとなります。',
+    'success.continueShopping': 'ショッピングを続ける',
+    'success.viewHistory':      '購入履歴を見る',
+    'success.orderNum':         '注文番号 ',
+    // Pay labels
+    'payLabel': {card:'クレジットカード', paypay:'PayPay', deferred:'後払い（コンビニ）', bank:'銀行振込'},
+  },
+  en: {
+    'nav.shop':             'Shop',
+    'nav.mypage':           'My Page',
+    'nav.cart':             'Cart',
+    'hero.cartSub':         'Cart',
+    'hero.checkoutSub':     'Checkout',
+    'summary.title':        'Order Summary',
+    'summary.subtotal':     'Subtotal',
+    'summary.shipping':     'Shipping',
+    'summary.total':        'Total (tax incl.)',
+    'summary.checkoutBtn':  'Proceed to Checkout →',
+    'summary.continueBtn':  'Continue Shopping',
+    'summary.free':         'Free',
+    'summary.freeNote':     '¥%s more for free shipping!',
+    'cart.empty':           'Your cart is empty',
+    'cart.startShopping':   'Start Shopping',
+    'cart.delete':          '✕ Remove',
+    'step.1': '① Shipping', 'step.2': '② Payment', 'step.3': '③ Review', 'step.4': '④ Done',
+    'step1.title':          'Shipping Information',
+    'step2.title':          'Payment Method',
+    'step3.title':          'Order Review',
+    'zone.domestic':        'Japan (Domestic)',
+    'zone.intl':            'International',
+    'intl.note':            '⚠️ <strong>International Shipping:</strong> Additional international shipping fee (¥3,500+), customs duties, and import taxes may apply. Delivery takes 7–14 business days.',
+    'intl.shipping':        'Int\'l Shipping',
+    'intl.eta':             '7–14 business days',
+    'f.name':   'Full Name', 'f.kana': 'Furigana', 'f.tel': 'Phone Number',
+    'f.zip':    'Postal Code', 'f.pref': 'Prefecture', 'f.prefPh': 'Select prefecture',
+    'f.city':   'City', 'f.addr': 'Street Address',
+    'f.payment':'Payment Method', 'f.paymentPh': 'Select payment method',
+    'fi.name':    'Full Name', 'fi.tel': 'Phone (with country code)',
+    'fi.country': 'Country / Region', 'fi.countryPh': 'Select country',
+    'fi.state':   'State / Province', 'fi.zip': 'ZIP / Postal Code',
+    'fi.city':    'City', 'fi.addr': 'Street Address',
+    'pay.card':    'Credit Card', 'pay.deferred': 'Pay Later (Convenience Store)', 'pay.bank': 'Bank Transfer',
+    'pay.cardNum': 'Card Number', 'pay.cardExp': 'Expiry Date',
+    'err.required':'Required', 'err.select': 'Please select', 'err.fill': 'Please fill in required fields',
+    'btn.toPayment': 'Payment →', 'btn.toConfirm': 'Review →',
+    'btn.back': '← Back', 'btn.placeOrder': 'Place Order ✓',
+    'review.shipTo': 'Ship to: ', 'review.payment': 'Payment: ', 'review.processing': 'Processing...',
+    'success.title':            'Thank you for your order!',
+    'success.body':             'Your order has been received. A confirmation email will be sent.',
+    'success.delivery':         'Estimated delivery: 2–4 business days.',
+    'success.deliveryIntl':     'International delivery: 7–14 business days.',
+    'success.continueShopping': 'Continue Shopping',
+    'success.viewHistory':      'View Order History',
+    'success.orderNum':         'Order No. ',
+    'payLabel': {card:'Credit Card', paypay:'PayPay', deferred:'Pay Later', bank:'Bank Transfer'},
+  },
+  zh: {
+    'nav.shop':             '商店',
+    'nav.mypage':           '我的页面',
+    'nav.cart':             '购物车',
+    'hero.cartSub':         '购物车',
+    'hero.checkoutSub':     '结账',
+    'summary.title':        '订单摘要',
+    'summary.subtotal':     '小计',
+    'summary.shipping':     '运费',
+    'summary.total':        '合计（含税）',
+    'summary.checkoutBtn':  '前往结账 →',
+    'summary.continueBtn':  '继续购物',
+    'summary.free':         '免费',
+    'summary.freeNote':     '再购¥%s即可免运费！',
+    'cart.empty':           '购物车为空',
+    'cart.startShopping':   '开始购物',
+    'cart.delete':          '✕ 删除',
+    'step.1': '① 收货地址', 'step.2': '② 支付方式', 'step.3': '③ 确认', 'step.4': '④ 完成',
+    'step1.title':          '收货地址信息',
+    'step2.title':          '支付方式',
+    'step3.title':          '确认订单',
+    'zone.domestic':        '日本国内',
+    'zone.intl':            '海外（国际配送）',
+    'intl.note':            '⚠️ <strong>关于国际配送：</strong>需另付国际运费（¥3,500起）及可能产生的关税和进口税。配送时间通常为7〜14个工作日。',
+    'intl.shipping':        '国际运费',
+    'intl.eta':             '7〜14个工作日',
+    'f.name':   '姓名', 'f.kana': '假名', 'f.tel': '电话号码',
+    'f.zip':    '邮政编码', 'f.pref': '都道府县', 'f.prefPh': '请选择',
+    'f.city':   '市区町村', 'f.addr': '详细地址',
+    'f.payment':'支付方式', 'f.paymentPh': '请选择支付方式',
+    'fi.name':    '姓名（拼音/英文）', 'fi.tel': '电话号码（含国际区号）',
+    'fi.country': '国家 / 地区', 'fi.countryPh': '请选择国家',
+    'fi.state':   '省 / 州', 'fi.zip': '邮政编码',
+    'fi.city':    '城市', 'fi.addr': '详细地址',
+    'pay.card':    '信用卡', 'pay.deferred': '货到付款（便利店）', 'pay.bank': '银行转账',
+    'pay.cardNum': '卡号', 'pay.cardExp': '有效期',
+    'err.required':'请填写此项', 'err.select': '请选择', 'err.fill': '请填写必填项目',
+    'btn.toPayment': '前往支付 →', 'btn.toConfirm': '确认订单 →',
+    'btn.back': '← 返回', 'btn.placeOrder': '提交订单 ✓',
+    'review.shipTo': '收货地址：', 'review.payment': '支付方式：', 'review.processing': '处理中...',
+    'success.title':            '感谢您的订购！',
+    'success.body':             '您的订单已受理，确认邮件将发送至您的邮箱。',
+    'success.delivery':         '预计送达时间：2〜4个工作日。',
+    'success.deliveryIntl':     '国际配送预计送达：7〜14个工作日。',
+    'success.continueShopping': '继续购物',
+    'success.viewHistory':      '查看订单记录',
+    'success.orderNum':         '订单号 ',
+    'payLabel': {card:'信用卡', paypay:'PayPay', deferred:'货到付款', bank:'银行转账'},
+  }
+};
+
+let currentLang = localStorage.getItem('fw_lang') || 'ja';
+let currentZone = 'domestic'; // 'domestic' | 'intl'
+
+function t(key, ...args) {
+  let val = I18N[currentLang]?.[key] ?? I18N['ja'][key] ?? key;
+  args.forEach(a => { val = String(val).replace('%s', a); });
+  return val;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('fw_lang', lang);
+  document.documentElement.lang = lang;
+  ['langJP','langEN','langZH'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.classList.toggle('active',
+      (id==='langJP'&&lang==='ja')||(id==='langEN'&&lang==='en')||(id==='langZH'&&lang==='zh'));
+  });
+  // translate static elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = I18N[lang]?.[key];
+    if (val !== undefined) el.innerHTML = val;
+  });
+  // Update select option placeholders
+  const prefSel = document.getElementById('s_pref');
+  if (prefSel) prefSel.options[0].textContent = t('f.prefPh');
+  const pmSel = document.getElementById('p_method');
+  if (pmSel) {
+    pmSel.options[0].textContent = t('f.paymentPh');
+    pmSel.options[1] && (pmSel.options[1].textContent = t('pay.card'));
+    pmSel.options[3] && (pmSel.options[3].textContent = t('pay.deferred'));
+    pmSel.options[4] && (pmSel.options[4].textContent = t('pay.bank'));
+  }
+  const ctySel = document.getElementById('i_country');
+  if (ctySel) ctySel.options[0].textContent = t('fi.countryPh');
+  // re-render cart
+  const titles = {ja:'カート — FAIRWAY', en:'Cart — FAIRWAY', zh:'购物车 — FAIRWAY'};
+  document.title = titles[lang] || titles.ja;
+  renderCart();
+}
+
+// ── CSS inject ──
 const styleEl = document.createElement('style');
 styleEl.textContent = COMMON_CSS;
 document.head.appendChild(styleEl);
 
 let currentStep = 1;
 
+// ── SHIPPING ZONE ──
+function setZone(zone) {
+  currentZone = zone;
+  document.getElementById('zoneDomestic').classList.toggle('active', zone==='domestic');
+  document.getElementById('zoneIntl').classList.toggle('active', zone==='intl');
+  document.getElementById('formDomestic').style.display = zone==='domestic' ? '' : 'none';
+  document.getElementById('formIntl').style.display = zone==='intl' ? '' : 'none';
+  document.getElementById('intlNote').style.display = zone==='intl' ? '' : 'none';
+  renderCart(); // update shipping fee display
+}
+
+// ── CART ──
+function getShipping(sub) {
+  if (sub === 0) return 0;
+  if (currentZone === 'intl') return 3500;
+  return sub >= 10000 ? 0 : 880;
+}
+
 function renderCart() {
   const sub = getCartTotal();
-  const cnt = getCartCount();
-  const ship = sub >= 10000 ? 0 : sub === 0 ? 0 : 880;
+  const ship = getShipping(sub);
   document.getElementById('subtotal').textContent = `¥${sub.toLocaleString()}`;
-  document.getElementById('shipping').textContent = ship === 0 && sub > 0 ? '無料' : ship === 0 ? '¥0' : `¥${ship.toLocaleString()}`;
+
+  const shipEl = document.getElementById('shipping');
+  if (currentZone === 'intl' && sub > 0) {
+    shipEl.textContent = `¥${ship.toLocaleString()} (${t('intl.eta')})`;
+  } else {
+    shipEl.textContent = ship === 0 && sub > 0 ? t('summary.free') : ship === 0 ? '¥0' : `¥${ship.toLocaleString()}`;
+  }
   document.getElementById('cartTotal').textContent = `¥${(sub + ship).toLocaleString()}`;
   document.getElementById('checkoutBtn').disabled = cart.length === 0;
+
   const note = document.getElementById('freeShipNote');
-  if (sub > 0 && sub < 10000) { note.textContent = `あと¥${(10000-sub).toLocaleString()}で送料無料！`; note.style.display=''; }
-  else note.style.display = 'none';
+  if (currentZone === 'domestic' && sub > 0 && sub < 10000) {
+    note.innerHTML = t('summary.freeNote', (10000-sub).toLocaleString());
+    note.style.display = '';
+  } else {
+    note.style.display = 'none';
+  }
   updateCartBadge();
 
   const wrap = document.getElementById('cartItemsWrap');
   if (!cart.length) {
-    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><p>カートに商品がありません</p><a href="index.html" class="btn-gold">ショッピングを始める</a></div>`;
+    wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><p>${t('cart.empty')}</p><a href="index.html" class="btn-gold">${t('cart.startShopping')}</a></div>`;
     return;
   }
-  wrap.innerHTML = `<div class="cart-items-wrap">` + cart.map(i=>`
+  wrap.innerHTML = `<div class="cart-items-wrap">` + cart.map(i => `
     <div class="cart-row">
       <div class="ci-img">${i.icon}</div>
       <div class="ci-info">
@@ -234,7 +570,7 @@ function renderCart() {
       </div>
       <div class="ci-right">
         <div class="ci-price">¥${(i.price*i.qty).toLocaleString()}</div>
-        <button class="ci-del" onclick="removeItem(${i.id})">✕ 削除</button>
+        <button class="ci-del" onclick="removeItem(${i.id})">${t('cart.delete')}</button>
       </div>
     </div>`).join('') + `</div>`;
 }
@@ -254,31 +590,61 @@ function removeItem(id) {
 function startCheckout() {
   document.getElementById('cartView').style.display = 'none';
   document.getElementById('checkoutView').style.display = 'block';
-  // プロフィールから住所を自動入力
+  // Autofill from profile
   if (currentUser) {
     const set = (id,v) => { const el=document.getElementById(id); if(el&&v) el.value=v; };
-    set('s_name', currentUser.name); set('s_kana', currentUser.kana);
-    set('s_tel', currentUser.phone); set('s_zip', currentUser.zip);
-    set('s_pref', currentUser.pref); set('s_city', currentUser.city);
+    set('s_name', currentUser.name);
+    set('s_kana', currentUser.kana);
+    set('s_tel',  currentUser.phone);
+    set('s_zip',  currentUser.zip);
+    set('s_pref', currentUser.pref);
+    set('s_city', currentUser.city);
     set('s_addr', currentUser.addr);
   }
+  // Update lang-dependent content in form
+  setLang(currentLang);
 }
 
 function toggleCard() {
   const isCard = document.getElementById('p_method').value === 'card';
-  ['cardNum','cardExp','cardCvc'].forEach(id => document.getElementById(id).style.display = isCard?'':'none');
+  ['cardNum','cardExp','cardCvc'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = isCard ? '' : 'none';
+  });
 }
 
 function validateStep(step) {
-  const req = { 1:['s_name','s_kana','s_tel','s_zip','s_pref','s_city','s_addr'], 2:['p_method'] };
-  if (!req[step]) return true;
-  let ok = true;
-  req[step].forEach(id => {
-    const el=document.getElementById(id); const g=el.closest('.form-group');
-    if (!el.value.trim()) { g.classList.add('has-error'); ok=false; } else g.classList.remove('has-error');
-  });
-  if (!ok) showToast('必須項目を入力してください');
-  return ok;
+  if (step === 1) {
+    if (currentZone === 'domestic') {
+      const fields = ['s_name','s_kana','s_tel','s_zip','s_pref','s_city','s_addr'];
+      let ok = true;
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        const g = el?.closest('.form-group');
+        if (!el?.value.trim()) { g?.classList.add('has-error'); ok=false; } else g?.classList.remove('has-error');
+      });
+      if (!ok) showToast(t('err.fill'));
+      return ok;
+    } else {
+      const fields = ['i_name','i_tel','i_country','i_zip','i_city','i_addr'];
+      let ok = true;
+      fields.forEach(id => {
+        const el = document.getElementById(id);
+        const g = el?.closest('.form-group');
+        if (!el?.value.trim()) { g?.classList.add('has-error'); ok=false; } else g?.classList.remove('has-error');
+      });
+      if (!ok) showToast(t('err.fill'));
+      return ok;
+    }
+  }
+  if (step === 2) {
+    const el = document.getElementById('p_method');
+    const g = el?.closest('.form-group');
+    if (!el?.value) { g?.classList.add('has-error'); showToast(t('err.fill')); return false; }
+    g?.classList.remove('has-error');
+    return true;
+  }
+  return true;
 }
 
 function goStep(n) {
@@ -286,54 +652,93 @@ function goStep(n) {
   if (n === 3) buildReview();
   for (let i=1;i<=4;i++) {
     document.getElementById(`step${i}`).classList.toggle('active', i===n);
-    const el=document.getElementById(`si${i}`);
-    el.className='step'+(i===n?' active':i<n?' done':'');
+    const el = document.getElementById(`si${i}`);
+    el.className = 'step' + (i===n?' active':i<n?' done':'');
   }
   currentStep = n;
   window.scrollTo(0,0);
 }
 
+function getShippingAddr() {
+  if (currentZone === 'domestic') {
+    return `${document.getElementById('s_pref')?.value||''}${document.getElementById('s_city')?.value||''}${document.getElementById('s_addr')?.value||''}`;
+  } else {
+    const country = document.getElementById('i_country');
+    const countryName = country?.options[country.selectedIndex]?.text || '';
+    return `${countryName} ${document.getElementById('i_state')?.value||''} ${document.getElementById('i_city')?.value||''} ${document.getElementById('i_addr')?.value||''} ${document.getElementById('i_zip')?.value||''}`.trim();
+  }
+}
+
 function buildReview() {
-  const sub=getCartTotal(); const ship=sub>=10000?0:880;
+  const sub = getCartTotal();
+  const ship = getShipping(sub);
   document.getElementById('orderReview').innerHTML = cart.map(i=>`
-    <div class="or-item"><div class="or-icon">${i.icon}</div>
-    <div class="or-info"><div class="or-name">${i.name}</div><div class="or-qty">${i.brand} · ${i.qty}点</div></div>
-    <div class="or-price">¥${(i.price*i.qty).toLocaleString()}</div></div>`).join('');
-  document.getElementById('reviewTotal').textContent=`¥${(sub+ship).toLocaleString()}`;
-  const mmap={card:'クレジットカード',paypay:'PayPay',deferred:'後払い',bank:'銀行振込'};
-  document.getElementById('reviewAddr').innerHTML=`
-    <strong style="color:var(--cream)">お届け先</strong><br>
-    ${document.getElementById('s_name').value}（${document.getElementById('s_kana').value}）<br>
-    〒${document.getElementById('s_zip').value} ${document.getElementById('s_pref').value}${document.getElementById('s_city').value}${document.getElementById('s_addr').value}<br>
-    TEL: ${document.getElementById('s_tel').value} ／ 支払い: ${mmap[document.getElementById('p_method').value]||''}`;
+    <div class="or-item">
+      <div class="or-icon">${i.icon}</div>
+      <div class="or-info"><div class="or-name">${i.name}</div><div class="or-qty">${i.brand} · ${i.qty}</div></div>
+      <div class="or-price">¥${(i.price*i.qty).toLocaleString()}</div>
+    </div>`).join('');
+  document.getElementById('reviewTotal').textContent = `¥${(sub+ship).toLocaleString()}`;
+  const pmVal = document.getElementById('p_method').value;
+  const payLabels = t('payLabel');
+  const addrDisplay = currentZone === 'domestic'
+    ? `${document.getElementById('s_name')?.value||''}（${document.getElementById('s_kana')?.value||''}）<br>〒${document.getElementById('s_zip')?.value||''} ${document.getElementById('s_pref')?.value||''}${document.getElementById('s_city')?.value||''}${document.getElementById('s_addr')?.value||''}<br>TEL: ${document.getElementById('s_tel')?.value||''}`
+    : `${document.getElementById('i_name')?.value||''}<br>${document.getElementById('i_addr')?.value||''}, ${document.getElementById('i_city')?.value||''} ${document.getElementById('i_state')?.value||''} ${document.getElementById('i_zip')?.value||''}<br>${document.getElementById('i_country')?.options[document.getElementById('i_country').selectedIndex]?.text||''}<br>TEL: ${document.getElementById('i_tel')?.value||''}`;
+
+  const shipInfo = currentZone === 'intl'
+    ? `<br><span style="color:var(--gold-lt);font-size:.72rem">🌏 ${t('intl.shipping')} ¥${ship.toLocaleString()} · ${t('intl.eta')}</span>`
+    : '';
+
+  document.getElementById('reviewAddr').innerHTML = `
+    <strong style="color:var(--cream)">${t('review.shipTo')}</strong><br>${addrDisplay}${shipInfo}
+    <br><br><strong style="color:var(--cream)">${t('review.payment')}</strong> ${payLabels[pmVal]||pmVal}`;
 }
 
 async function placeOrder() {
-  const btn=document.getElementById('placeBtn');
-  btn.disabled=true; btn.textContent='処理中...';
-  const sub=getCartTotal(); const ship=sub>=10000?0:880;
-  const addr=`${document.getElementById('s_pref').value}${document.getElementById('s_city').value}${document.getElementById('s_addr').value}`;
-  const items=cart.map(i=>({id:i.id,icon:i.icon,name:i.name,brand:i.brand,qty:i.qty,price:i.price}));
+  const btn = document.getElementById('placeBtn');
+  btn.disabled = true; btn.textContent = t('review.processing');
+  const sub = getCartTotal();
+  const ship = getShipping(sub);
+  const addr = getShippingAddr();
+  const items = cart.map(i=>({id:i.id,icon:i.icon,name:i.name,brand:i.brand,qty:i.qty,price:i.price}));
   try {
     let orderNum;
+    const countryCode = currentZone === 'intl' ? (document.getElementById('i_country')?.value || '') : '';
     if (token) {
-      const data=await api('POST','/api/orders',{items,total:sub+ship,shippingAddress:addr,paymentMethod:document.getElementById('p_method').value});
-      orderNum=data.order_number;
+      const data = await api('POST','/api/orders',{
+        items, total: sub+ship,
+        shippingAddress: addr,
+        paymentMethod: document.getElementById('p_method').value,
+        shippingZone: currentZone,
+        countryCode,
+      });
+      orderNum = data.order_number;
     } else {
-      orderNum=`FW-${Date.now().toString().slice(-8)}`;
+      orderNum = `FW-${Date.now().toString().slice(-8)}`;
     }
-    document.getElementById('orderNumBox').textContent=`注文番号 ${orderNum}`;
+    document.getElementById('orderNumBox').textContent = t('success.orderNum') + orderNum;
+    // Update success delivery text for intl
+    const deliveryEl = document.querySelector('[data-i18n="success.delivery"]');
+    if (deliveryEl && currentZone === 'intl') deliveryEl.textContent = t('success.deliveryIntl');
     goStep(4);
     cart=[]; saveCartLocal(); syncCartServer(); updateCartBadge();
   } catch(e) {
-    showToast('注文処理に失敗しました: '+e.message);
-    btn.disabled=false; btn.textContent='注文を確定する ✓';
+    showToast(`${t('review.processing').replace('...', '')} Error: ` + e.message);
+    btn.disabled=false; btn.textContent = t('btn.placeOrder');
   }
 }
 
 async function init() {
-  const styleEl=document.createElement('style'); styleEl.textContent=COMMON_CSS; document.head.appendChild(styleEl);
   await restoreSession();
+  // Apply saved language
+  document.getElementById('langJP').classList.toggle('active', currentLang==='ja');
+  document.getElementById('langEN').classList.toggle('active', currentLang==='en');
+  document.getElementById('langZH').classList.toggle('active', currentLang==='zh');
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = I18N[currentLang]?.[key];
+    if (val !== undefined) el.innerHTML = val;
+  });
   renderCart();
 }
 init();

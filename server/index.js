@@ -1,6 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { Pool } = require('pg');
@@ -16,10 +17,11 @@ const pool = new Pool({
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY || 'sk_test_placeholder');
 
-// Webhook は raw body 必須なので先に定義
 app.post('/api/payments/webhook', express.raw({ type: 'application/json' }), handleWebhook);
-app.use(cors({ origin: process.env.FRONTEND_URL || '*', credentials: true }));
+app.use(cors({ origin: '*', credentials: true }));
 app.use(express.json());
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 const JWT_SECRET = process.env.JWT_SECRET || 'fairway-dev-secret-change-in-prod';
 function signToken(userId) { return jwt.sign({ userId }, JWT_SECRET, { expiresIn: '30d' }); }
@@ -30,7 +32,28 @@ function auth(req, res, next) {
   catch { res.status(401).json({ error: 'トークンが無効です' }); }
 }
 
-// ── DB INIT ──
+// ── 送料計算ユーティリティ ──
+const DOMESTIC_FREE_THRESHOLD = 10000;
+const DOMESTIC_SHIPPING       = 880;
+const INTL_SHIPPING_BASE      = 3500;
+
+// 国コードごとの追加送料（重量・距離による調整）
+const INTL_SHIPPING_SURCHARGE = {
+  US: 1000, CA: 1000, GB: 500, DE: 500, FR: 500,
+  IT: 500,  ES: 500,  NL: 500, SE: 500, CH: 500,
+  AU: 500,  NZ: 500,  IN: 500,
+  // アジア・中東は基本料金のみ
+};
+
+function calcShipping({ subtotal, shippingZone, countryCode }) {
+  if (shippingZone === 'intl') {
+    const surcharge = INTL_SHIPPING_SURCHARGE[countryCode] || 0;
+    return INTL_SHIPPING_BASE + surcharge;
+  }
+  // domestic
+  return subtotal >= DOMESTIC_FREE_THRESHOLD ? 0 : DOMESTIC_SHIPPING;
+}
+
 async function initDB() {
   await pool.query(`
     CREATE TABLE IF NOT EXISTS users (
@@ -59,6 +82,9 @@ async function initDB() {
       payment_status TEXT NOT NULL DEFAULT 'unpaid',
       payment_intent_id TEXT,
       total INTEGER NOT NULL,
+      shipping_fee INTEGER NOT NULL DEFAULT 0,
+      shipping_zone TEXT NOT NULL DEFAULT 'domestic',
+      shipping_country TEXT,
       shipping_address TEXT,
       payment_method TEXT,
       items JSONB NOT NULL,
@@ -98,6 +124,11 @@ async function initDB() {
       is_default BOOLEAN NOT NULL DEFAULT false,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+
+    -- 既存テーブルへのカラム追加（初回以降のマイグレーション）
+    ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_fee INTEGER NOT NULL DEFAULT 0;
+    ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_zone TEXT NOT NULL DEFAULT 'domestic';
+    ALTER TABLE orders ADD COLUMN IF NOT EXISTS shipping_country TEXT;
   `);
   console.log('✅ DB initialized');
 }
@@ -111,7 +142,6 @@ app.post('/api/auth/register', async (req, res) => {
   if (password.length < 6) return res.status(400).json({ error: 'パスワードは6文字以上で入力してください' });
   try {
     const hash = await bcrypt.hash(password, 10);
-    // Stripe Customer作成（Stripeキーが設定されている場合のみ）
     let stripeCustomerId = null;
     if (process.env.STRIPE_SECRET_KEY && !process.env.STRIPE_SECRET_KEY.includes('placeholder')) {
       try {
@@ -196,18 +226,43 @@ app.get('/api/orders', auth, async (req, res) => {
   res.json(r.rows);
 });
 
-// Stripe不要の通常注文（ローカル開発・後払い・銀行振込用）
+// 送料見積もりAPI（フロントが事前確認に使用）
+app.post('/api/shipping/estimate', async (req, res) => {
+  const { subtotal, shippingZone, countryCode } = req.body;
+  if (typeof subtotal !== 'number') return res.status(400).json({ error: '不正なデータ' });
+  const fee = calcShipping({ subtotal, shippingZone: shippingZone || 'domestic', countryCode });
+  res.json({ shippingFee: fee, total: subtotal + fee });
+});
+
+// 通常注文（Stripe不要・後払い・銀行振込など）
 app.post('/api/orders', auth, async (req, res) => {
-  const { items, total, shippingAddress, paymentMethod } = req.body;
+  const { items, total, shippingAddress, paymentMethod, shippingZone, countryCode } = req.body;
   if (!items || !total) return res.status(400).json({ error: '注文データが不正です' });
+
+  // サーバー側でも送料を再計算して検証
+  const PRICES = { 1:88000,2:132000,3:7800,4:14800,5:52000,6:3800,7:42000,8:8200,9:12800,10:68000,11:76000,12:38000 };
+  const subtotal = items.reduce((s, i) => s + (PRICES[i.id] || 0) * i.qty, 0);
+  const shippingFee = calcShipping({ subtotal, shippingZone: shippingZone || 'domestic', countryCode });
+  const expectedTotal = subtotal + shippingFee;
+
+  // 金額の整合性チェック（±100円の誤差は許容）
+  if (Math.abs(total - expectedTotal) > 100) {
+    console.warn(`合計金額不一致: received=${total}, expected=${expectedTotal}`);
+    return res.status(400).json({ error: '合計金額が一致しません。ページを更新してお試しください。' });
+  }
+
   const orderNumber = `FW-${Date.now().toString().slice(-8)}`;
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
     const r = await client.query(
-      `INSERT INTO orders (user_id, order_number, status, payment_status, payment_intent_id, total, shipping_address, payment_method, items)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
-      [req.userId, orderNumber, 'processing', 'paid', null, total, shippingAddress, paymentMethod, JSON.stringify(items)]
+      `INSERT INTO orders
+        (user_id, order_number, status, payment_status, payment_intent_id,
+         total, shipping_fee, shipping_zone, shipping_country, shipping_address, payment_method, items)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING *`,
+      [req.userId, orderNumber, 'processing', 'paid', null,
+       total, shippingFee, shippingZone || 'domestic', countryCode || null,
+       shippingAddress, paymentMethod, JSON.stringify(items)]
     );
     await client.query('DELETE FROM carts WHERE user_id=$1', [req.userId]);
     await client.query('COMMIT');
@@ -252,7 +307,6 @@ app.get('/api/reviews', auth, async (req, res) => {
 });
 
 app.get('/api/reviews/product/:productId', async (req, res) => {
-  // 認証不要 — 商品ページ用
   const r = await pool.query(
     `SELECT r.id, r.rating, r.title, r.body, r.created_at, u.name AS user_name
      FROM reviews r JOIN users u ON r.user_id=u.id
@@ -348,29 +402,53 @@ app.patch('/api/addresses/:id/set-default', auth, async (req, res) => {
 // STRIPE PAYMENTS
 // ════════════════════════════════════════
 app.post('/api/payments/create-intent', auth, async (req, res) => {
-  const { items, shippingAddress } = req.body;
+  const { items, shippingAddress, shippingZone, countryCode } = req.body;
   if (!items?.length) return res.status(400).json({ error: 'カートが空です' });
+
   const PRICES = { 1:88000,2:132000,3:7800,4:14800,5:52000,6:3800,7:42000,8:8200,9:12800,10:68000,11:76000,12:38000 };
   const subtotal = items.reduce((s, i) => s + (PRICES[i.product_id] || 0) * i.qty, 0);
   if (subtotal <= 0) return res.status(400).json({ error: '金額の計算に失敗しました' });
-  const shipping = subtotal >= 10000 ? 0 : 880;
+
+  // サーバー側で送料を計算（フロントの値を信用しない）
+  const shipping = calcShipping({ subtotal, shippingZone: shippingZone || 'domestic', countryCode });
   const total = subtotal + shipping;
+
   try {
     const userRes = await pool.query('SELECT stripe_customer_id FROM users WHERE id=$1', [req.userId]);
     const customerId = userRes.rows[0]?.stripe_customer_id;
     const intent = await stripe.paymentIntents.create({
-      amount: total, currency: 'jpy',
+      amount: total,
+      currency: 'jpy',
       customer: customerId || undefined,
       payment_method_types: ['card'],
-      metadata: { user_id: String(req.userId), shipping_address: shippingAddress || '' },
-      description: `FAIRWAY注文 - ユーザー${req.userId}`,
+      metadata: {
+        user_id:          String(req.userId),
+        shipping_zone:    shippingZone || 'domestic',
+        country_code:     countryCode || '',
+        shipping_address: shippingAddress || '',
+        shipping_fee:     String(shipping),
+      },
+      description: `FAIRWAY注文 - ユーザー${req.userId}${shippingZone === 'intl' ? ` (${countryCode})` : ''}`,
     });
+
     const orderNumber = `FW-${Date.now().toString().slice(-8)}`;
     await pool.query(
-      'INSERT INTO orders (user_id,order_number,status,payment_status,payment_intent_id,total,shipping_address,payment_method,items) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
-      [req.userId, orderNumber, 'pending_payment', 'unpaid', intent.id, total, shippingAddress || '', 'card', JSON.stringify(items)]
+      `INSERT INTO orders
+        (user_id, order_number, status, payment_status, payment_intent_id,
+         total, shipping_fee, shipping_zone, shipping_country, shipping_address, payment_method, items)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12)`,
+      [req.userId, orderNumber, 'pending_payment', 'unpaid', intent.id,
+       total, shipping, shippingZone || 'domestic', countryCode || null,
+       shippingAddress || '', 'card', JSON.stringify(items)]
     );
-    res.json({ clientSecret: intent.client_secret, orderNumber, total, shipping });
+
+    res.json({
+      clientSecret: intent.client_secret,
+      orderNumber,
+      total,
+      shipping,
+      subtotal,
+    });
   } catch (e) {
     console.error('Stripe error:', e);
     res.status(500).json({ error: '決済の初期化に失敗しました: ' + e.message });
@@ -410,16 +488,28 @@ async function handleWebhook(req, res) {
   catch (e) { return res.status(400).send(`Webhook Error: ${e.message}`); }
   switch (event.type) {
     case 'payment_intent.succeeded':
-      await pool.query("UPDATE orders SET status='processing',payment_status='paid' WHERE payment_intent_id=$1 AND payment_status='unpaid'", [event.data.object.id]).catch(console.error);
+      await pool.query(
+        "UPDATE orders SET status='processing',payment_status='paid' WHERE payment_intent_id=$1 AND payment_status='unpaid'",
+        [event.data.object.id]
+      ).catch(console.error);
       break;
     case 'payment_intent.payment_failed':
-      await pool.query("UPDATE orders SET payment_status='failed' WHERE payment_intent_id=$1", [event.data.object.id]).catch(console.error);
+      await pool.query(
+        "UPDATE orders SET payment_status='failed' WHERE payment_intent_id=$1",
+        [event.data.object.id]
+      ).catch(console.error);
       break;
   }
   res.json({ received: true });
 }
 
 app.get('/health', (_, res) => res.json({ status: 'ok', time: new Date().toISOString() }));
+
+app.get('*', (req, res) => {
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+  }
+});
 
 initDB()
   .then(() => app.listen(PORT, () => console.log(`🚀 FAIRWAY API on port ${PORT}`)))

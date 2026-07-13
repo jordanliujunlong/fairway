@@ -66,6 +66,12 @@
   .prod-price small{font-size:.65rem;color:var(--gray);font-family:var(--font-ja)}
   .add-cart-btn{width:38px;height:38px;background:var(--gold);border:none;color:var(--black);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:700}
   .add-cart-btn:hover{background:var(--gold-lt);transform:scale(1.1)}
+  /* Language Toggle */
+  .lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(201,168,76,.35);overflow:hidden;flex-shrink:0}
+  .lang-btn{padding:.4rem .7rem;background:none;border:none;color:rgba(245,240,232,.45);font-family:var(--font-ja);font-size:.7rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;line-height:1}
+  .lang-btn.active{background:var(--gold);color:var(--black);font-weight:700}
+  .lang-btn:not(.active):hover{color:var(--gold);background:rgba(201,168,76,.08)}
+  .lang-divider{width:1px;height:16px;background:rgba(201,168,76,.3);flex-shrink:0}
   /* Product Detail Modal */
   .pd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:250;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
   .pd-overlay.open{opacity:1;pointer-events:all}
@@ -145,16 +151,24 @@
 <nav>
   <a href="index.html" class="nav-logo">FAIR<span>WAY</span></a>
   <ul class="nav-links">
-    <li><a href="#category">カテゴリ</a></li>
-    <li><a href="#products">商品一覧</a></li>
-    <li><a href="#about">ブランド</a></li>
+    <li><a href="#category" data-i18n="nav.category">カテゴリ</a></li>
+    <li><a href="#products" data-i18n="nav.products">商品一覧</a></li>
+    <li><a href="#about" data-i18n="nav.about">ブランド</a></li>
   </ul>
   <div class="nav-right">
+    <!-- Language Toggle -->
+    <div class="lang-toggle" id="langToggle">
+      <button class="lang-btn active" id="langJP" onclick="setLang('ja')">JP</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" id="langEN" onclick="setLang('en')">EN</button>
+      <div class="lang-divider"></div>
+      <button class="lang-btn" id="langZH" onclick="setLang('zh')">中文</button>
+    </div>
     <a href="mypage.html" class="nav-btn" id="mypageNavBtn">
-      <span class="user-dot" id="userDot"></span>マイページ
+      <span class="user-dot" id="userDot"></span><span data-i18n="nav.mypage">マイページ</span>
     </a>
     <a href="cart.html" class="nav-btn">
-      🛒 カート <span class="cart-badge">0</span>
+      🛒 <span data-i18n="nav.cart">カート</span> <span class="cart-badge">0</span>
     </a>
   </div>
 </nav>
@@ -166,53 +180,53 @@
   <div class="hero-content">
     <p class="hero-eyebrow">Premium Golf Equipment</p>
     <h1 class="hero-title">YOUR<br><em>Perfect</em><br>GAME</h1>
-    <p class="hero-sub">プロ監修の厳選ゴルフ用品を。クラブ・ウェア・用品まで500点以上を取り揃えた日本最高峰のゴルフストア。</p>
+    <p class="hero-sub" data-i18n="hero.sub">プロ監修の厳選ゴルフ用品を。クラブ・ウェア・用品まで500点以上を取り揃えた日本最高峰のゴルフストア。</p>
     <div class="hero-cta">
-      <a href="#products" class="btn-gold">今すぐショッピング →</a>
-      <a href="#category" class="btn-ghost">カテゴリを見る</a>
+      <a href="#products" class="btn-gold" data-i18n="hero.cta1">今すぐショッピング →</a>
+      <a href="#category" class="btn-ghost" data-i18n="hero.cta2">カテゴリを見る</a>
     </div>
   </div>
   <div class="hero-deco">
     <span class="hero-deco-num">500+</span>
     <div style="display:flex;flex-direction:column;gap:.5rem">
-      <div class="hero-deco-item"><span>🏌️</span><span>クラブ · ボール · ウェア</span></div>
-      <div class="hero-deco-item"><span>🚚</span><span>¥10,000以上 送料無料</span></div>
-      <div class="hero-deco-item"><span>🏆</span><span>プロ監修フィッティング</span></div>
+      <div class="hero-deco-item"><span>🏌️</span><span data-i18n="hero.deco1">クラブ · ボール · ウェア</span></div>
+      <div class="hero-deco-item"><span>🚚</span><span data-i18n="hero.deco2">¥10,000以上 送料無料</span></div>
+      <div class="hero-deco-item"><span>🏆</span><span data-i18n="hero.deco3">プロ監修フィッティング</span></div>
     </div>
   </div>
 </section>
 
-<div class="marquee-wrap"><div class="marquee-track">
-  <span class="marquee-item">¥10,000以上 送料無料</span><span class="marquee-item">30日間返品保証</span><span class="marquee-item">プロフィッティング対応</span><span class="marquee-item">500点以上の厳選アイテム</span><span class="marquee-item">NEW ARRIVALS</span>
-  <span class="marquee-item">¥10,000以上 送料無料</span><span class="marquee-item">30日間返品保証</span><span class="marquee-item">プロフィッティング対応</span><span class="marquee-item">500点以上の厳選アイテム</span><span class="marquee-item">NEW ARRIVALS</span>
+<div class="marquee-wrap"><div class="marquee-track" id="marqueeTrack">
+  <span class="marquee-item" data-i18n="marquee.1">¥10,000以上 送料無料</span><span class="marquee-item" data-i18n="marquee.2">30日間返品保証</span><span class="marquee-item" data-i18n="marquee.3">プロフィッティング対応</span><span class="marquee-item" data-i18n="marquee.4">500点以上の厳選アイテム</span><span class="marquee-item">NEW ARRIVALS</span>
+  <span class="marquee-item" data-i18n="marquee.1">¥10,000以上 送料無料</span><span class="marquee-item" data-i18n="marquee.2">30日間返品保証</span><span class="marquee-item" data-i18n="marquee.3">プロフィッティング対応</span><span class="marquee-item" data-i18n="marquee.4">500点以上の厳選アイテム</span><span class="marquee-item">NEW ARRIVALS</span>
 </div></div>
 
 <!-- CATEGORY -->
 <section class="section" id="category">
   <p class="section-eyebrow">Shop by Category</p>
-  <h2 class="section-title">カテゴリ<em>から探す</em></h2>
+  <h2 class="section-title" data-i18n="cat.title">カテゴリ<em>から探す</em></h2>
   <div class="rule"></div>
   <div class="cat-grid">
-    <div class="cat-card" onclick="filterAndScroll('club')"><div class="cat-emoji">🏌️</div><div class="cat-line"></div><div class="cat-name">CLUBS</div><div class="cat-count">ゴルフクラブ · 128点</div></div>
-    <div class="cat-card" onclick="filterAndScroll('ball')"><div class="cat-emoji">⛳</div><div class="cat-line"></div><div class="cat-name">BALLS</div><div class="cat-count">ゴルフボール · 64点</div></div>
-    <div class="cat-card" onclick="filterAndScroll('wear')"><div class="cat-emoji">👕</div><div class="cat-line"></div><div class="cat-name">WEAR</div><div class="cat-count">ウェア · 210点</div></div>
-    <div class="cat-card" onclick="filterAndScroll('bag')"><div class="cat-emoji">🎒</div><div class="cat-line"></div><div class="cat-name">BAGS</div><div class="cat-count">バッグ · 45点</div></div>
-    <div class="cat-card" onclick="filterAndScroll('goods')"><div class="cat-emoji">🧤</div><div class="cat-line"></div><div class="cat-name">GOODS</div><div class="cat-count">小物・用品 · 98点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('club')"><div class="cat-emoji">🏌️</div><div class="cat-line"></div><div class="cat-name">CLUBS</div><div class="cat-count" data-i18n="cat.clubs">ゴルフクラブ · 128点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('ball')"><div class="cat-emoji">⛳</div><div class="cat-line"></div><div class="cat-name">BALLS</div><div class="cat-count" data-i18n="cat.balls">ゴルフボール · 64点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('wear')"><div class="cat-emoji">👕</div><div class="cat-line"></div><div class="cat-name">WEAR</div><div class="cat-count" data-i18n="cat.wear">ウェア · 210点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('bag')"><div class="cat-emoji">🎒</div><div class="cat-line"></div><div class="cat-name">BAGS</div><div class="cat-count" data-i18n="cat.bags">バッグ · 45点</div></div>
+    <div class="cat-card" onclick="filterAndScroll('goods')"><div class="cat-emoji">🧤</div><div class="cat-line"></div><div class="cat-name">GOODS</div><div class="cat-count" data-i18n="cat.goods">小物・用品 · 98点</div></div>
   </div>
 </section>
 
 <!-- PRODUCTS -->
 <section class="section products-bg" id="products">
   <p class="section-eyebrow">Featured Products</p>
-  <h2 class="section-title">おすすめ<em>商品</em></h2>
+  <h2 class="section-title" data-i18n="products.title">おすすめ<em>商品</em></h2>
   <div class="rule"></div>
-  <div class="filter-row">
-    <button class="filter-btn active" onclick="setFilter('all',this)">すべて</button>
-    <button class="filter-btn" onclick="setFilter('club',this)">クラブ</button>
-    <button class="filter-btn" onclick="setFilter('ball',this)">ボール</button>
-    <button class="filter-btn" onclick="setFilter('wear',this)">ウェア</button>
-    <button class="filter-btn" onclick="setFilter('bag',this)">バッグ</button>
-    <button class="filter-btn" onclick="setFilter('goods',this)">小物</button>
+  <div class="filter-row" id="filterRow">
+    <button class="filter-btn active" onclick="setFilter('all',this)" data-i18n="filter.all">すべて</button>
+    <button class="filter-btn" onclick="setFilter('club',this)" data-i18n="filter.club">クラブ</button>
+    <button class="filter-btn" onclick="setFilter('ball',this)" data-i18n="filter.ball">ボール</button>
+    <button class="filter-btn" onclick="setFilter('wear',this)" data-i18n="filter.wear">ウェア</button>
+    <button class="filter-btn" onclick="setFilter('bag',this)" data-i18n="filter.bag">バッグ</button>
+    <button class="filter-btn" onclick="setFilter('goods',this)" data-i18n="filter.goods">小物</button>
   </div>
   <div class="products-grid" id="productsGrid"></div>
 </section>
@@ -222,7 +236,7 @@
   <div>
     <p class="section-eyebrow">About Fairway</p>
     <h2 class="brand-sub">Crafted for the<br>Passionate Golfer</h2>
-    <p class="brand-text">FAIRWAYは、ゴルフへの情熱を持つすべての方のために生まれたプレミアムゴルフストアです。世界のトップブランドから厳選した500点以上の商品を、最高のサービスとともにお届けします。</p>
+    <p class="brand-text" data-i18n="brand.text">FAIRWAYは、ゴルフへの情熱を持つすべての方のために生まれたプレミアムゴルフストアです。世界のトップブランドから厳選した500点以上の商品を、最高のサービスとともにお届けします。</p>
     <div class="stats-row">
       <div><div class="stat-num">500+</div><div class="stat-lbl">PRODUCTS</div></div>
       <div><div class="stat-num">50+</div><div class="stat-lbl">BRANDS</div></div>
@@ -230,19 +244,31 @@
     </div>
   </div>
   <div class="brand-features">
-    <div class="feat-item"><div class="feat-icon">🚚</div><div class="feat-title">Free Shipping</div><p class="feat-text">¥10,000以上で全国送料無料。</p></div>
-    <div class="feat-item"><div class="feat-icon">🔄</div><div class="feat-title">30-Day Returns</div><p class="feat-text">未使用品30日以内の返品・交換。</p></div>
-    <div class="feat-item"><div class="feat-icon">🏆</div><div class="feat-title">Pro Fitting</div><p class="feat-text">プロ監修フィッティング対応。</p></div>
-    <div class="feat-item"><div class="feat-icon">🔒</div><div class="feat-title">Secure Payment</div><p class="feat-text">SSL暗号化・Stripe決済対応。</p></div>
+    <div class="feat-item"><div class="feat-icon">🚚</div><div class="feat-title">Free Shipping</div><p class="feat-text" data-i18n="feat.shipping">¥10,000以上で全国送料無料。</p></div>
+    <div class="feat-item"><div class="feat-icon">🔄</div><div class="feat-title">30-Day Returns</div><p class="feat-text" data-i18n="feat.returns">未使用品30日以内の返品・交換。</p></div>
+    <div class="feat-item"><div class="feat-icon">🏆</div><div class="feat-title">Pro Fitting</div><p class="feat-text" data-i18n="feat.fitting">プロ監修フィッティング対応。</p></div>
+    <div class="feat-item"><div class="feat-icon">🔒</div><div class="feat-title">Secure Payment</div><p class="feat-text" data-i18n="feat.payment">SSL暗号化・Stripe決済対応。</p></div>
   </div>
 </div>
 
 <footer>
   <div class="footer-grid">
-    <div><div class="footer-logo">FAIR<span>WAY</span></div><p class="footer-desc">ゴルフへの情熱を持つすべての方のための<br>プレミアムゴルフ用品専門ストア。</p></div>
-    <div class="footer-col"><h4>Shop</h4><ul><li><a href="#">クラブ</a></li><li><a href="#">ボール</a></li><li><a href="#">ウェア</a></li><li><a href="#">バッグ</a></li></ul></div>
-    <div class="footer-col"><h4>Support</h4><ul><li><a href="#">よくある質問</a></li><li><a href="#">配送について</a></li><li><a href="#">返品・交換</a></li></ul></div>
-    <div class="footer-col"><h4>Account</h4><ul><li><a href="mypage.html">マイページ</a></li><li><a href="cart.html">カート</a></li></ul></div>
+    <div><div class="footer-logo">FAIR<span>WAY</span></div><p class="footer-desc" data-i18n="footer.desc">ゴルフへの情熱を持つすべての方のための<br>プレミアムゴルフ用品専門ストア。</p></div>
+    <div class="footer-col"><h4>Shop</h4><ul>
+      <li><a href="#" data-i18n="footer.clubs">クラブ</a></li>
+      <li><a href="#" data-i18n="footer.balls">ボール</a></li>
+      <li><a href="#" data-i18n="footer.wear">ウェア</a></li>
+      <li><a href="#" data-i18n="footer.bags">バッグ</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Support</h4><ul>
+      <li><a href="#" data-i18n="footer.faq">よくある質問</a></li>
+      <li><a href="#" data-i18n="footer.shipping">配送について</a></li>
+      <li><a href="#" data-i18n="footer.returns">返品・交換</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Account</h4><ul>
+      <li><a href="mypage.html" data-i18n="nav.mypage">マイページ</a></li>
+      <li><a href="cart.html" data-i18n="nav.cart">カート</a></li>
+    </ul></div>
   </div>
   <div class="footer-bottom">
     <p class="footer-copy">© 2026 FAIRWAY Premium Golf Store.</p>
@@ -265,25 +291,231 @@
       <div class="pd-price-row">
         <span class="pd-orig" id="pdOrig" style="display:none"></span>
         <span class="pd-price" id="pdPrice"></span>
-        <span class="pd-tax">（税込）</span>
+        <span class="pd-tax" data-i18n="modal.tax">（税込）</span>
       </div>
       <div class="pd-desc-long" id="pdDescLong"></div>
       <div class="pd-specs" id="pdSpecs"></div>
       <div class="pd-qty-row">
-        <span class="pd-qty-label">数量</span>
+        <span class="pd-qty-label" data-i18n="modal.qty">数量</span>
         <div class="pd-qty-ctrl">
           <button class="pd-qty-btn" onclick="pdQty=Math.max(1,pdQty-1);document.getElementById('pdQtyNum').textContent=pdQty">−</button>
           <span class="pd-qty-num" id="pdQtyNum">1</span>
           <button class="pd-qty-btn" onclick="pdQty++;document.getElementById('pdQtyNum').textContent=pdQty">＋</button>
         </div>
       </div>
-      <button class="pd-add-btn" id="pdAddBtn">🛒 カートに追加</button>
+      <button class="pd-add-btn" id="pdAddBtn" data-i18n="modal.addBtn">🛒 カートに追加</button>
       <div class="pd-reviews" id="pdReviews"></div>
     </div>
   </div>
 </div>
 
 <script>
+// ── i18n translations ──
+const I18N = {
+  ja: {
+    'nav.category':   'カテゴリ',
+    'nav.products':   '商品一覧',
+    'nav.about':      'ブランド',
+    'nav.mypage':     'マイページ',
+    'nav.cart':       'カート',
+    'hero.sub':       'プロ監修の厳選ゴルフ用品を。クラブ・ウェア・用品まで500点以上を取り揃えた日本最高峰のゴルフストア。',
+    'hero.cta1':      '今すぐショッピング →',
+    'hero.cta2':      'カテゴリを見る',
+    'hero.deco1':     'クラブ · ボール · ウェア',
+    'hero.deco2':     '¥10,000以上 送料無料',
+    'hero.deco3':     'プロ監修フィッティング',
+    'marquee.1':      '¥10,000以上 送料無料',
+    'marquee.2':      '30日間返品保証',
+    'marquee.3':      'プロフィッティング対応',
+    'marquee.4':      '500点以上の厳選アイテム',
+    'cat.title':      'カテゴリ<em>から探す</em>',
+    'cat.clubs':      'ゴルフクラブ · 128点',
+    'cat.balls':      'ゴルフボール · 64点',
+    'cat.wear':       'ウェア · 210点',
+    'cat.bags':       'バッグ · 45点',
+    'cat.goods':      '小物・用品 · 98点',
+    'products.title': 'おすすめ<em>商品</em>',
+    'filter.all':     'すべて',
+    'filter.club':    'クラブ',
+    'filter.ball':    'ボール',
+    'filter.wear':    'ウェア',
+    'filter.bag':     'バッグ',
+    'filter.goods':   '小物',
+    'brand.text':     'FAIRWAYは、ゴルフへの情熱を持つすべての方のために生まれたプレミアムゴルフストアです。世界のトップブランドから厳選した500点以上の商品を、最高のサービスとともにお届けします。',
+    'feat.shipping':  '¥10,000以上で全国送料無料。',
+    'feat.returns':   '未使用品30日以内の返品・交換。',
+    'feat.fitting':   'プロ監修フィッティング対応。',
+    'feat.payment':   'SSL暗号化・Stripe決済対応。',
+    'footer.desc':    'ゴルフへの情熱を持つすべての方のための<br>プレミアムゴルフ用品専門ストア。',
+    'footer.clubs':   'クラブ',
+    'footer.balls':   'ボール',
+    'footer.wear':    'ウェア',
+    'footer.bags':    'バッグ',
+    'footer.faq':     'よくある質問',
+    'footer.shipping':'配送について',
+    'footer.returns': '返品・交換',
+    'modal.tax':      '（税込）',
+    'modal.qty':      '数量',
+    'modal.addBtn':   '🛒 カートに追加',
+    'toast.wishAdd':  'お気に入りに追加しました ♡',
+    'toast.wishDel':  'お気に入りから削除しました',
+    'toast.loginReq': 'ログインしてください',
+    'toast.cartAdd':  'をカートに追加しました',
+    'catLabel':       {club:'クラブ',ball:'ボール',wear:'ウェア',bag:'バッグ',goods:'小物'},
+  },
+  en: {
+    'nav.category':   'Category',
+    'nav.products':   'Products',
+    'nav.about':      'Brand',
+    'nav.mypage':     'My Page',
+    'nav.cart':       'Cart',
+    'hero.sub':       'Pro-curated golf equipment. Japan\'s premier golf store with 500+ clubs, apparel, and accessories.',
+    'hero.cta1':      'Shop Now →',
+    'hero.cta2':      'Browse Categories',
+    'hero.deco1':     'Clubs · Balls · Apparel',
+    'hero.deco2':     'Free shipping over ¥10,000',
+    'hero.deco3':     'Pro-supervised fitting',
+    'marquee.1':      'Free shipping over ¥10,000',
+    'marquee.2':      '30-Day Return Policy',
+    'marquee.3':      'Pro Fitting Available',
+    'marquee.4':      '500+ Curated Items',
+    'cat.title':      'Shop by <em>Category</em>',
+    'cat.clubs':      'Golf Clubs · 128 items',
+    'cat.balls':      'Golf Balls · 64 items',
+    'cat.wear':       'Apparel · 210 items',
+    'cat.bags':       'Bags · 45 items',
+    'cat.goods':      'Accessories · 98 items',
+    'products.title': 'Featured <em>Products</em>',
+    'filter.all':     'All',
+    'filter.club':    'Clubs',
+    'filter.ball':    'Balls',
+    'filter.wear':    'Apparel',
+    'filter.bag':     'Bags',
+    'filter.goods':   'Accessories',
+    'brand.text':     'FAIRWAY was created for everyone who is passionate about golf. We deliver 500+ carefully selected products from the world\'s top brands with exceptional service.',
+    'feat.shipping':  'Free nationwide shipping on orders over ¥10,000.',
+    'feat.returns':   'Returns & exchanges within 30 days on unused items.',
+    'feat.fitting':   'Pro-supervised club fitting available.',
+    'feat.payment':   'SSL encrypted · Stripe payment supported.',
+    'footer.desc':    'A premium golf equipment store<br>for everyone passionate about the game.',
+    'footer.clubs':   'Clubs',
+    'footer.balls':   'Balls',
+    'footer.wear':    'Apparel',
+    'footer.bags':    'Bags',
+    'footer.faq':     'FAQ',
+    'footer.shipping':'Shipping Info',
+    'footer.returns': 'Returns & Exchanges',
+    'modal.tax':      '(tax incl.)',
+    'modal.qty':      'Qty',
+    'modal.addBtn':   '🛒 Add to Cart',
+    'toast.wishAdd':  'Added to wishlist ♡',
+    'toast.wishDel':  'Removed from wishlist',
+    'toast.loginReq': 'Please log in',
+    'toast.cartAdd':  ' added to cart',
+    'catLabel':       {club:'Clubs',ball:'Balls',wear:'Apparel',bag:'Bags',goods:'Accessories'},
+  },
+  zh: {
+    'nav.category':   '分类',
+    'nav.products':   '商品列表',
+    'nav.about':      '品牌',
+    'nav.mypage':     '我的页面',
+    'nav.cart':       '购物车',
+    'hero.sub':       '专业监制的精选高尔夫用品。日本顶级高尔夫商店，提供500余款球杆、服装及配件。',
+    'hero.cta1':      '立即购物 →',
+    'hero.cta2':      '浏览分类',
+    'hero.deco1':     '球杆 · 球 · 服装',
+    'hero.deco2':     '满¥10,000免运费',
+    'hero.deco3':     '专业拟合服务',
+    'marquee.1':      '满¥10,000免运费',
+    'marquee.2':      '30天退换货保证',
+    'marquee.3':      '专业球杆拟合',
+    'marquee.4':      '500余款精选商品',
+    'cat.title':      '按<em>分类</em>浏览',
+    'cat.clubs':      '高尔夫球杆 · 128件',
+    'cat.balls':      '高尔夫球 · 64件',
+    'cat.wear':       '服装 · 210件',
+    'cat.bags':       '球包 · 45件',
+    'cat.goods':      '配件 · 98件',
+    'products.title': '<em>精选</em>商品',
+    'filter.all':     '全部',
+    'filter.club':    '球杆',
+    'filter.ball':    '球',
+    'filter.wear':    '服装',
+    'filter.bag':     '球包',
+    'filter.goods':   '配件',
+    'brand.text':     'FAIRWAY专为热爱高尔夫的人士而生。我们从全球顶级品牌中精选500余款商品，以卓越服务送达您的手中。',
+    'feat.shipping':  '满¥10,000全国免运费。',
+    'feat.returns':   '未使用商品30天内可退换。',
+    'feat.fitting':   '提供专业监制球杆拟合服务。',
+    'feat.payment':   'SSL加密 · 支持Stripe支付。',
+    'footer.desc':    '为所有热爱高尔夫的人士打造的<br>顶级高尔夫专卖店。',
+    'footer.clubs':   '球杆',
+    'footer.balls':   '球',
+    'footer.wear':    '服装',
+    'footer.bags':    '球包',
+    'footer.faq':     '常见问题',
+    'footer.shipping':'配送说明',
+    'footer.returns': '退换货',
+    'modal.tax':      '（含税）',
+    'modal.qty':      '数量',
+    'modal.addBtn':   '🛒 加入购物车',
+    'toast.wishAdd':  '已添加到收藏 ♡',
+    'toast.wishDel':  '已从收藏中删除',
+    'toast.loginReq': '请先登录',
+    'toast.cartAdd':  ' 已加入购物车',
+    'catLabel':       {club:'球杆',ball:'球',wear:'服装',bag:'球包',goods:'配件'},
+  }
+};
+
+const PRODUCT_DESC_ZH = {
+  1: '超低旋转，最大飞行距离。职业巡回赛选手使用款。',
+  2: 'AI设计杆面，兼顾方向稳定性与飞行距离。',
+  3: '巡回赛使用率第一。高旋转与柔软手感。',
+  4: 'UV防护与吸湿排汗。专为舒适挥杆设计。',
+  5: '全防水立式球包。14格分隔设计。',
+  6: '顶级小牛皮。卓越贴合感与耐久性。',
+  7: '最大惯性矩，方向性出色。',
+  8: '老虎·伍兹爱用款。',
+  9: '四向弹力面料，挥杆自如。',
+  10: 'GPS激光测距仪。±0.5码精度。',
+  11: '碳纤维杆面，超轻量最大反弹力。',
+  12: '顶级球车包。15格独立分隔。',
+  13: 'Hello Kitty × PEARLY GATES联名款。附小猫咪吉祥物杆头套。',
+  14: '黑色皮革风格托特包。醒目粉色立体LOGO与蝴蝶结。',
+  15: 'PEARLY GATES针织杆头套。司机杆用。黑色×粉色。',
+  16: 'PG立体刺绣LOGO球帽。白色与藏青色两款。',
+  17: '哑光徽章笑脸风格球袋。白色与黑色两款。',
+  18: '笑脸徽章立式球袋。PG89款。黑色。',
+  19: '徽章风格杆头套。司机杆用。黑色与白色两款。',
+};
+
+let currentLang = localStorage.getItem('fw_lang') || 'ja';
+
+function t(key) {
+  return I18N[currentLang]?.[key] ?? I18N['ja'][key] ?? key;
+}
+
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('fw_lang', lang);
+  document.documentElement.lang = lang;
+  // Update toggle buttons
+  document.getElementById('langJP').classList.toggle('active', lang === 'ja');
+  document.getElementById('langEN').classList.toggle('active', lang === 'en');
+  document.getElementById('langZH').classList.toggle('active', lang === 'zh');
+  // Translate all data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = I18N[lang]?.[key];
+    if (val !== undefined) el.innerHTML = val;
+  });
+  // Re-render products (descriptions are language-aware)
+  renderProducts(currentFilter);
+  // Update page title
+  const titles = {ja:'FAIRWAY — プレミアムゴルフストア', en:'FAIRWAY — Premium Golf Store', zh:'FAIRWAY — 顶级高尔夫商店'};
+  document.title = titles[lang] || titles.ja;
+}
+
 // CSS変数を注入
 const style = document.createElement('style');
 style.textContent = COMMON_CSS;
@@ -291,25 +523,50 @@ document.head.appendChild(style);
 
 let wishlist = [];
 let pdQty = 1;
-const catLabel = {club:'クラブ',ball:'ボール',wear:'ウェア',bag:'バッグ',goods:'小物'};
+let currentFilter = 'all';
+
+// Product descriptions in other languages
+const PRODUCT_DESC_EN = {
+  1: 'Ultra-low spin for maximum distance. Tour pro model.',
+  2: 'AI-designed face for consistent direction and distance.',
+  3: '#1 on Tour. High spin and soft feel.',
+  4: 'UV protection & moisture-wicking. Engineered for comfort.',
+  5: 'Fully waterproof stand bag. 14-way divider.',
+  6: 'Premium cabretta leather. Superior fit and durability.',
+  7: 'Maximum MOI for exceptional accuracy.',
+  8: "Tiger Woods' preferred model.",
+  9: '4-way stretch fabric. Freedom of movement.',
+  10: 'GPS laser rangefinder. ±0.5yd accuracy.',
+  11: 'Carbon face for ultra-light maximum rebound.',
+  12: 'Premium cart bag. 15-way divider.',
+  13: 'Hello Kitty × PEARLY GATES collab. Mascot head cover.',
+  14: 'Black leather-style tote. Bold pink 3D logo & bow.',
+  15: 'PEARLY GATES knit head cover. Driver. Black × Pink.',
+  16: 'PG logo embroidered cap. White & Navy colorways.',
+  17: 'Matte wappen smiley caddy bag. White & Black.',
+  18: 'Smiley wappen stand bag. PG89 edition. Black.',
+  19: 'Wappen driver head cover. Black & White colorways.',
+};
 
 function renderProducts(filter='all') {
+  currentFilter = filter;
+  const lang = currentLang;
   const list = filter==='all' ? PRODUCTS : PRODUCTS.filter(p=>p.cat===filter);
   document.getElementById('productsGrid').innerHTML = list.map(p=>`
     <div class="prod-card">
-      <div class="prod-img" onclick="openPD(${p.id})">
+      <div class="prod-img" style="${p.img?'padding:0;overflow:hidden;':''}background:${p.img?'var(--dark)':'linear-gradient(135deg,var(--forest),var(--green))'}" onclick="openPD(${p.id})">
         ${p.badge?`<div class="prod-badge ${p.badge==='SALE'?'sale-badge':'new-badge'}">${p.badge}</div>`:''}
         <button class="wish-btn ${wishlist.includes(p.id)?'wished':''}" onclick="event.stopPropagation();toggleWish(${p.id},this)">♡</button>
-        <span>${p.icon}</span>
+        ${productThumb(p,'icon')}
       </div>
       <div class="prod-body">
         <div class="prod-brand" onclick="openPD(${p.id})">${p.brand}</div>
         <div class="prod-name" onclick="openPD(${p.id})">${p.name}</div>
-        <div class="prod-desc" onclick="openPD(${p.id})">${p.desc}</div>
+        <div class="prod-desc" onclick="openPD(${p.id})">${lang === 'en' ? (PRODUCT_DESC_EN[p.id] || p.desc) : lang === 'zh' ? (PRODUCT_DESC_ZH[p.id] || p.desc) : p.desc}</div>
         <div class="prod-foot">
           <div class="prod-price">
             ${p.origPrice?`<span class="orig">¥${p.origPrice.toLocaleString()}</span>`:''}
-            ¥${p.price.toLocaleString()}<small>（税込）</small>
+            ¥${p.price.toLocaleString()}<small>${t('modal.tax')}</small>
           </div>
           <button class="add-cart-btn" onclick="addToCart(${p.id})">+</button>
         </div>
@@ -317,25 +574,27 @@ function renderProducts(filter='all') {
     </div>`).join('');
 }
 
-function setFilter(cat,btn) {
+function setFilter(cat, btn) {
   renderProducts(cat);
   document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
 }
+
 function filterAndScroll(cat) {
   renderProducts(cat);
-  const map={club:'クラブ',ball:'ボール',wear:'ウェア',bag:'バッグ',goods:'小物'};
-  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active',b.textContent===map[cat]));
+  const catLabels = t('catLabel');
+  const labelMap = {club: catLabels.club, ball: catLabels.ball, wear: catLabels.wear, bag: catLabels.bag, goods: catLabels.goods};
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.toggle('active', b.textContent===labelMap[cat]));
   document.getElementById('products').scrollIntoView({behavior:'smooth'});
 }
 
 async function toggleWish(id, btn) {
-  if (!token) { showToast('ログインしてください'); window.location.href='mypage.html'; return; }
+  if (!token) { showToast(t('toast.loginReq')); window.location.href='mypage.html'; return; }
   const wished = wishlist.includes(id);
   try {
-    if (wished) { await api('DELETE',`/api/wishlist/${id}`); wishlist=wishlist.filter(x=>x!==id); btn.classList.remove('wished'); showToast('お気に入りから削除しました'); }
-    else { await api('POST',`/api/wishlist/${id}`); wishlist.push(id); btn.classList.add('wished'); showToast('お気に入りに追加しました ♡'); }
-  } catch { showToast('ログインしてください'); }
+    if (wished) { await api('DELETE',`/api/wishlist/${id}`); wishlist=wishlist.filter(x=>x!==id); btn.classList.remove('wished'); showToast(t('toast.wishDel')); }
+    else { await api('POST',`/api/wishlist/${id}`); wishlist.push(id); btn.classList.add('wished'); showToast(t('toast.wishAdd')); }
+  } catch { showToast(t('toast.loginReq')); }
 }
 
 function openPD(id) {
@@ -343,6 +602,7 @@ function openPD(id) {
   if (!p) return;
   pdQty = 1;
   document.getElementById('pdQtyNum').textContent = 1;
+  const catLabel = t('catLabel');
   const badges = [];
   if (p.badge==='NEW') badges.push(`<span class="pd-badge new">NEW</span>`);
   if (p.badge==='SALE') badges.push(`<span class="pd-badge sale">SALE</span>`);
@@ -350,15 +610,21 @@ function openPD(id) {
   document.getElementById('pdBadges').innerHTML = badges.join('');
   document.getElementById('pdBrand').textContent = p.brand;
   document.getElementById('pdName').textContent = p.name;
-  document.getElementById('pdDescLong').textContent = p.descLong||p.desc;
+  const desc = currentLang === 'en' ? (p.descLongEN || PRODUCT_DESC_EN[p.id] || p.desc) : currentLang === 'zh' ? (PRODUCT_DESC_ZH[p.id] || p.desc) : (p.descLong || p.desc);
+  document.getElementById('pdDescLong').textContent = desc;
   const orig=document.getElementById('pdOrig');
   if (p.origPrice){orig.style.display='';orig.textContent=`¥${p.origPrice.toLocaleString()}`;}else orig.style.display='none';
   document.getElementById('pdPrice').textContent=`¥${p.price.toLocaleString()}`;
+  document.getElementById('pdTax') && (document.getElementById('pdTax').textContent = t('modal.tax'));
   let stars='';for(let i=0;i<5;i++) stars+=`<span>${i<Math.floor(p.rating)?'★':'☆'}</span>`;
-  stars+=`<span class="pd-rating-num">${p.rating}(${p.reviews?.length||0}件)</span>`;
+  const reviewLabel = currentLang === 'en' ? `${p.reviews?.length||0} reviews` : currentLang === 'zh' ? `${p.reviews?.length||0}条评价` : `${p.reviews?.length||0}件`;
+  stars+=`<span class="pd-rating-num">${p.rating}(${reviewLabel})</span>`;
   document.getElementById('pdStars').innerHTML=stars;
   document.getElementById('pdSpecs').innerHTML=(p.specs||[]).map(([k,v])=>`<span class="pd-spec-key">${k}</span><span class="pd-spec-val">${v}</span>`).join('');
-  document.getElementById('pdMainImg').textContent=p.icon;
+  const pdMainEl = document.getElementById('pdMainImg');
+  pdMainEl.innerHTML = productThumb(p, 'modal');
+  if (p.img) { pdMainEl.style.fontSize = ''; pdMainEl.style.display = 'flex'; pdMainEl.style.alignItems = 'center'; pdMainEl.style.justifyContent = 'center'; }
+  document.getElementById('pdAddBtn').innerHTML = t('modal.addBtn');
   document.getElementById('pdReviews').innerHTML=(p.reviews||[]).map(rv=>`
     <div class="pd-review"><div class="pd-review-head"><span class="pd-reviewer">${rv.user}</span><span class="pd-review-date">${rv.date}</span></div>
     <div style="color:var(--gold);font-size:.8rem">★★★★★</div><div class="pd-review-text">${rv.text}</div></div>`).join('');
@@ -368,6 +634,19 @@ function openPD(id) {
 }
 function closePDModal(){document.getElementById('pdOverlay').classList.remove('open');document.body.style.overflow='';}
 function closePD(e){if(e.target.id==='pdOverlay')closePDModal();}
+
+// Override addToCart toast to use i18n
+const _origAddToCart = addToCart;
+function addToCart(productId, qty=1) {
+  const p = PRODUCTS.find(x=>x.id===productId);
+  if (!p) return;
+  const ex = cart.find(x=>x.id===productId);
+  if (ex) ex.qty += qty; else cart.push({...p, qty});
+  saveCartLocal();
+  syncCartServer();
+  updateCartBadge();
+  showToast(`${p.name}${t('toast.cartAdd')}`);
+}
 
 window.addEventListener('scroll',()=>{
   document.querySelector('nav').style.padding=window.scrollY>60?'.7rem 3rem':'1.1rem 3rem';
@@ -381,7 +660,8 @@ async function init() {
   if (token) {
     try { const rows=await api('GET','/api/wishlist'); wishlist=rows.map(r=>r.product_id); } catch{}
   }
-  renderProducts();
+  // Apply saved language
+  setLang(currentLang);
   updateCartBadge();
 }
 init();
