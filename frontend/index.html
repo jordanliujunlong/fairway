@@ -7,9 +7,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
 <script src="common.js"></script>
 <style>
-  /* CSS変数はcommon.jsで注入 */
   .hero{min-height:580px;height:82vh;max-height:780px;display:grid;grid-template-columns:1fr auto;align-items:center;position:relative;overflow:hidden;padding:0 4rem}
-  .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 65% 40%,rgba(45,90,61,.4) 0%,transparent 70%),linear-gradient(150deg,#050a06 0%,#0d1a0f 45%,#1a3320 100%)}
+  .hero-bg{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 65% 40%,rgba(46,125,50,.55) 0%,transparent 70%),linear-gradient(150deg,#2a2a2a 0%,#222222 45%,#1b5e20 100%)}
   .hero-lines{position:absolute;inset:0;opacity:.03;background-image:linear-gradient(rgba(201,168,76,1) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,1) 1px,transparent 1px);background-size:80px 80px}
   .hero-content{position:relative;z-index:2;max-width:560px;animation:fadeUp .9s ease both;padding:6rem 0 4rem}
   @keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
@@ -21,40 +20,40 @@
   .hero-cta{display:flex;gap:.8rem;flex-wrap:wrap}
   .hero-deco{position:relative;z-index:2;padding:6rem 2rem 4rem 4rem;display:flex;flex-direction:column;align-items:flex-end;justify-content:center;gap:1.5rem;flex-shrink:0}
   .hero-deco-num{font-family:var(--font-hd);font-size:clamp(6rem,12vw,11rem);line-height:1;color:rgba(201,168,76,.08);display:block;text-align:right}
-  .hero-deco-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .9rem;border:1px solid rgba(201,168,76,.18);background:rgba(26,51,32,.3);font-size:.7rem;letter-spacing:.1em;color:rgba(245,240,232,.55)}
+  .hero-deco-item{display:flex;align-items:center;gap:.6rem;padding:.5rem .9rem;border:1px solid rgba(201,168,76,.18);background:rgba(27,94,32,.3);font-size:.7rem;letter-spacing:.1em;color:rgba(245,240,232,.55)}
   .marquee-wrap{background:var(--gold);overflow:hidden;padding:.65rem 0}
   .marquee-track{display:flex;animation:marquee 22s linear infinite;white-space:nowrap}
   @keyframes marquee{from{transform:translateX(0)}to{transform:translateX(-50%)}}
   .marquee-item{font-family:var(--font-hd);font-size:.85rem;letter-spacing:.2em;color:var(--black);padding:0 2rem}
   .marquee-item::after{content:'◆';font-size:.4rem;opacity:.5;margin-left:1.5rem}
-  .section{padding:6rem 4rem}
+  .section{padding:6rem 4rem;background:#444444}
   .section-eyebrow{font-size:.68rem;letter-spacing:.28em;color:var(--gold);margin-bottom:.8rem;display:flex;align-items:center;gap:.7rem}
   .section-eyebrow::before{content:'';width:24px;height:1px;background:var(--gold)}
   .section-title{font-family:var(--font-en);font-size:clamp(2rem,4vw,3rem);font-weight:300;color:var(--cream);line-height:1.15;margin-bottom:.6rem}
   .section-title em{font-style:italic;color:var(--gold-lt)}
   .rule{width:50px;height:1px;background:var(--gold);margin-bottom:2.5rem}
   .cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;margin-top:2rem}
-  .cat-card{position:relative;overflow:hidden;cursor:pointer;background:var(--forest);padding:2.5rem 1.5rem 1.8rem;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .3s}
+  .cat-card{position:relative;overflow:hidden;cursor:pointer;background:#3e3e3e;border:1px solid rgba(46,125,50,.2);padding:2.5rem 1.5rem 1.8rem;min-height:190px;display:flex;flex-direction:column;justify-content:flex-end;transition:transform .3s}
   .cat-card:hover{transform:translateY(-4px)}
-  .cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(45,90,61,.3),rgba(5,10,6,.7))}
+  .cat-card::before{content:'';position:absolute;inset:0;background:linear-gradient(160deg,rgba(46,125,50,.3),rgba(26,26,26,.7))}
   .cat-emoji{position:absolute;top:1.5rem;left:50%;transform:translateX(-50%);font-size:2.8rem;transition:transform .3s}
   .cat-card:hover .cat-emoji{transform:translateX(-50%) scale(1.15)}
   .cat-name{font-family:var(--font-hd);font-size:1.3rem;letter-spacing:.12em;color:var(--cream);position:relative;z-index:1}
   .cat-count{font-size:.68rem;letter-spacing:.1em;color:var(--gold);position:relative;z-index:1;margin-top:.2rem}
   .cat-line{position:absolute;bottom:0;left:0;right:0;height:2px;background:var(--gold);transform:scaleX(0);transform-origin:left;transition:transform .3s}
   .cat-card:hover .cat-line{transform:scaleX(1)}
-  .products-bg{background:var(--dark)}
+  .products-bg{background:#444444}
   .filter-row{display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:2.5rem}
   .filter-btn{padding:.45rem 1.2rem;background:transparent;border:1px solid rgba(245,240,232,.12);color:rgba(245,240,232,.5);font-family:var(--font-ja);font-size:.75rem;letter-spacing:.1em;cursor:pointer;transition:all .2s}
   .filter-btn.active,.filter-btn:hover{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.07)}
   .products-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
-  .prod-card{background:var(--forest);transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
+  .prod-card{background:#3e3e3e;border:1px solid rgba(255,255,255,.06);transition:transform .3s,box-shadow .3s;position:relative;overflow:hidden}
   .prod-card:hover{transform:translateY(-5px);box-shadow:0 18px 48px rgba(0,0,0,.55)}
-  .prod-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:5.5rem;background:linear-gradient(135deg,var(--forest),var(--green));position:relative;overflow:hidden;cursor:pointer}
+  .prod-img{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:5.5rem;background:linear-gradient(135deg,#1b5e20,#2e7d32);position:relative;overflow:hidden;cursor:pointer}
   .prod-badge{position:absolute;top:.9rem;left:.9rem;padding:.2rem .65rem;font-size:.62rem;font-weight:700;letter-spacing:.1em}
   .prod-badge.new-badge{background:var(--gold);color:var(--black)}
   .prod-badge.sale-badge{background:var(--red);color:#fff}
-  .wish-btn{position:absolute;top:.8rem;right:.8rem;background:rgba(5,10,6,.6);border:1px solid rgba(201,168,76,.3);color:var(--cream);width:34px;height:34px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
+  .wish-btn{position:absolute;top:.8rem;right:.8rem;background:rgba(26,26,26,.6);border:1px solid rgba(201,168,76,.3);color:var(--cream);width:34px;height:34px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;z-index:2}
   .wish-btn:hover,.wish-btn.wished{background:var(--gold);color:var(--black);border-color:var(--gold)}
   .prod-body{padding:1.2rem 1.3rem 1.3rem}
   .prod-brand{font-size:.62rem;letter-spacing:.22em;color:var(--gold);text-transform:uppercase;margin-bottom:.35rem;cursor:pointer}
@@ -66,23 +65,33 @@
   .prod-price small{font-size:.65rem;color:var(--gray);font-family:var(--font-ja)}
   .add-cart-btn{width:38px;height:38px;background:var(--gold);border:none;color:var(--black);font-size:1.3rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;font-weight:700}
   .add-cart-btn:hover{background:var(--gold-lt);transform:scale(1.1)}
-  /* Language Toggle */
-  .lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(201,168,76,.35);overflow:hidden;flex-shrink:0}
+  .lang-toggle{display:flex;align-items:center;border:1px solid rgba(201,168,76,.35);overflow:hidden;flex-shrink:0}
   .lang-btn{padding:.4rem .7rem;background:none;border:none;color:rgba(245,240,232,.45);font-family:var(--font-ja);font-size:.7rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;line-height:1}
   .lang-btn.active{background:var(--gold);color:var(--black);font-weight:700}
   .lang-btn:not(.active):hover{color:var(--gold);background:rgba(201,168,76,.08)}
-  .lang-divider{width:1px;height:16px;background:rgba(201,168,76,.3);flex-shrink:0}
-  /* Product Detail Modal */
+  .lang-divider{width:1px;height:14px;background:rgba(201,168,76,.25);flex-shrink:0}
   .pd-overlay{position:fixed;inset:0;background:rgba(0,0,0,.82);z-index:250;opacity:0;pointer-events:none;transition:opacity .3s;backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;padding:1rem}
   .pd-overlay.open{opacity:1;pointer-events:all}
-  .pd-modal{background:var(--dark);border:1px solid rgba(201,168,76,.18);width:100%;max-width:860px;max-height:92vh;overflow-y:auto;position:relative;display:grid;grid-template-columns:1fr 1fr;animation:modalIn .3s ease both}
+  .pd-modal{background:#222222;border:1px solid rgba(201,168,76,.18);width:100%;max-width:1040px;max-height:94vh;overflow-y:auto;position:relative;display:grid;grid-template-columns:1.15fr 1fr;animation:modalIn .3s ease both}
   @keyframes modalIn{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
-  @media(max-width:700px){.pd-modal{grid-template-columns:1fr}}
-  .pd-close{position:absolute;top:1rem;right:1rem;z-index:2;background:rgba(5,10,6,.7);border:1px solid rgba(201,168,76,.3);color:var(--cream);width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
+  @media(max-width:700px){
+    .pd-modal{grid-template-columns:1fr}
+    .pd-gallery{min-height:auto;padding:1.2rem 1rem 1rem}
+    .pd-main-img{min-height:260px}
+    .pd-main-img img{max-height:320px}
+    .pd-thumb{width:52px;height:52px}
+  }
+  .pd-close{position:absolute;top:1rem;right:1rem;z-index:2;background:rgba(26,26,26,.7);border:1px solid rgba(201,168,76,.3);color:var(--cream);width:36px;height:36px;border-radius:50%;font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s}
   .pd-close:hover{background:var(--gold);color:var(--black)}
-  .pd-gallery{background:linear-gradient(135deg,var(--forest),var(--green));display:flex;flex-direction:column;align-items:center;justify-content:center;padding:3rem 2rem;min-height:360px}
-  .pd-main-img{font-size:8rem;margin-bottom:1.5rem;transition:transform .3s;cursor:default}
-  .pd-main-img:hover{transform:scale(1.08)}
+  .pd-gallery{background:linear-gradient(135deg,#1b5e20,#2e7d32);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:1.8rem 1.5rem 1.2rem;min-height:480px;gap:1rem}
+  .pd-main-img{font-size:8rem;transition:opacity .25s;cursor:default;width:100%;flex:1;display:flex;align-items:center;justify-content:center;min-height:380px}
+  .pd-main-img img{max-width:100%;max-height:460px;width:auto;height:auto;object-fit:contain;display:block;border-radius:2px;box-shadow:0 8px 28px rgba(0,0,0,.28)}
+  .pd-main-img:hover{transform:none}
+  .pd-thumbs{display:flex;gap:.6rem;justify-content:center;flex-wrap:wrap;padding-top:.2rem}
+  .pd-thumb{width:62px;height:62px;border:2px solid transparent;cursor:pointer;overflow:hidden;opacity:.6;transition:all .2s;flex-shrink:0;background:rgba(0,0,0,.15)}
+  .pd-thumb:hover{opacity:1;border-color:rgba(201,168,76,.5)}
+  .pd-thumb.active{opacity:1;border-color:var(--gold)}
+  .pd-thumb img{width:100%;height:100%;object-fit:contain}
   .pd-info{padding:2.5rem 2rem;display:flex;flex-direction:column;gap:.9rem;overflow-y:auto}
   .pd-badge{padding:.2rem .7rem;font-size:.62rem;font-weight:700;letter-spacing:.1em}
   .pd-badge.new{background:var(--gold);color:var(--black)}
@@ -109,13 +118,12 @@
   .pd-add-btn{padding:1rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.88rem;font-weight:700;letter-spacing:.12em;border:none;cursor:pointer;transition:all .2s;width:100%}
   .pd-add-btn:hover{background:var(--gold-lt)}
   .pd-reviews{border-top:1px solid rgba(201,168,76,.1);padding-top:.9rem;display:flex;flex-direction:column;gap:.7rem}
-  .pd-review{padding:.7rem;background:rgba(26,51,32,.2);border-left:2px solid rgba(201,168,76,.3)}
+  .pd-review{padding:.7rem;background:rgba(27,94,32,.2);border-left:2px solid rgba(201,168,76,.3)}
   .pd-review-head{display:flex;justify-content:space-between;margin-bottom:.3rem}
   .pd-reviewer{font-size:.72rem;color:var(--gold-lt);font-weight:700}
   .pd-review-date{font-size:.68rem;color:var(--gray)}
   .pd-review-text{font-size:.78rem;color:rgba(245,240,232,.6);line-height:1.7}
-  /* brand banner */
-  .brand-banner{padding:5rem 4rem;background:linear-gradient(135deg,var(--forest),var(--green) 50%,var(--forest));position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
+  .brand-banner{padding:5rem 4rem;background:linear-gradient(135deg,#1b5e20,#2e7d32 50%,#1b5e20);position:relative;overflow:hidden;display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center}
   .brand-banner::after{content:'FAIRWAY';position:absolute;right:-1rem;top:50%;transform:translateY(-50%);font-family:var(--font-hd);font-size:14rem;color:rgba(245,240,232,.025);line-height:1;pointer-events:none}
   .brand-sub{font-family:var(--font-en);font-size:clamp(1.8rem,3vw,2.5rem);font-weight:300;font-style:italic;color:var(--cream);line-height:1.3;margin-bottom:1rem}
   .brand-text{font-size:.84rem;color:rgba(245,240,232,.62);line-height:2;margin-bottom:1.5rem}
@@ -123,12 +131,12 @@
   .stat-num{font-family:var(--font-hd);font-size:2.4rem;color:var(--gold-lt);line-height:1}
   .stat-lbl{font-size:.68rem;letter-spacing:.12em;color:rgba(245,240,232,.45);margin-top:.2rem}
   .brand-features{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-  .feat-item{padding:1.2rem;border:1px solid rgba(201,168,76,.15);background:rgba(5,10,6,.25);transition:border-color .3s}
+  .feat-item{padding:1.2rem;border:1px solid rgba(201,168,76,.15);background:rgba(26,26,26,.25);transition:border-color .3s}
   .feat-item:hover{border-color:rgba(201,168,76,.4)}
   .feat-icon{font-size:1.5rem;margin-bottom:.5rem}
   .feat-title{font-family:var(--font-en);font-size:.95rem;color:var(--cream);margin-bottom:.2rem}
   .feat-text{font-size:.73rem;color:var(--gray);line-height:1.7}
-  footer{background:var(--black);border-top:1px solid rgba(201,168,76,.1);padding:4rem 4rem 2rem}
+  footer{background:#3e3e3e;border-top:1px solid rgba(201,168,76,.1);padding:4rem 4rem 2rem}
   .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:3rem;margin-bottom:2.5rem}
   .footer-logo{font-family:var(--font-hd);font-size:2rem;letter-spacing:.15em;margin-bottom:.7rem}
   .footer-logo span{color:var(--gold)}
@@ -187,7 +195,7 @@
     </div>
   </div>
   <div class="hero-deco">
-    <span class="hero-deco-num">500+</span>
+    <span class="hero-deco-num">24</span>
     <div style="display:flex;flex-direction:column;gap:.5rem">
       <div class="hero-deco-item"><span>🏌️</span><span data-i18n="hero.deco1">クラブ · ボール · ウェア</span></div>
       <div class="hero-deco-item"><span>🚚</span><span data-i18n="hero.deco2">¥10,000以上 送料無料</span></div>
@@ -207,7 +215,6 @@
   <h2 class="section-title" data-i18n="cat.title">カテゴリ<em>から探す</em></h2>
   <div class="rule"></div>
   <div class="cat-grid">
-    <div class="cat-card" onclick="filterAndScroll('club')"><div class="cat-emoji">🏌️</div><div class="cat-line"></div><div class="cat-name">CLUBS</div><div class="cat-count" data-i18n="cat.clubs">ゴルフクラブ · 128点</div></div>
     <div class="cat-card" onclick="filterAndScroll('ball')"><div class="cat-emoji">⛳</div><div class="cat-line"></div><div class="cat-name">BALLS</div><div class="cat-count" data-i18n="cat.balls">ゴルフボール · 64点</div></div>
     <div class="cat-card" onclick="filterAndScroll('wear')"><div class="cat-emoji">👕</div><div class="cat-line"></div><div class="cat-name">WEAR</div><div class="cat-count" data-i18n="cat.wear">ウェア · 210点</div></div>
     <div class="cat-card" onclick="filterAndScroll('bag')"><div class="cat-emoji">🎒</div><div class="cat-line"></div><div class="cat-name">BAGS</div><div class="cat-count" data-i18n="cat.bags">バッグ · 45点</div></div>
@@ -222,7 +229,6 @@
   <div class="rule"></div>
   <div class="filter-row" id="filterRow">
     <button class="filter-btn active" onclick="setFilter('all',this)" data-i18n="filter.all">すべて</button>
-    <button class="filter-btn" onclick="setFilter('club',this)" data-i18n="filter.club">クラブ</button>
     <button class="filter-btn" onclick="setFilter('ball',this)" data-i18n="filter.ball">ボール</button>
     <button class="filter-btn" onclick="setFilter('wear',this)" data-i18n="filter.wear">ウェア</button>
     <button class="filter-btn" onclick="setFilter('bag',this)" data-i18n="filter.bag">バッグ</button>
@@ -238,7 +244,7 @@
     <h2 class="brand-sub">Crafted for the<br>Passionate Golfer</h2>
     <p class="brand-text" data-i18n="brand.text">FAIRWAYは、ゴルフへの情熱を持つすべての方のために生まれたプレミアムゴルフストアです。世界のトップブランドから厳選した500点以上の商品を、最高のサービスとともにお届けします。</p>
     <div class="stats-row">
-      <div><div class="stat-num">500+</div><div class="stat-lbl">PRODUCTS</div></div>
+      <div><div class="stat-num">24</div><div class="stat-lbl">PRODUCTS</div></div>
       <div><div class="stat-num">50+</div><div class="stat-lbl">BRANDS</div></div>
       <div><div class="stat-num">10K+</div><div class="stat-lbl">CUSTOMERS</div></div>
     </div>
@@ -282,6 +288,7 @@
     <button class="pd-close" onclick="closePDModal()">✕</button>
     <div class="pd-gallery">
       <div class="pd-main-img" id="pdMainImg"></div>
+      <div class="pd-thumbs" id="pdThumbs"></div>
     </div>
     <div class="pd-info">
       <div style="display:flex;gap:.5rem;flex-wrap:wrap" id="pdBadges"></div>
@@ -330,10 +337,10 @@ const I18N = {
     'marquee.4':      '500点以上の厳選アイテム',
     'cat.title':      'カテゴリ<em>から探す</em>',
     'cat.clubs':      'ゴルフクラブ · 128点',
-    'cat.balls':      'ゴルフボール · 64点',
-    'cat.wear':       'ウェア · 210点',
-    'cat.bags':       'バッグ · 45点',
-    'cat.goods':      '小物・用品 · 98点',
+    'cat.balls':      'ゴルフボール · 1点',
+    'cat.wear':       'ウェア · 3点',
+    'cat.bags':       'バッグ · 6点',
+    'cat.goods':      '小物・用品 · 14点',
     'products.title': 'おすすめ<em>商品</em>',
     'filter.all':     'すべて',
     'filter.club':    'クラブ',
@@ -381,10 +388,10 @@ const I18N = {
     'marquee.4':      '500+ Curated Items',
     'cat.title':      'Shop by <em>Category</em>',
     'cat.clubs':      'Golf Clubs · 128 items',
-    'cat.balls':      'Golf Balls · 64 items',
-    'cat.wear':       'Apparel · 210 items',
-    'cat.bags':       'Bags · 45 items',
-    'cat.goods':      'Accessories · 98 items',
+    'cat.balls':      'Golf Balls · 1 item',
+    'cat.wear':       'Apparel · 3 items',
+    'cat.bags':       'Bags · 6 items',
+    'cat.goods':      'Accessories · 14 items',
     'products.title': 'Featured <em>Products</em>',
     'filter.all':     'All',
     'filter.club':    'Clubs',
@@ -432,10 +439,10 @@ const I18N = {
     'marquee.4':      '500余款精选商品',
     'cat.title':      '按<em>分类</em>浏览',
     'cat.clubs':      '高尔夫球杆 · 128件',
-    'cat.balls':      '高尔夫球 · 64件',
-    'cat.wear':       '服装 · 210件',
-    'cat.bags':       '球包 · 45件',
-    'cat.goods':      '配件 · 98件',
+    'cat.balls':      '高尔夫球 · 1件',
+    'cat.wear':       '服装 · 3件',
+    'cat.bags':       '球包 · 6件',
+    'cat.goods':      '配件 · 14件',
     'products.title': '<em>精选</em>商品',
     'filter.all':     '全部',
     'filter.club':    '球杆',
@@ -468,25 +475,30 @@ const I18N = {
 };
 
 const PRODUCT_DESC_ZH = {
-  1: '超低旋转，最大飞行距离。职业巡回赛选手使用款。',
-  2: 'AI设计杆面，兼顾方向稳定性与飞行距离。',
-  3: '巡回赛使用率第一。高旋转与柔软手感。',
-  4: 'UV防护与吸湿排汗。专为舒适挥杆设计。',
-  5: '全防水立式球包。14格分隔设计。',
-  6: '顶级小牛皮。卓越贴合感与耐久性。',
-  7: '最大惯性矩，方向性出色。',
-  8: '老虎·伍兹爱用款。',
-  9: '四向弹力面料，挥杆自如。',
-  10: 'GPS激光测距仪。±0.5码精度。',
-  11: '碳纤维杆面，超轻量最大反弹力。',
-  12: '顶级球车包。15格独立分隔。',
-  13: 'Hello Kitty × PEARLY GATES联名款。附小猫咪吉祥物杆头套。',
-  14: '黑色皮革风格托特包。醒目粉色立体LOGO与蝴蝶结。',
-  15: 'PEARLY GATES针织杆头套。司机杆用。黑色×粉色。',
-  16: 'PG立体刺绣LOGO球帽。白色与藏青色两款。',
-  17: '哑光徽章笑脸风格球袋。白色与黑色两款。',
-  18: '笑脸徽章立式球袋。PG89款。黑色。',
-  19: '徽章风格杆头套。司机杆用。黑色与白色两款。',
+  101: 'Hello Kitty × PEARLY GATES联名款。毛绒发球杆杆头套。',
+  102: '骷髅国王方块花色刺绣杆头套。司机杆用。',
+  103: '巫师刺绣三件套。黑色×蓝色。发球杆/球道木/铁木杆。',
+  104: '巫师刺绣三件套。白色×绿色。发球杆/球道木/铁木杆。',
+  105: '星条旗铁杆套装10件。潜水料材质。藏青色。',
+  106: '星条旗铁杆套装10件。潜水料材质。宝蓝色。',
+  107: '德古拉伯爵毛绒杆头套。附斗篷设计。',
+  108: '德州长角牛刺绣刀背推杆套。限量版。',
+  109: '火龙毛绒杆头套。翅膀与火焰尾巴。',
+  110: '钻石头山与椰子树。夏威夷限定设计。',
+  111: '草裙舞者刺绣槌形推杆套。夏威夷限定。',
+  112: '皮革瞄准棒收纳套。立体LOGO。',
+  113: '黑白椰子树印花。时尚帆布杆头套。',
+  114: '串珠钥匙扣。多彩PICKLEBALL字母设计。',
+  201: '经典布洛克设计搭配BOOST缓震。无钉款。',
+  202: 'IGNITE缓震有钉高尔夫球鞋。纯黑色。',
+  203: 'IGNITE缓震有钉球鞋。白/藏青/红美国配色。',
+  301: '1909限量版巡回赛球包。金色刺绣工艺。',
+  302: '官方授权达斯·维达全黑巡回赛球包。',
+  303: '霓虹波普艺术图案。黑蓝配色立式球包。',
+  304: '蓝色渐变条纹搭配橡树叶刺绣。',
+  305: '老虎伍兹新品牌。白色真皮×酒红色。',
+  306: '手工真皮高尔夫球杆筒。黄铜配件与格纹内衬。',
+  401: '2026限量版。棒球设计TP5。五层结构。',
 };
 
 let currentLang = localStorage.getItem('fw_lang') || 'ja';
@@ -516,36 +528,36 @@ function setLang(lang) {
   document.title = titles[lang] || titles.ja;
 }
 
-// CSS変数を注入
-const style = document.createElement('style');
-style.textContent = COMMON_CSS;
-document.head.appendChild(style);
-
 let wishlist = [];
 let pdQty = 1;
 let currentFilter = 'all';
 
 // Product descriptions in other languages
 const PRODUCT_DESC_EN = {
-  1: 'Ultra-low spin for maximum distance. Tour pro model.',
-  2: 'AI-designed face for consistent direction and distance.',
-  3: '#1 on Tour. High spin and soft feel.',
-  4: 'UV protection & moisture-wicking. Engineered for comfort.',
-  5: 'Fully waterproof stand bag. 14-way divider.',
-  6: 'Premium cabretta leather. Superior fit and durability.',
-  7: 'Maximum MOI for exceptional accuracy.',
-  8: "Tiger Woods' preferred model.",
-  9: '4-way stretch fabric. Freedom of movement.',
-  10: 'GPS laser rangefinder. ±0.5yd accuracy.',
-  11: 'Carbon face for ultra-light maximum rebound.',
-  12: 'Premium cart bag. 15-way divider.',
-  13: 'Hello Kitty × PEARLY GATES collab. Mascot head cover.',
-  14: 'Black leather-style tote. Bold pink 3D logo & bow.',
-  15: 'PEARLY GATES knit head cover. Driver. Black × Pink.',
-  16: 'PG logo embroidered cap. White & Navy colorways.',
-  17: 'Matte wappen smiley caddy bag. White & Black.',
-  18: 'Smiley wappen stand bag. PG89 edition. Black.',
-  19: 'Wappen driver head cover. Black & White colorways.',
+  101: 'Hello Kitty × PEARLY GATES. Plush driver head cover.',
+  102: 'Skull King of Diamonds embroidered head cover. Driver.',
+  103: 'Wizard embroidered 3-piece set. Black & Blue. DR/FW/UT.',
+  104: 'Wizard embroidered 3-piece set. White & Green. DR/FW/UT.',
+  105: 'US Flag iron cover 10-pack. Neoprene. Navy.',
+  106: 'US Flag iron cover 10-pack. Neoprene. Royal blue.',
+  107: 'Dracula plush driver head cover with cape.',
+  108: 'Texas Longhorn embroidered blade putter cover. Limited.',
+  109: 'Fire dragon plush cover with wings and flame tail.',
+  110: 'Diamond Head & palm trees. Hawaii exclusive design.',
+  111: 'Hula dancer embroidered mallet putter cover. Hawaii.',
+  112: 'Leather alignment stick cover with raised logo.',
+  113: 'Monochrome palm tree print. Stylish canvas cover.',
+  114: 'Beaded key fob with colorful PICKLEBALL lettering.',
+  201: 'Classic brogue design with BOOST cushioning. Spikeless.',
+  202: 'IGNITE foam spiked golf shoe. All black.',
+  203: 'IGNITE foam spiked shoe. White/Navy/Red USA colorway.',
+  301: '1909 Limited Edition tour staff bag. Gold embroidery.',
+  302: 'Official licensed Darth Vader all-black tour staff bag.',
+  303: 'Neon pop art graphics. Black & blue stand bag.',
+  304: 'Blue gradient stripes with oak leaf embroidery.',
+  305: "Tiger Woods' new brand. White leather × burgundy.",
+  206: 'Handmade leather golf case. Brass hardware & tartan lining.',
+  401: '2026 Limited. Baseball design TP5. 5-layer construction.',
 };
 
 function renderProducts(filter='all') {
@@ -597,10 +609,27 @@ async function toggleWish(id, btn) {
   } catch { showToast(t('toast.loginReq')); }
 }
 
+let currentGalleryIdx = 0;
+
+function switchGalleryImg(pid, idx) {
+  const p = PRODUCTS.find(x => x.id === pid);
+  if (!p) return;
+  currentGalleryIdx = idx;
+  const mainEl = document.getElementById('pdMainImg');
+  const gallery = p.gallery || (p.img ? [p.img] : null);
+  if (gallery && PRODUCT_IMAGES[gallery[idx]]) {
+    mainEl.innerHTML = `<img src="${PRODUCT_IMAGES[gallery[idx]]}" alt="${p.name}">`;
+  } else {
+    mainEl.innerHTML = `<span style="font-size:8rem">${p.icon||'📦'}</span>`;
+  }
+  document.querySelectorAll('.pd-thumb').forEach((el,i) => el.classList.toggle('active', i === idx));
+}
+
 function openPD(id) {
   const p = PRODUCTS.find(x=>x.id===id);
   if (!p) return;
   pdQty = 1;
+  currentGalleryIdx = 0;
   document.getElementById('pdQtyNum').textContent = 1;
   const catLabel = t('catLabel');
   const badges = [];
@@ -615,16 +644,42 @@ function openPD(id) {
   const orig=document.getElementById('pdOrig');
   if (p.origPrice){orig.style.display='';orig.textContent=`¥${p.origPrice.toLocaleString()}`;}else orig.style.display='none';
   document.getElementById('pdPrice').textContent=`¥${p.price.toLocaleString()}`;
-  document.getElementById('pdTax') && (document.getElementById('pdTax').textContent = t('modal.tax'));
   let stars='';for(let i=0;i<5;i++) stars+=`<span>${i<Math.floor(p.rating)?'★':'☆'}</span>`;
   const reviewLabel = currentLang === 'en' ? `${p.reviews?.length||0} reviews` : currentLang === 'zh' ? `${p.reviews?.length||0}条评价` : `${p.reviews?.length||0}件`;
   stars+=`<span class="pd-rating-num">${p.rating}(${reviewLabel})</span>`;
   document.getElementById('pdStars').innerHTML=stars;
   document.getElementById('pdSpecs').innerHTML=(p.specs||[]).map(([k,v])=>`<span class="pd-spec-key">${k}</span><span class="pd-spec-val">${v}</span>`).join('');
-  const pdMainEl = document.getElementById('pdMainImg');
-  pdMainEl.innerHTML = productThumb(p, 'modal');
-  if (p.img) { pdMainEl.style.fontSize = ''; pdMainEl.style.display = 'flex'; pdMainEl.style.alignItems = 'center'; pdMainEl.style.justifyContent = 'center'; }
   document.getElementById('pdAddBtn').innerHTML = t('modal.addBtn');
+
+  // ── Gallery ──
+  const gallery = p.gallery || (p.img ? [p.img] : null);
+  const thumbsEl = document.getElementById('pdThumbs');
+
+  if (gallery && gallery.length > 0) {
+    // メイン画像（最初の1枚）
+    const firstImg = PRODUCT_IMAGES[gallery[0]];
+    const mainEl = document.getElementById('pdMainImg');
+    if (firstImg) {
+      mainEl.innerHTML = `<img src="${firstImg}" alt="${p.name}">`;
+    } else {
+      mainEl.innerHTML = `<span style="font-size:8rem">${p.icon||'📦'}</span>`;
+    }
+    // サムネイル（2枚以上の時だけ表示）
+    if (gallery.length > 1) {
+      thumbsEl.innerHTML = gallery.map((imgKey, i) => {
+        const imgSrc = PRODUCT_IMAGES[imgKey];
+        return imgSrc
+          ? `<div class="pd-thumb ${i===0?'active':''}" onclick="switchGalleryImg(${id},${i})"><img src="${imgSrc}" loading="lazy" alt=""></div>`
+          : '';
+      }).join('');
+    } else {
+      thumbsEl.innerHTML = '';
+    }
+  } else {
+    document.getElementById('pdMainImg').innerHTML = `<span style="font-size:8rem">${p.icon||'📦'}</span>`;
+    thumbsEl.innerHTML = '';
+  }
+
   document.getElementById('pdReviews').innerHTML=(p.reviews||[]).map(rv=>`
     <div class="pd-review"><div class="pd-review-head"><span class="pd-reviewer">${rv.user}</span><span class="pd-review-date">${rv.date}</span></div>
     <div style="color:var(--gold);font-size:.8rem">★★★★★</div><div class="pd-review-text">${rv.text}</div></div>`).join('');
@@ -653,14 +708,10 @@ window.addEventListener('scroll',()=>{
 });
 
 async function init() {
-  const styleEl = document.createElement('style');
-  styleEl.textContent = COMMON_CSS;
-  document.head.appendChild(styleEl);
   await restoreSession();
   if (token) {
     try { const rows=await api('GET','/api/wishlist'); wishlist=rows.map(r=>r.product_id); } catch{}
   }
-  // Apply saved language
   setLang(currentLang);
   updateCartBadge();
 }

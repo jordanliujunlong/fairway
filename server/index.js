@@ -240,7 +240,7 @@ app.post('/api/orders', auth, async (req, res) => {
   if (!items || !total) return res.status(400).json({ error: '注文データが不正です' });
 
   // サーバー側でも送料を再計算して検証
-  const PRICES = { 1:88000,2:132000,3:7800,4:14800,5:52000,6:3800,7:42000,8:8200,9:12800,10:68000,11:76000,12:38000 };
+  const PRICES = { 13:18500,20:14800,21:32800,22:32800,23:6800,24:6800,25:28600,26:22800,27:22800,28:168000,29:7800,30:12800,31:8900,32:9800,33:8500,34:4800,35:6200,36:198000,37:78000,38:158000,39:128000,40:8470,41:88000,42:3200 };
   const subtotal = items.reduce((s, i) => s + (PRICES[i.id] || 0) * i.qty, 0);
   const shippingFee = calcShipping({ subtotal, shippingZone: shippingZone || 'domestic', countryCode });
   const expectedTotal = subtotal + shippingFee;
@@ -405,7 +405,7 @@ app.post('/api/payments/create-intent', auth, async (req, res) => {
   const { items, shippingAddress, shippingZone, countryCode } = req.body;
   if (!items?.length) return res.status(400).json({ error: 'カートが空です' });
 
-  const PRICES = { 1:88000,2:132000,3:7800,4:14800,5:52000,6:3800,7:42000,8:8200,9:12800,10:68000,11:76000,12:38000 };
+  const PRICES = { 13:18500,20:14800,21:32800,22:32800,23:6800,24:6800,25:28600,26:22800,27:22800,28:168000,29:7800,30:12800,31:8900,32:9800,33:8500,34:4800,35:6200,36:198000,37:78000,38:158000,39:128000,40:8470,41:88000,42:3200 };
   const subtotal = items.reduce((s, i) => s + (PRICES[i.product_id] || 0) * i.qty, 0);
   if (subtotal <= 0) return res.status(400).json({ error: '金額の計算に失敗しました' });
 

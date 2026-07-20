@@ -5,24 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>カート — FAIRWAY</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Zen+Kaku+Gothic+New:wght@300;400;700&family=Bebas+Neue&display=swap" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
 <script src="common.js"></script>
 <style>
-  .page-hero{background:linear-gradient(135deg,var(--dark),var(--forest));padding:3rem 4rem 2rem;border-bottom:1px solid rgba(201,168,76,.15)}
+  .page-hero{background:linear-gradient(135deg,#222222,#1b5e20);padding:3rem 4rem 2rem;border-bottom:1px solid rgba(201,168,76,.15)}
   .page-hero h1{font-family:var(--font-hd);font-size:3rem;letter-spacing:.1em;color:var(--cream)}
   .page-hero h1 span{color:var(--gold)}
   .cart-layout{display:grid;grid-template-columns:1fr 360px;gap:2rem;padding:3rem 4rem;align-items:start}
   @media(max-width:900px){.cart-layout{grid-template-columns:1fr;padding:2rem 1.5rem}.page-hero{padding:2rem 1.5rem}}
-  /* Language Toggle */
   .lang-toggle{display:flex;align-items:center;gap:0;border:1px solid rgba(201,168,76,.35);overflow:hidden;flex-shrink:0}
   .lang-btn{padding:.4rem .7rem;background:none;border:none;color:rgba(245,240,232,.45);font-family:var(--font-ja);font-size:.7rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;line-height:1}
   .lang-btn.active{background:var(--gold);color:var(--black);font-weight:700}
   .lang-btn:not(.active):hover{color:var(--gold);background:rgba(201,168,76,.08)}
   .lang-divider{width:1px;height:16px;background:rgba(201,168,76,.3);flex-shrink:0}
-  /* cart items */
   .cart-items-wrap{display:flex;flex-direction:column;gap:1px}
-  .cart-row{display:flex;gap:1.2rem;padding:1.5rem;background:var(--forest);align-items:center;transition:background .2s}
-  .cart-row:hover{background:rgba(26,51,32,.8)}
-  .ci-img{width:80px;height:80px;background:linear-gradient(135deg,var(--forest),var(--green));display:flex;align-items:center;justify-content:center;font-size:2.4rem;flex-shrink:0}
+  .cart-row{display:flex;gap:1.2rem;padding:1.5rem;background:#2e7d32;align-items:center;transition:background .2s}
+  .cart-row:hover{background:#1b5e20}
+  .ci-img{width:80px;height:80px;background:linear-gradient(135deg,#1b5e20,#2e7d32);display:flex;align-items:center;justify-content:center;font-size:2.4rem;flex-shrink:0;overflow:hidden}
   .ci-info{flex:1;min-width:0}
   .ci-brand{font-size:.62rem;letter-spacing:.2em;color:var(--gold);text-transform:uppercase;margin-bottom:.2rem}
   .ci-name{font-family:var(--font-en);font-size:1.05rem;color:var(--cream);margin-bottom:.5rem}
@@ -37,8 +36,7 @@
   .empty-state{text-align:center;padding:5rem 2rem;color:var(--gray)}
   .empty-icon{font-size:4rem;opacity:.3;margin-bottom:1.2rem}
   .empty-state p{font-size:.88rem;margin-bottom:1.5rem}
-  /* summary */
-  .cart-summary-box{background:var(--dark);border:1px solid rgba(201,168,76,.15);padding:1.8rem;position:sticky;top:90px}
+  .cart-summary-box{background:#222222;border:1px solid rgba(201,168,76,.15);padding:1.8rem;position:sticky;top:90px}
   .summary-title{font-family:var(--font-hd);font-size:1.3rem;letter-spacing:.12em;color:var(--cream);margin-bottom:1.5rem;padding-bottom:.8rem;border-bottom:1px solid rgba(201,168,76,.12)}
   .summary-row{display:flex;justify-content:space-between;padding:.5rem 0;font-size:.82rem;color:var(--gray)}
   .summary-row.total{border-top:1px solid rgba(201,168,76,.15);margin-top:.8rem;padding-top:1rem;color:var(--cream)}
@@ -49,7 +47,6 @@
   .checkout-btn:disabled{opacity:.4;cursor:not-allowed}
   .continue-btn{width:100%;padding:.8rem;background:transparent;color:rgba(245,240,232,.5);font-family:var(--font-ja);font-size:.82rem;letter-spacing:.1em;border:1px solid rgba(245,240,232,.15);cursor:pointer;transition:all .2s;margin-top:.6rem;text-align:center;display:block}
   .continue-btn:hover{border-color:var(--gold);color:var(--gold)}
-  /* checkout steps */
   .checkout-section{display:none;padding:3rem 4rem}
   .checkout-section.active{display:block}
   @media(max-width:900px){.checkout-section{padding:2rem 1.5rem}}
@@ -64,20 +61,18 @@
   .form-group.full{grid-column:1/-1}
   .form-group label{font-size:.72rem;letter-spacing:.1em;color:rgba(245,240,232,.55)}
   .form-group label span{color:var(--gold)}
-  .form-group input,.form-group select{background:rgba(26,51,32,.3);border:1px solid rgba(245,240,232,.12);color:var(--cream);padding:.75rem 1rem;font-family:var(--font-ja);font-size:.85rem;outline:none;transition:border-color .2s;-webkit-appearance:none;width:100%}
+  .form-group input,.form-group select{background:rgba(255,255,255,.09);border:1px solid rgba(245,240,232,.12);color:var(--cream);padding:.75rem 1rem;font-family:var(--font-ja);font-size:.85rem;outline:none;transition:border-color .2s;-webkit-appearance:none;width:100%}
   .form-group input:focus,.form-group select:focus{border-color:rgba(201,168,76,.5)}
   .form-group input::placeholder{color:rgba(245,240,232,.2)}
-  .form-group select option{background:var(--dark)}
+  .form-group select option{background:#444444}
   .form-group.has-error input,.form-group.has-error select{border-color:var(--red)}
   .error-msg{font-size:.7rem;color:var(--red);margin-top:.2rem;display:none}
   .form-group.has-error .error-msg{display:block}
   .form-section-title{font-family:var(--font-en);font-size:1.15rem;color:var(--cream);margin-bottom:1.2rem;padding-bottom:.6rem;border-bottom:1px solid rgba(201,168,76,.1)}
-  /* Shipping zone toggle */
   .ship-zone-row{display:flex;gap:.5rem;margin-bottom:1.5rem;max-width:640px}
   .ship-zone-btn{flex:1;padding:.7rem;background:transparent;border:1px solid rgba(245,240,232,.12);color:rgba(245,240,232,.45);font-family:var(--font-ja);font-size:.78rem;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:.4rem}
   .ship-zone-btn.active{border-color:var(--gold);color:var(--gold);background:rgba(201,168,76,.07)}
   .ship-zone-btn:hover:not(.active){border-color:rgba(201,168,76,.3);color:rgba(245,240,232,.7)}
-  /* Intl shipping note */
   .intl-note{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.18);padding:.9rem 1.1rem;font-size:.78rem;color:rgba(245,240,232,.65);line-height:1.8;margin-bottom:1.2rem;max-width:640px}
   .intl-note strong{color:var(--gold-lt)}
   .form-actions{display:flex;gap:.8rem;margin-top:2rem}
@@ -85,21 +80,51 @@
   .btn-back:hover{background:rgba(245,240,232,.1)}
   .btn-next{padding:.9rem 2rem;background:var(--gold);color:var(--black);font-family:var(--font-ja);font-size:.82rem;font-weight:700;border:none;cursor:pointer;transition:all .2s}
   .btn-next:hover{background:var(--gold-lt)}
-  /* review */
   .order-review-list{display:flex;flex-direction:column;gap:.6rem;margin-bottom:1.5rem;max-width:640px}
-  .or-item{display:flex;align-items:center;gap:.8rem;padding:.8rem;background:rgba(26,51,32,.3);border:1px solid rgba(201,168,76,.08)}
+  .or-item{display:flex;align-items:center;gap:.8rem;padding:.8rem;background:rgba(255,255,255,.09);border:1px solid rgba(201,168,76,.08)}
   .or-icon{font-size:1.5rem;width:40px;text-align:center;flex-shrink:0}
   .or-name{font-size:.82rem;color:var(--cream)}
   .or-qty{font-size:.7rem;color:var(--gray)}
   .or-price{font-family:var(--font-en);font-size:1rem;color:var(--gold-lt);white-space:nowrap;margin-left:auto}
   .review-total-box{display:flex;justify-content:space-between;padding:1rem;background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.15);margin-bottom:1rem;max-width:640px}
-  .review-addr-box{font-size:.78rem;color:var(--gray);line-height:1.9;padding:1rem;background:rgba(26,51,32,.2);border:1px solid rgba(201,168,76,.08);margin-bottom:1.5rem;max-width:640px}
-  /* success */
+  .review-addr-box{font-size:.78rem;color:var(--gray);line-height:1.9;padding:1rem;background:rgba(255,255,255,.1);border:1px solid rgba(201,168,76,.08);margin-bottom:1.5rem;max-width:640px}
   .success-screen{text-align:center;padding:4rem 2rem;max-width:500px;margin:0 auto}
   .success-icon{font-size:4.5rem;margin-bottom:1.2rem;animation:popIn .5s cubic-bezier(.34,1.56,.64,1) both}
   @keyframes popIn{from{transform:scale(0)}to{transform:scale(1)}}
   .success-title{font-family:var(--font-en);font-size:2rem;font-weight:300;color:var(--cream);margin-bottom:.8rem}
   .order-num-box{font-family:var(--font-hd);font-size:1.1rem;color:var(--gold);letter-spacing:.2em;margin:1.2rem 0;padding:.8rem;border:1px solid rgba(201,168,76,.25);background:rgba(201,168,76,.05)}
+  .policy-mini{margin-top:1rem;padding:.8rem;border:1px solid rgba(245,240,232,.06);background:rgba(255,255,255,.1);font-size:.7rem;color:rgba(245,240,232,.4);line-height:1.7;text-align:center}
+  .policy-mini a{color:var(--gold);text-decoration:underline;cursor:pointer}
+  .policy-agree-row{display:flex;align-items:flex-start;gap:.7rem;margin-top:1.5rem;margin-bottom:.5rem;max-width:640px;background:rgba(46,125,50,.2);border:1px solid rgba(201,168,76,.15);padding:1rem}
+  .policy-agree-row input[type=checkbox]{width:16px;height:16px;margin-top:.15rem;flex-shrink:0;accent-color:var(--gold);cursor:pointer}
+  .policy-agree-label{font-size:.78rem;color:rgba(245,240,232,.65);line-height:1.7;cursor:pointer}
+  .policy-agree-label a{color:var(--gold);text-decoration:underline}
+  .policy-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);z-index:300;display:none;align-items:center;justify-content:center;padding:1rem;backdrop-filter:blur(6px)}
+  .policy-overlay.open{display:flex}
+  .policy-modal{background:#222222;border:1px solid rgba(201,168,76,.2);width:100%;max-width:720px;max-height:88vh;display:flex;flex-direction:column;animation:modalIn .25s ease both}
+  .policy-modal-head{padding:1.2rem 1.5rem;border-bottom:1px solid rgba(201,168,76,.12);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+  .policy-modal-head h2{font-family:var(--font-hd);font-size:1.4rem;letter-spacing:.12em;color:var(--cream)}
+  .policy-tabs{display:flex;border-bottom:1px solid rgba(201,168,76,.1);flex-shrink:0}
+  .policy-tab{padding:.7rem 1.2rem;background:none;border:none;color:rgba(245,240,232,.4);font-family:var(--font-ja);font-size:.75rem;letter-spacing:.08em;cursor:pointer;transition:all .2s;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .policy-tab.active{color:var(--gold);border-bottom-color:var(--gold)}
+  .policy-tab:hover:not(.active){color:rgba(245,240,232,.7)}
+  .policy-body{padding:1.5rem;overflow-y:auto;flex:1}
+  .policy-section{display:none}
+  .policy-section.active{display:block}
+  .policy-section h3{font-family:var(--font-en);font-size:1rem;color:var(--gold-lt);margin:1.2rem 0 .5rem;padding-bottom:.3rem;border-bottom:1px solid rgba(201,168,76,.1)}
+  .policy-section h3:first-child{margin-top:0}
+  .policy-section p,.policy-section li{font-size:.8rem;color:rgba(245,240,232,.65);line-height:1.9;margin-bottom:.5rem}
+  .policy-section ul{padding-left:1.2rem;margin-bottom:.8rem}
+  .policy-section li{list-style:disc}
+  .policy-section .highlight{background:rgba(201,168,76,.08);border-left:3px solid var(--gold);padding:.6rem .9rem;margin:.8rem 0;font-size:.78rem;color:rgba(245,240,232,.75);line-height:1.8}
+  .policy-close-btn{width:32px;height:32px;background:rgba(245,240,232,.06);border:1px solid rgba(245,240,232,.12);color:rgba(245,240,232,.5);cursor:pointer;font-size:1rem;display:flex;align-items:center;justify-content:center;transition:all .2s;flex-shrink:0}
+  .policy-close-btn:hover{background:var(--gold);color:var(--black);border-color:var(--gold)}
+  /* Stripe Elements */
+  .stripe-element{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);padding:.85rem 1rem;transition:border-color .2s}
+  .stripe-element.StripeElement--focus{border-color:rgba(201,168,76,.6)}
+  .stripe-element.StripeElement--invalid{border-color:var(--red)}
+  .stripe-error{font-size:.72rem;color:var(--red);margin-top:.4rem;min-height:1rem}
+  .stripe-secure{font-size:.7rem;color:rgba(245,240,232,.4);margin-top:.5rem;line-height:1.6}
 </style>
 </head>
 <body>
@@ -138,6 +163,7 @@
         <div class="summary-row total"><span data-i18n="summary.total">合計（税込）</span><span class="val" id="cartTotal">¥0</span></div>
         <button class="checkout-btn" id="checkoutBtn" onclick="startCheckout()"><span data-i18n="summary.checkoutBtn">レジへ進む →</span></button>
         <a href="index.html" class="continue-btn" data-i18n="summary.continueBtn">ショッピングを続ける</a>
+        <div class="policy-mini" data-i18n="policy.mini">ご購入には<a onclick="openPolicy('returns')">返品・返金ポリシー</a>および<a onclick="openPolicy('terms')">利用規約</a>への同意が必要です。</div>
       </div>
     </div>
   </div>
@@ -262,9 +288,12 @@
           </select>
           <span class="error-msg" data-i18n="err.select">選択してください</span>
         </div>
-        <div class="form-group full" id="cardNum" style="display:none"><label data-i18n="pay.cardNum">カード番号</label><input id="p_card" placeholder="0000 0000 0000 0000" maxlength="19" oninput="this.value=this.value.replace(/\D/g,'').replace(/(.{4})/g,'$1 ').trim().slice(0,19)"></div>
-        <div class="form-group" id="cardExp" style="display:none"><label data-i18n="pay.cardExp">有効期限</label><input id="p_exp" placeholder="MM/YY" maxlength="5" oninput="this.value=this.value.replace(/\D/g,'').replace(/^(.{2})/,'$1/').slice(0,5)"></div>
-        <div class="form-group" id="cardCvc" style="display:none"><label>CVC</label><input id="p_cvc" placeholder="123" maxlength="4"></div>
+        <div class="form-group full" id="stripeCardWrap" style="display:none">
+          <label data-i18n="pay.cardInfo">カード情報</label>
+          <div id="stripeCardElement" class="stripe-element"></div>
+          <div id="stripeCardError" class="stripe-error"></div>
+          <div class="stripe-secure" data-i18n="pay.secureNote">🔒 カード情報はStripeにより暗号化され、当店のサーバーには保存されません。</div>
+        </div>
       </div>
       <div class="form-actions">
         <button class="btn-back" onclick="goStep(1)" data-i18n="btn.back">← 戻る</button>
@@ -278,6 +307,13 @@
       <div class="order-review-list" id="orderReview"></div>
       <div class="review-total-box"><span style="font-size:.82rem;color:rgba(245,240,232,.6)" data-i18n="summary.total">ご請求合計（税込）</span><span style="font-family:var(--font-en);font-size:1.4rem" id="reviewTotal"></span></div>
       <div class="review-addr-box" id="reviewAddr"></div>
+      <!-- Policy Agreement -->
+      <div class="policy-agree-row">
+        <input type="checkbox" id="policyAgree">
+        <label class="policy-agree-label" for="policyAgree" data-i18n="policy.agree">
+          <a onclick="openPolicy('returns')">返品・返金ポリシー</a>、<a onclick="openPolicy('shipping')">配送ポリシー</a>、および<a onclick="openPolicy('terms')">利用規約</a>を確認し、同意します。
+        </label>
+      </div>
       <div class="form-actions">
         <button class="btn-back" onclick="goStep(2)" data-i18n="btn.back">← 戻る</button>
         <button class="btn-next" id="placeBtn" onclick="placeOrder()" data-i18n="btn.placeOrder">注文を確定する ✓</button>
@@ -297,6 +333,45 @@
           <a href="mypage.html" class="btn-ghost" data-i18n="success.viewHistory">購入履歴を見る</a>
         </div>
       </div>
+    </div>
+  </div>
+</div>
+
+<!-- POLICY MODAL -->
+<div class="policy-overlay" id="policyOverlay" onclick="closePolicyOutside(event)">
+  <div class="policy-modal">
+    <div class="policy-modal-head">
+      <h2 id="policyModalTitle">POLICY</h2>
+      <button class="policy-close-btn" onclick="closePolicy()">✕</button>
+    </div>
+    <div class="policy-tabs" id="policyTabs">
+      <button class="policy-tab active" onclick="switchPolicy('returns')" data-tab="returns" data-i18n="policy.tab.returns">返品・返金</button>
+      <button class="policy-tab" onclick="switchPolicy('shipping')" data-tab="shipping" data-i18n="policy.tab.shipping">配送</button>
+      <button class="policy-tab" onclick="switchPolicy('terms')" data-tab="terms" data-i18n="policy.tab.terms">利用規約</button>
+      <button class="policy-tab" onclick="switchPolicy('privacy')" data-tab="privacy" data-i18n="policy.tab.privacy">プライバシー</button>
+    </div>
+    <div class="policy-body">
+
+      <!-- RETURNS & REFUND -->
+      <div class="policy-section active" id="policy-returns">
+        <div id="policy-returns-content"></div>
+      </div>
+
+      <!-- SHIPPING -->
+      <div class="policy-section" id="policy-shipping">
+        <div id="policy-shipping-content"></div>
+      </div>
+
+      <!-- TERMS -->
+      <div class="policy-section" id="policy-terms">
+        <div id="policy-terms-content"></div>
+      </div>
+
+      <!-- PRIVACY -->
+      <div class="policy-section" id="policy-privacy">
+        <div id="policy-privacy-content"></div>
+      </div>
+
     </div>
   </div>
 </div>
@@ -342,7 +417,11 @@ const I18N = {
     'fi.city':    '市区町村', 'fi.addr': '番地・建物名',
     // Payment
     'pay.card':     'クレジットカード', 'pay.deferred': '後払い（コンビニ）', 'pay.bank': '銀行振込',
-    'pay.cardNum':  'カード番号', 'pay.cardExp': '有効期限',
+    'pay.cardInfo': 'カード情報',
+    'pay.secureNote':'🔒 カード情報はStripeにより暗号化され、当店のサーバーには保存されません。',
+    'pay.cardError': 'カード情報を入力してください',
+    'pay.declined':  '決済が拒否されました。カード情報をご確認ください。',
+    'pay.loginRequired': 'カード決済にはログインが必要です。マイページからログインしてください。',
     // Errors
     'err.required': '入力してください', 'err.select': '選択してください', 'err.fill': '必須項目を入力してください',
     // Buttons
@@ -360,6 +439,14 @@ const I18N = {
     'success.orderNum':         '注文番号 ',
     // Pay labels
     'payLabel': {card:'クレジットカード', paypay:'PayPay', deferred:'後払い（コンビニ）', bank:'銀行振込'},
+    // Policy
+    'policy.mini':           'ご購入には<a onclick="openPolicy(\'returns\')">返品・返金ポリシー</a>および<a onclick="openPolicy(\'terms\')">利用規約</a>への同意が必要です。',
+    'policy.agree':          '<a onclick="openPolicy(\'returns\')">返品・返金ポリシー</a>、<a onclick="openPolicy(\'shipping\')">配送ポリシー</a>、および<a onclick="openPolicy(\'terms\')">利用規約</a>を確認し、同意します。',
+    'policy.agreeError':     'ご注文前にポリシーへの同意をお願いします。',
+    'policy.tab.returns':    '返品・返金',
+    'policy.tab.shipping':   '配送',
+    'policy.tab.terms':      '利用規約',
+    'policy.tab.privacy':    'プライバシー',
   },
   en: {
     'nav.shop':             'Shop',
@@ -396,7 +483,11 @@ const I18N = {
     'fi.state':   'State / Province', 'fi.zip': 'ZIP / Postal Code',
     'fi.city':    'City', 'fi.addr': 'Street Address',
     'pay.card':    'Credit Card', 'pay.deferred': 'Pay Later (Convenience Store)', 'pay.bank': 'Bank Transfer',
-    'pay.cardNum': 'Card Number', 'pay.cardExp': 'Expiry Date',
+    'pay.cardInfo': 'Card Information',
+    'pay.secureNote':'🔒 Your card details are encrypted by Stripe and never stored on our servers.',
+    'pay.cardError': 'Please enter your card details',
+    'pay.declined':  'Payment was declined. Please check your card details.',
+    'pay.loginRequired': 'Please log in to pay by card. You can log in from My Page.',
     'err.required':'Required', 'err.select': 'Please select', 'err.fill': 'Please fill in required fields',
     'btn.toPayment': 'Payment →', 'btn.toConfirm': 'Review →',
     'btn.back': '← Back', 'btn.placeOrder': 'Place Order ✓',
@@ -409,6 +500,14 @@ const I18N = {
     'success.viewHistory':      'View Order History',
     'success.orderNum':         'Order No. ',
     'payLabel': {card:'Credit Card', paypay:'PayPay', deferred:'Pay Later', bank:'Bank Transfer'},
+    // Policy
+    'policy.mini':           'By purchasing you agree to our <a onclick="openPolicy(\'returns\')">Return & Refund Policy</a> and <a onclick="openPolicy(\'terms\')">Terms of Service</a>.',
+    'policy.agree':          'I have read and agree to the <a onclick="openPolicy(\'returns\')">Return & Refund Policy</a>, <a onclick="openPolicy(\'shipping\')">Shipping Policy</a>, and <a onclick="openPolicy(\'terms\')">Terms of Service</a>.',
+    'policy.agreeError':     'Please agree to our policies before placing your order.',
+    'policy.tab.returns':    'Returns & Refunds',
+    'policy.tab.shipping':   'Shipping',
+    'policy.tab.terms':      'Terms of Service',
+    'policy.tab.privacy':    'Privacy Policy',
   },
   zh: {
     'nav.shop':             '商店',
@@ -445,7 +544,11 @@ const I18N = {
     'fi.state':   '省 / 州', 'fi.zip': '邮政编码',
     'fi.city':    '城市', 'fi.addr': '详细地址',
     'pay.card':    '信用卡', 'pay.deferred': '货到付款（便利店）', 'pay.bank': '银行转账',
-    'pay.cardNum': '卡号', 'pay.cardExp': '有效期',
+    'pay.cardInfo': '银行卡信息',
+    'pay.secureNote':'🔒 您的卡信息由Stripe加密处理，本店服务器不会保存。',
+    'pay.cardError': '请输入银行卡信息',
+    'pay.declined':  '支付被拒绝，请检查您的卡信息。',
+    'pay.loginRequired': '使用信用卡支付需要登录，请前往我的页面登录。',
     'err.required':'请填写此项', 'err.select': '请选择', 'err.fill': '请填写必填项目',
     'btn.toPayment': '前往支付 →', 'btn.toConfirm': '确认订单 →',
     'btn.back': '← 返回', 'btn.placeOrder': '提交订单 ✓',
@@ -458,6 +561,14 @@ const I18N = {
     'success.viewHistory':      '查看订单记录',
     'success.orderNum':         '订单号 ',
     'payLabel': {card:'信用卡', paypay:'PayPay', deferred:'货到付款', bank:'银行转账'},
+    // Policy
+    'policy.mini':           '购买即表示您同意我们的<a onclick="openPolicy(\'returns\')">退货退款政策</a>和<a onclick="openPolicy(\'terms\')">服务条款</a>。',
+    'policy.agree':          '我已阅读并同意<a onclick="openPolicy(\'returns\')">退货退款政策</a>、<a onclick="openPolicy(\'shipping\')">配送政策</a>及<a onclick="openPolicy(\'terms\')">服务条款</a>。',
+    'policy.agreeError':     '请在下单前同意相关政策。',
+    'policy.tab.returns':    '退货退款',
+    'policy.tab.shipping':   '配送政策',
+    'policy.tab.terms':      '服务条款',
+    'policy.tab.privacy':    '隐私政策',
   }
 };
 
@@ -501,12 +612,9 @@ function setLang(lang) {
   const titles = {ja:'カート — FAIRWAY', en:'Cart — FAIRWAY', zh:'购物车 — FAIRWAY'};
   document.title = titles[lang] || titles.ja;
   renderCart();
+  // ポリシーコンテンツも更新
+  if (document.getElementById('policyOverlay')?.classList.contains('open')) renderPolicyContent();
 }
-
-// ── CSS inject ──
-const styleEl = document.createElement('style');
-styleEl.textContent = COMMON_CSS;
-document.head.appendChild(styleEl);
 
 let currentStep = 1;
 
@@ -526,6 +634,14 @@ function getShipping(sub) {
   if (sub === 0) return 0;
   if (currentZone === 'intl') return 3500;
   return sub >= 10000 ? 0 : 880;
+}
+
+function getCartThumb(i) {
+  // PRODUCT_IMAGESはcommon.jsで定義。img付き商品は実写、なければiconかデフォルト絵文字
+  if (i.img && typeof PRODUCT_IMAGES !== 'undefined' && PRODUCT_IMAGES[i.img]) {
+    return `<img src="${PRODUCT_IMAGES[i.img]}" style="width:100%;height:100%;object-fit:cover;display:block;" alt="${i.name}">`;
+  }
+  return `<span style="font-size:2rem">${i.icon || '📦'}</span>`;
 }
 
 function renderCart() {
@@ -556,9 +672,9 @@ function renderCart() {
     wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><p>${t('cart.empty')}</p><a href="index.html" class="btn-gold">${t('cart.startShopping')}</a></div>`;
     return;
   }
-  wrap.innerHTML = `<div class="cart-items-wrap">` + cart.map(i => `
+  wrap.innerHTML = cart.map(i => `
     <div class="cart-row">
-      <div class="ci-img">${i.icon}</div>
+      <div class="ci-img" style="${i.img ? 'padding:0;overflow:hidden;' : 'display:flex;align-items:center;justify-content:center;'}">${getCartThumb(i)}</div>
       <div class="ci-info">
         <div class="ci-brand">${i.brand}</div>
         <div class="ci-name">${i.name}</div>
@@ -572,7 +688,7 @@ function renderCart() {
         <div class="ci-price">¥${(i.price*i.qty).toLocaleString()}</div>
         <button class="ci-del" onclick="removeItem(${i.id})">${t('cart.delete')}</button>
       </div>
-    </div>`).join('') + `</div>`;
+    </div>`).join('');
 }
 
 function changeQty(id, d) {
@@ -601,16 +717,53 @@ function startCheckout() {
     set('s_city', currentUser.city);
     set('s_addr', currentUser.addr);
   }
-  // Update lang-dependent content in form
-  setLang(currentLang);
+  // フォーム内のdata-i18nラベルだけ更新（setLang全体は呼ばない）
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const val = I18N[currentLang]?.[key];
+    if (val !== undefined) el.innerHTML = val;
+  });
+  window.scrollTo(0, 0);
+}
+
+// ── Stripe 初期化 ──
+const STRIPE_PUBLISHABLE_KEY = 'pk_test_51TQSMXIbsNaLabFcAlLPHBZiPT7pTkohHlGcMtNDQ26BJeU64J1ypSToWk4U2iX5RUWqgIgOI37Rx44ypJH18xXU00pa4ZLUlV';
+let stripe = null, stripeCard = null, stripeMounted = false;
+
+function initStripe() {
+  if (stripe) return;
+  if (typeof Stripe === 'undefined') { console.warn('Stripe.js が読み込まれていません'); return; }
+  stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
+  const elements = stripe.elements({ locale: currentLang === 'zh' ? 'zh' : currentLang });
+  stripeCard = elements.create('card', {
+    hidePostalCode: true,
+    style: {
+      base: {
+        color: '#f5f0e8',
+        fontFamily: '"Zen Kaku Gothic New", sans-serif',
+        fontSize: '15px',
+        '::placeholder': { color: 'rgba(245,240,232,.35)' },
+      },
+      invalid: { color: '#e07060', iconColor: '#e07060' },
+    },
+  });
+  stripeCard.on('change', e => {
+    const err = document.getElementById('stripeCardError');
+    if (err) err.textContent = e.error ? e.error.message : '';
+  });
 }
 
 function toggleCard() {
   const isCard = document.getElementById('p_method').value === 'card';
-  ['cardNum','cardExp','cardCvc'].forEach(id => {
-    const el = document.getElementById(id);
-    if (el) el.style.display = isCard ? '' : 'none';
-  });
+  const wrap = document.getElementById('stripeCardWrap');
+  if (wrap) wrap.style.display = isCard ? '' : 'none';
+  if (isCard) {
+    initStripe();
+    if (stripeCard && !stripeMounted) {
+      stripeCard.mount('#stripeCardElement');
+      stripeMounted = true;
+    }
+  }
 }
 
 function validateStep(step) {
@@ -642,6 +795,11 @@ function validateStep(step) {
     const g = el?.closest('.form-group');
     if (!el?.value) { g?.classList.add('has-error'); showToast(t('err.fill')); return false; }
     g?.classList.remove('has-error');
+    // カード決済はログイン必須
+    if (el.value === 'card' && !token) {
+      showToast(t('pay.loginRequired'));
+      return false;
+    }
     return true;
   }
   return true;
@@ -674,7 +832,7 @@ function buildReview() {
   const ship = getShipping(sub);
   document.getElementById('orderReview').innerHTML = cart.map(i=>`
     <div class="or-item">
-      <div class="or-icon">${i.icon}</div>
+      <div class="or-icon" style="${i.img ? 'padding:0;overflow:hidden;width:40px;height:40px;' : ''}">${getCartThumb(i)}</div>
       <div class="or-info"><div class="or-name">${i.name}</div><div class="or-qty">${i.brand} · ${i.qty}</div></div>
       <div class="or-price">¥${(i.price*i.qty).toLocaleString()}</div>
     </div>`).join('');
@@ -690,11 +848,17 @@ function buildReview() {
     : '';
 
   document.getElementById('reviewAddr').innerHTML = `
-    <strong style="color:var(--cream)">${t('review.shipTo')}</strong><br>${addrDisplay}${shipInfo}
-    <br><br><strong style="color:var(--cream)">${t('review.payment')}</strong> ${payLabels[pmVal]||pmVal}`;
+    <strong style="color:#1a2e1c">${t('review.shipTo')}</strong><br>${addrDisplay}${shipInfo}
+    <br><br><strong style="color:#1a2e1c">${t('review.payment')}</strong> ${payLabels[pmVal]||pmVal}`;
 }
 
 async function placeOrder() {
+  // ポリシー同意チェック
+  if (!document.getElementById('policyAgree')?.checked) {
+    showToast(t('policy.agreeError'));
+    document.getElementById('policyAgree').closest('.policy-agree-row').style.border = '1px solid var(--red)';
+    return;
+  }
   const btn = document.getElementById('placeBtn');
   btn.disabled = true; btn.textContent = t('review.processing');
   const sub = getCartTotal();
@@ -705,14 +869,59 @@ async function placeOrder() {
     let orderNum;
     const countryCode = currentZone === 'intl' ? (document.getElementById('i_country')?.value || '') : '';
     if (token) {
-      const data = await api('POST','/api/orders',{
-        items, total: sub+ship,
-        shippingAddress: addr,
-        paymentMethod: document.getElementById('p_method').value,
-        shippingZone: currentZone,
-        countryCode,
-      });
-      orderNum = data.order_number;
+      const payMethod = document.getElementById('p_method').value;
+
+      // ── カード決済：Stripe 経由 ──
+      if (payMethod === 'card') {
+        if (!stripe || !stripeCard) {
+          showToast(t('pay.cardError'));
+          btn.disabled = false; btn.textContent = t('btn.placeOrder');
+          return;
+        }
+        // 1. サーバーで PaymentIntent を作成
+        const intentRes = await api('POST','/api/payments/create-intent',{
+          items: items.map(i => ({ product_id: i.id, qty: i.qty })),
+          shippingAddress: addr,
+          shippingZone: currentZone,
+          countryCode,
+        });
+
+        // 2. Stripe にカード情報を送信して決済
+        const result = await stripe.confirmCardPayment(intentRes.clientSecret, {
+          payment_method: {
+            card: stripeCard,
+            billing_details: {
+              name: currentZone === 'domestic'
+                ? (document.getElementById('s_name')?.value || '')
+                : (document.getElementById('i_name')?.value || ''),
+              email: currentUser?.email || undefined,
+            },
+          },
+        });
+
+        if (result.error) {
+          const errEl = document.getElementById('stripeCardError');
+          if (errEl) errEl.textContent = result.error.message;
+          showToast(result.error.message || t('pay.declined'));
+          btn.disabled = false; btn.textContent = t('btn.placeOrder');
+          return;
+        }
+
+        // 3. サーバーで注文を確定
+        await api('POST','/api/payments/confirm',{ paymentIntentId: result.paymentIntent.id });
+        orderNum = intentRes.orderNumber;
+
+      // ── その他の支払い方法：従来どおり ──
+      } else {
+        const data = await api('POST','/api/orders',{
+          items, total: sub+ship,
+          shippingAddress: addr,
+          paymentMethod: payMethod,
+          shippingZone: currentZone,
+          countryCode,
+        });
+        orderNum = data.order_number;
+      }
     } else {
       orderNum = `FW-${Date.now().toString().slice(-8)}`;
     }
@@ -726,6 +935,319 @@ async function placeOrder() {
     showToast(`${t('review.processing').replace('...', '')} Error: ` + e.message);
     btn.disabled=false; btn.textContent = t('btn.placeOrder');
   }
+}
+
+// ── POLICY CONTENT ──
+const POLICY_CONTENT = {
+  ja: {
+    returns: `
+      <h3>返品・返金ポリシー</h3>
+      <div class="highlight">未使用・未開封の商品に限り、お届けから<strong>30日以内</strong>であれば返品・交換を承ります。</div>
+      <h3>返品条件</h3>
+      <ul>
+        <li>お届けから30日以内であること</li>
+        <li>未使用・未開封で、タグや付属品がすべて揃っていること</li>
+        <li>商品に汚れ・傷・においがないこと</li>
+        <li>ご購入時の領収書または注文番号が確認できること</li>
+      </ul>
+      <h3>返品対象外</h3>
+      <ul>
+        <li>使用済み・開封済みの商品</li>
+        <li>カスタマイズ・フィッティング済みクラブ</li>
+        <li>セール・アウトレット品</li>
+        <li>衛生上の理由によりグローブ・アパレル類（試着後）</li>
+        <li>お届けから30日を超えた商品</li>
+      </ul>
+      <h3>返金について</h3>
+      <p>返品商品の確認後、<strong>5〜7営業日以内</strong>に元のお支払い方法へ返金いたします。クレジットカードの場合、ご利用明細への反映に数日かかる場合があります。</p>
+      <h3>交換について</h3>
+      <p>サイズ・カラー違いの交換は在庫がある場合に限り承ります。交換品の送料はFAIRWAYが負担します。</p>
+      <h3>不良品・誤配送</h3>
+      <p>商品に不具合があった場合または誤った商品が届いた場合は、送料着払いにて返品を承り、全額返金または交換品の発送をいたします。</p>
+      <h3>海外配送の返品</h3>
+      <p>海外からの返品は、返品送料はお客様負担となります。関税・輸入税の還付はFAIRWAYでは対応できかねます。</p>
+      <h3>お問い合わせ</h3>
+      <p>返品をご希望の場合は、注文番号・理由・写真（不良品の場合）を添えて <strong>support@fairway.jp</strong> までご連絡ください。</p>
+    `,
+    shipping: `
+      <h3>配送ポリシー</h3>
+      <div class="highlight">¥10,000以上のご注文は<strong>国内送料無料</strong>。¥10,000未満は一律¥880。</div>
+      <h3>国内配送</h3>
+      <ul>
+        <li>通常配送：2〜4営業日</li>
+        <li>送料：¥10,000以上で無料 / 未満は¥880</li>
+        <li>在庫商品は注文翌営業日に発送</li>
+        <li>離島・一部地域は別途送料・日数が必要な場合があります</li>
+      </ul>
+      <h3>海外配送</h3>
+      <ul>
+        <li>配送日数：7〜14営業日（国・地域により異なります）</li>
+        <li>基本送料：¥3,500〜（国・地域により異なります）</li>
+        <li>関税・輸入税・通関手数料はお客様負担となります</li>
+        <li>通関の遅延によりお届けが遅れる場合があります</li>
+      </ul>
+      <h3>追跡について</h3>
+      <p>発送後、追跡番号をメールにてお知らせします。配送状況は発送業者のサイトにてご確認いただけます。</p>
+      <h3>未着・紛失</h3>
+      <p>お届け予定日から7日を過ぎても届かない場合は、<strong>support@fairway.jp</strong> までご連絡ください。</p>
+    `,
+    terms: `
+      <h3>利用規約</h3>
+      <p>FAIRWAYをご利用いただくにあたり、以下の利用規約をよくお読みください。</p>
+      <h3>1. サービスの利用</h3>
+      <p>本サイトは18歳以上の方を対象としています。ご購入の際は正確な情報をご入力ください。虚偽の情報によるご注文はキャンセルとなる場合があります。</p>
+      <h3>2. 価格・在庫</h3>
+      <p>価格は予告なく変更される場合があります。在庫切れの際はご注文をキャンセルし、全額返金いたします。</p>
+      <h3>3. 支払い</h3>
+      <p>クレジットカード・PayPay・後払い・銀行振込に対応しています。ご注文確定後に決済が行われます。</p>
+      <h3>4. 知的財産権</h3>
+      <p>本サイトに掲載されているすべてのコンテンツ（画像・テキスト・ロゴ等）はFAIRWAYまたは各ブランドに帰属します。無断転載・複製を禁じます。</p>
+      <h3>5. 免責事項</h3>
+      <p>商品の使用による怪我・損害についてFAIRWAYは責任を負いかねます。ゴルフ用品は正しい方法でご使用ください。</p>
+      <h3>6. 準拠法</h3>
+      <p>本規約は日本法に準拠し、東京地方裁判所を専属管轄裁判所とします。</p>
+    `,
+    privacy: `
+      <h3>プライバシーポリシー</h3>
+      <p>FAIRWAYは、お客様の個人情報保護を最重要事項として取り組んでいます。</p>
+      <h3>収集する情報</h3>
+      <ul>
+        <li>氏名・住所・電話番号・メールアドレス</li>
+        <li>ご注文情報・購入履歴</li>
+        <li>サイト閲覧履歴（Cookie）</li>
+      </ul>
+      <h3>利用目的</h3>
+      <ul>
+        <li>商品の発送・お問い合わせ対応</li>
+        <li>お得な情報・新商品のご案内（メール配信）</li>
+        <li>サービスの改善・分析</li>
+      </ul>
+      <h3>第三者への提供</h3>
+      <p>配送業者・決済事業者への必要最小限の情報共有を除き、お客様の個人情報を第三者に販売・提供することはありません。</p>
+      <h3>Cookie</h3>
+      <p>利便性向上のためCookieを使用しています。ブラウザの設定で無効化することも可能です。</p>
+      <h3>お問い合わせ</h3>
+      <p>個人情報に関するお問い合わせは <strong>privacy@fairway.jp</strong> までご連絡ください。</p>
+    `,
+  },
+  en: {
+    returns: `
+      <h3>Return & Refund Policy</h3>
+      <div class="highlight">We accept returns on unused, unopened items within <strong>30 days</strong> of delivery.</div>
+      <h3>Return Conditions</h3>
+      <ul>
+        <li>Returned within 30 days of delivery</li>
+        <li>Unused and unopened, with all tags and accessories intact</li>
+        <li>Free from damage, stains, or odors</li>
+        <li>Proof of purchase (receipt or order number) provided</li>
+      </ul>
+      <h3>Non-Returnable Items</h3>
+      <ul>
+        <li>Used or opened items</li>
+        <li>Custom-fitted or personalized clubs</li>
+        <li>Sale or clearance items</li>
+        <li>Gloves and apparel for hygiene reasons (after try-on)</li>
+        <li>Items returned after 30 days</li>
+      </ul>
+      <h3>Refunds</h3>
+      <p>Once we receive and inspect your return, we will process a refund to your original payment method within <strong>5–7 business days</strong>. Credit card refunds may take additional time to appear on your statement.</p>
+      <h3>Exchanges</h3>
+      <p>We accept exchanges for different sizes or colors, subject to availability. FAIRWAY covers the shipping cost for the replacement item.</p>
+      <h3>Defective or Incorrect Items</h3>
+      <p>If you receive a defective or incorrect item, we will cover return shipping and issue a full refund or send a replacement at no charge.</p>
+      <h3>International Returns</h3>
+      <p>International customers are responsible for return shipping costs. FAIRWAY cannot refund customs duties or import taxes.</p>
+      <h3>Contact Us</h3>
+      <p>To initiate a return, please email <strong>support@fairway.jp</strong> with your order number, reason for return, and photos (if defective).</p>
+    `,
+    shipping: `
+      <h3>Shipping Policy</h3>
+      <div class="highlight">Free domestic shipping on orders over <strong>¥10,000</strong>. Orders under ¥10,000 ship for ¥880.</div>
+      <h3>Domestic Shipping (Japan)</h3>
+      <ul>
+        <li>Delivery: 2–4 business days</li>
+        <li>Shipping fee: Free over ¥10,000 / ¥880 under ¥10,000</li>
+        <li>In-stock items ship the next business day</li>
+        <li>Remote islands may require additional fees and time</li>
+      </ul>
+      <h3>International Shipping</h3>
+      <ul>
+        <li>Delivery: 7–14 business days (varies by destination)</li>
+        <li>Starting from ¥3,500 (varies by country)</li>
+        <li>Customs duties, import taxes, and brokerage fees are the customer's responsibility</li>
+        <li>Customs delays may extend delivery time</li>
+      </ul>
+      <h3>Tracking</h3>
+      <p>A tracking number will be emailed after shipment. You can monitor delivery status on the carrier's website.</p>
+      <h3>Lost or Missing Packages</h3>
+      <p>If your order hasn't arrived 7 days past the expected delivery date, please contact us at <strong>support@fairway.jp</strong>.</p>
+    `,
+    terms: `
+      <h3>Terms of Service</h3>
+      <p>Please read these Terms of Service carefully before using FAIRWAY.</p>
+      <h3>1. Eligibility</h3>
+      <p>This site is intended for users aged 18 and over. Please provide accurate information when placing an order. Orders based on false information may be cancelled.</p>
+      <h3>2. Pricing & Availability</h3>
+      <p>Prices are subject to change without notice. If an item is out of stock, your order will be cancelled and a full refund issued.</p>
+      <h3>3. Payment</h3>
+      <p>We accept credit cards, PayPay, deferred payment, and bank transfer. Payment is processed upon order confirmation.</p>
+      <h3>4. Intellectual Property</h3>
+      <p>All content on this site (images, text, logos, etc.) belongs to FAIRWAY or the respective brands. Unauthorized reproduction is prohibited.</p>
+      <h3>5. Disclaimer</h3>
+      <p>FAIRWAY is not liable for injuries or damages resulting from the use of purchased products. Please use golf equipment safely and correctly.</p>
+      <h3>6. Governing Law</h3>
+      <p>These Terms are governed by the laws of Japan. The Tokyo District Court shall have exclusive jurisdiction.</p>
+    `,
+    privacy: `
+      <h3>Privacy Policy</h3>
+      <p>FAIRWAY is committed to protecting your personal information.</p>
+      <h3>Information We Collect</h3>
+      <ul>
+        <li>Name, address, phone number, email address</li>
+        <li>Order information and purchase history</li>
+        <li>Browsing data (Cookies)</li>
+      </ul>
+      <h3>How We Use Your Information</h3>
+      <ul>
+        <li>Order fulfillment and customer support</li>
+        <li>Promotional emails and new product announcements</li>
+        <li>Service improvement and analytics</li>
+      </ul>
+      <h3>Third-Party Sharing</h3>
+      <p>We share only the minimum necessary information with shipping carriers and payment processors. We do not sell your personal data to third parties.</p>
+      <h3>Cookies</h3>
+      <p>We use cookies to enhance your experience. You can disable them in your browser settings.</p>
+      <h3>Contact</h3>
+      <p>For privacy-related inquiries, please email <strong>privacy@fairway.jp</strong>.</p>
+    `,
+  },
+  zh: {
+    returns: `
+      <h3>退货退款政策</h3>
+      <div class="highlight">未使用、未开封的商品可在收货后 <strong>30天内</strong> 申请退货或换货。</div>
+      <h3>退货条件</h3>
+      <ul>
+        <li>在收货后30天内提出申请</li>
+        <li>商品未使用、未开封，标签及配件齐全</li>
+        <li>商品无污渍、损坏或异味</li>
+        <li>能提供购买凭证（收据或订单号）</li>
+      </ul>
+      <h3>不可退货商品</h3>
+      <ul>
+        <li>已使用或已开封的商品</li>
+        <li>定制或已拟合的球杆</li>
+        <li>促销或特价商品</li>
+        <li>出于卫生原因，手套及服装（试穿后）</li>
+        <li>超过30天的商品</li>
+      </ul>
+      <h3>退款</h3>
+      <p>收到退货商品并确认后，将在 <strong>5〜7个工作日内</strong> 退款至原支付方式。信用卡退款可能需要额外时间才能在账单中显示。</p>
+      <h3>换货</h3>
+      <p>在库存充足的情况下，可申请尺码或颜色换货。换货商品的运费由FAIRWAY承担。</p>
+      <h3>瑕疵品或错发商品</h3>
+      <p>如收到瑕疵品或错误商品，FAIRWAY将承担退货运费并全额退款或重新发货。</p>
+      <h3>海外退货</h3>
+      <p>国际退货的运费由买家承担。关税及进口税不在退款范围内。</p>
+      <h3>联系我们</h3>
+      <p>如需申请退货，请发送邮件至 <strong>support@fairway.jp</strong>，并附上订单号、退货原因及照片（瑕疵品时）。</p>
+    `,
+    shipping: `
+      <h3>配送政策</h3>
+      <div class="highlight">日本国内订单满<strong>¥10,000免运费</strong>。不满¥10,000运费为¥880。</div>
+      <h3>日本国内配送</h3>
+      <ul>
+        <li>配送时间：2〜4个工作日</li>
+        <li>运费：满¥10,000免费 / 不满¥10,000收¥880</li>
+        <li>有库存商品于订单翌日发货</li>
+        <li>偏远岛屿地区可能需要额外运费及时间</li>
+      </ul>
+      <h3>国际配送</h3>
+      <ul>
+        <li>配送时间：7〜14个工作日（因国家/地区而异）</li>
+        <li>运费起：¥3,500（因国家/地区而异）</li>
+        <li>关税、进口税及清关费用由买家承担</li>
+        <li>清关延误可能影响到货时间</li>
+      </ul>
+      <h3>物流追踪</h3>
+      <p>发货后将通过邮件发送追踪单号。您可在承运商官网查询配送状态。</p>
+      <h3>未收到包裹</h3>
+      <p>若超过预计到货日期7天仍未收到商品，请联系 <strong>support@fairway.jp</strong>。</p>
+    `,
+    terms: `
+      <h3>服务条款</h3>
+      <p>使用FAIRWAY前，请仔细阅读以下服务条款。</p>
+      <h3>1. 适用对象</h3>
+      <p>本网站适用于18岁及以上用户。下单时请提供准确信息。因虚假信息产生的订单可能被取消。</p>
+      <h3>2. 价格与库存</h3>
+      <p>价格如有变动，恕不另行通知。若商品缺货，订单将被取消并全额退款。</p>
+      <h3>3. 支付</h3>
+      <p>支持信用卡、PayPay、货到付款及银行转账。订单确认后进行扣款。</p>
+      <h3>4. 知识产权</h3>
+      <p>本网站所有内容（图片、文字、Logo等）归FAIRWAY或相关品牌所有，未经授权禁止转载或复制。</p>
+      <h3>5. 免责声明</h3>
+      <p>FAIRWAY不对因使用购买商品而造成的伤害或损失承担责任。请正确、安全地使用高尔夫用品。</p>
+      <h3>6. 适用法律</h3>
+      <p>本条款适用日本法律，以东京地方法院为专属管辖法院。</p>
+    `,
+    privacy: `
+      <h3>隐私政策</h3>
+      <p>FAIRWAY高度重视您的个人信息保护。</p>
+      <h3>收集的信息</h3>
+      <ul>
+        <li>姓名、地址、电话号码、电子邮箱</li>
+        <li>订单信息及购买记录</li>
+        <li>浏览数据（Cookie）</li>
+      </ul>
+      <h3>使用目的</h3>
+      <ul>
+        <li>商品发货及客户服务</li>
+        <li>促销邮件及新品通知</li>
+        <li>服务改善与数据分析</li>
+      </ul>
+      <h3>信息共享</h3>
+      <p>除向承运商和支付机构提供必要信息外，FAIRWAY不会向第三方出售或提供您的个人信息。</p>
+      <h3>Cookie</h3>
+      <p>我们使用Cookie以提升您的使用体验。您可在浏览器设置中禁用Cookie。</p>
+      <h3>联系方式</h3>
+      <p>如有隐私相关问题，请发送邮件至 <strong>privacy@fairway.jp</strong>。</p>
+    `,
+  },
+};
+
+let currentPolicyTab = 'returns';
+
+function openPolicy(tab = 'returns') {
+  currentPolicyTab = tab;
+  renderPolicyContent();
+  document.getElementById('policyOverlay').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closePolicy() {
+  document.getElementById('policyOverlay').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closePolicyOutside(e) {
+  if (e.target.id === 'policyOverlay') closePolicy();
+}
+
+function switchPolicy(tab) {
+  currentPolicyTab = tab;
+  document.querySelectorAll('.policy-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === tab));
+  document.querySelectorAll('.policy-section').forEach(s => s.classList.toggle('active', s.id === 'policy-' + tab));
+  renderPolicyContent();
+}
+
+function renderPolicyContent() {
+  const lang = currentLang in POLICY_CONTENT ? currentLang : 'ja';
+  const tabs = ['returns','shipping','terms','privacy'];
+  tabs.forEach(tab => {
+    document.querySelectorAll('.policy-tab').forEach(b => b.classList.toggle('active', b.dataset.tab === currentPolicyTab));
+    document.querySelectorAll('.policy-section').forEach(s => s.classList.toggle('active', s.id === 'policy-' + currentPolicyTab));
+    const el = document.getElementById(`policy-${tab}-content`);
+    if (el) el.innerHTML = POLICY_CONTENT[lang][tab] || '';
+  });
 }
 
 async function init() {
