@@ -32,6 +32,8 @@ const PRODUCTS = [
     {id:41,cat:'bag',brand:'Heritage Leather',name:'Vintage Leather Golf Case',img:'leather_case_1',gallery:['leather_case_1','leather_case_2','leather_case_5','leather_case_3','leather_case_4'],desc:'ハンドメイド本革のクラシックゴルフケース。真鍮金具＆タータンチェック裏地。',descLong:'職人が一点ずつ手縫いで仕上げた本革製ヴィンテージゴルフケース。上質なタンレザーに真鍮バックルとショルダーストラップを組み合わせた、往年のスコットランドスタイル。内部と蓋にはタータンチェックの裏地をあしらい、クラブを優しく保護します。専用のボール入れケース付き。使い込むほどに味わい深く育つ、生涯もののケースです。',price:88000,badge:'NEW',icon:null,specs:[['ブランド','Heritage Leather'],['素材','本革（タンニンなめし）'],['金具','真鍮'],['裏地','タータンチェック'],['付属品','ボールケース / ショルダーストラップ'],['製法','ハンドステッチ']],rating:5.0,reviews:[{user:'瀬川 K.',date:'2026.07.17',text:'革の質感が素晴らしい。使うほど風合いが増していきます。'},{user:'新井 T.',date:'2026.07.18',text:'クラシックゴルフにぴったり。所有する喜びがあります。'}]},
   {id:40,cat:'ball',brand:'TaylorMade',name:'TP5 Baseball Limited (12個入)',img:'tp5bb_1',gallery:['tp5bb_1','tp5bb_2','tp5bb_3'],desc:'2026限定。ベースボールデザインのTP5。5層構造。',descLong:'TaylorMade の2026年リミテッドエディション TP5。野球ボールの赤い縫い目を再現したユニークなデザインで、パッケージもレトロなベースボール仕様。5層構造による圧倒的な飛距離とグリーン周りのスピン性能はそのまま。コレクションにも実戦にも使える限定モデルです。',price:8470,badge:'NEW',icon:null,specs:[['ブランド','TaylorMade'],['モデル','TP5 2026 Limited Edition'],['デザイン','ベースボール'],['層構造','5ピース'],['入数','12個入り'],['備考','数量限定']],rating:4.9,reviews:[{user:'野口 H.',date:'2026.07.16',text:'デザインが可愛くて使うのがもったいない。'},{user:'三浦 T.',date:'2026.07.18',text:'性能は通常のTP5と同じ。プレゼントにも最適。'}]},
 
+  {id:43,cat:'club',brand:'L.A.B GOLF',name:'VZN.1 Putter',img:'vzn_1',gallery:['vzn_1','vzn_2'],desc:'ゼロトルク設計で驚異の直進性。全10色のカラーモデル。',descLong:'L.A.B GOLF独自の「Lie Angle Balance」理論に基づき、ヘッドの重心をシャフト軸線上へ完全配置。ストローク中に生じる不要なフェース回転（トルク）を極限まで排除し、誰でも安定したストレートストロークを実現します。グリーン・ブルー・レッド・パープルなど全10色のアルマイトカラーからお選びいただけます。',price:68000,badge:'NEW',icon:null,specs:[['テクノロジー','Lie Angle Balance（ゼロトルク）'],['ヘッド素材','6061アルミニウム（アルマイト仕上げ）'],['シャフト長','33 / 34 / 35インチ'],['グリップ','L.A.B GOLFオリジナルグリップ'],['カラー','全10色展開']],rating:4.9,reviews:[{user:'岡田 R.',date:'2026.05.02',text:'パチンと入る感覚が別格。ラインに逆らわず素直に転がります。'},{user:'村上 A.',date:'2026.04.20',text:'カラーが豊富で自分だけの1本が選べるのが嬉しい。'}]},
+  {id:44,cat:'club',brand:'L.A.B GOLF',name:'DF3i Putter',img:'df3i_1',gallery:['df3i_1','df3i_2'],desc:'デュアルフォース設計のマレット型。圧倒的な直進安定性。',descLong:'2つの慣性モーメント（MOI）源を組み合わせた「Dual Force」構造により、トウ・ヒール双方向のブレを抑制。ラウンド型マレットヘッドが視覚的なアライメントもサポートします。ホワイトシャフトと鮮やかなカラーリングの組み合わせが人気です。',price:68000,badge:'NEW',icon:null,specs:[['テクノロジー','Dual Force（デュアルフォースMOI）'],['ヘッド素材','6061アルミニウム（アルマイト仕上げ）'],['シャフト','ホワイトストレートシャフト'],['グリップ','L.A.B GOLFオリジナルグリップ'],['カラー','ピンク/パープル/グリーン/ブルー 他']],rating:4.7,reviews:[{user:'橋本 N.',date:'2026.04.28',text:'丸型ヘッドで構えやすく、パット数が確実に減りました。'}]},
 ];
 
 // ── 商品画像（外部ファイル参照）──
@@ -109,6 +111,10 @@ const PRODUCT_IMAGES = new Proxy({
   leather_case_5: 'leather_case_5.jpg',
   pickle_key_1: 'pickle_key_1.jpg',
   pg_kitty_set: 'pg_kitty_set.jpg',
+  vzn_1: 'vzn-1.jpg',
+  vzn_2: 'vzn-2.jpg',
+  df3i_1: 'df3i-1.jpg',
+  df3i_2: 'df3i-2.jpg',
 }, {
   get(target, prop) {
     const file = target[prop];
