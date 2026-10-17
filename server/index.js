@@ -33,6 +33,20 @@ function auth(req, res, next) {
   try { req.userId = jwt.verify(h.slice(7), JWT_SECRET).userId; next(); }
   catch { res.status(401).json({ error: 'トークンが無効です' }); }
 }
+// ログイン任意（ゲスト購入用）。トークンがあれば req.userId をセット、なければ null
+function optionalAuth(req, res, next) {
+  const h = req.headers.authorization;
+  req.userId = null;
+  if (!h?.startsWith('Bearer ')) return next();
+  try { req.userId = jwt.verify(h.slice(7), JWT_SECRET).userId; next(); }
+  catch { res.status(401).json({ error: 'トークンが無効です' }); }
+}
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+// ゲスト注文はメールアドレス必須。問題なければ null、エラーならメッセージを返す
+function checkGuestEmail(req) {
+  if (req.userId) return null;
+  return EMAIL_RE.test(req.body.guestEmail || '') ? null : 'メールアドレスを入力してください';
+}
 
 // ── DB INIT ──
 async function initDB() {
@@ -68,6 +82,7 @@ async function initDB() {
       items JSONB NOT NULL,
       created_at TIMESTAMPTZ DEFAULT NOW()
     );
+    ALTER TABLE orders ADD COLUMN IF NOT EXISTS guest_email TEXT;
 
     CREATE TABLE IF NOT EXISTS wishlists (
       id SERIAL PRIMARY KEY,
@@ -201,19 +216,21 @@ app.get('/api/orders', auth, async (req, res) => {
 });
 
 // Stripe不要の通常注文（ローカル開発・後払い・銀行振込用）
-app.post('/api/orders', auth, async (req, res) => {
-  const { items, total, shippingAddress, paymentMethod } = req.body;
+app.post('/api/orders', optionalAuth, async (req, res) => {
+  const { items, total, shippingAddress, paymentMethod, guestEmail } = req.body;
   if (!items || !total) return res.status(400).json({ error: '注文データが不正です' });
+  const emailErr = checkGuestEmail(req);
+  if (emailErr) return res.status(400).json({ error: emailErr });
   const orderNumber = `FW-${Date.now().toString().slice(-8)}`;
   const client = await pool.connect();
   try {
     await client.query('BEGIN');
     const r = await client.query(
-      `INSERT INTO orders (user_id, order_number, status, payment_status, payment_intent_id, total, shipping_address, payment_method, items)
-       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING *`,
-      [req.userId, orderNumber, 'processing', 'paid', null, total, shippingAddress, paymentMethod, JSON.stringify(items)]
+      `INSERT INTO orders (user_id, order_number, status, payment_status, payment_intent_id, total, shipping_address, payment_method, items, guest_email)
+       VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING *`,
+      [req.userId, orderNumber, 'processing', 'paid', null, total, shippingAddress, paymentMethod, JSON.stringify(items), req.userId ? null : guestEmail]
     );
-    await client.query('DELETE FROM carts WHERE user_id=$1', [req.userId]);
+    if (req.userId) await client.query('DELETE FROM carts WHERE user_id=$1', [req.userId]);
     await client.query('COMMIT');
     res.json(r.rows[0]);
   } catch (e) {
@@ -351,28 +368,34 @@ app.patch('/api/addresses/:id/set-default', auth, async (req, res) => {
 // ════════════════════════════════════════
 // STRIPE PAYMENTS
 // ════════════════════════════════════════
-app.post('/api/payments/create-intent', auth, async (req, res) => {
-  const { items, shippingAddress } = req.body;
+app.post('/api/payments/create-intent', optionalAuth, async (req, res) => {
+  const { items, shippingAddress, guestEmail } = req.body;
   if (!items?.length) return res.status(400).json({ error: 'カートが空です' });
+  const emailErr = checkGuestEmail(req);
+  if (emailErr) return res.status(400).json({ error: emailErr });
 const PRICES = { 1:88000,2:132000,3:7800,4:14800,5:52000,6:3800,7:42000,8:8200,9:12800,10:68000,11:76000,12:38000,13:18500,20:14800,21:32800,22:32800,23:6800,24:6800,25:28600,26:22800,27:22800,28:168000,29:7800,30:12800,31:8900,32:9800,33:8500,34:4800,35:6200,36:198000,37:78000,38:158000,39:128000,40:8470,41:88000,42:50,43:140000,44:140000,45:217500,46:3000 };
   const subtotal = items.reduce((s, i) => s + (PRICES[i.product_id] || 0) * i.qty, 0);
   if (subtotal <= 0) return res.status(400).json({ error: '金額の計算に失敗しました' });
   const shipping = subtotal >= 10000 ? 0 : 880;
   const total = subtotal + shipping;
   try {
-    const userRes = await pool.query('SELECT stripe_customer_id FROM users WHERE id=$1', [req.userId]);
-    const customerId = userRes.rows[0]?.stripe_customer_id;
+    let customerId;
+    if (req.userId) {
+      const userRes = await pool.query('SELECT stripe_customer_id FROM users WHERE id=$1', [req.userId]);
+      customerId = userRes.rows[0]?.stripe_customer_id;
+    }
     const intent = await stripe.paymentIntents.create({
       amount: total, currency: 'jpy',
       customer: customerId || undefined,
+      receipt_email: req.userId ? undefined : guestEmail,
       payment_method_types: ['card'],
-      metadata: { user_id: String(req.userId), shipping_address: shippingAddress || '' },
-      description: `FAIRWAY注文 - ユーザー${req.userId}`,
+      metadata: { user_id: req.userId ? String(req.userId) : 'guest', guest_email: req.userId ? '' : guestEmail, shipping_address: (shippingAddress || '').slice(0, 500) },
+      description: req.userId ? `FAIRWAY注文 - ユーザー${req.userId}` : `FAIRWAY注文 - ゲスト ${guestEmail}`,
     });
     const orderNumber = `FW-${Date.now().toString().slice(-8)}`;
     await pool.query(
-      'INSERT INTO orders (user_id,order_number,status,payment_status,payment_intent_id,total,shipping_address,payment_method,items) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9)',
-      [req.userId, orderNumber, 'pending_payment', 'unpaid', intent.id, total, shippingAddress || '', 'card', JSON.stringify(items)]
+      'INSERT INTO orders (user_id,order_number,status,payment_status,payment_intent_id,total,shipping_address,payment_method,items,guest_email) VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)',
+      [req.userId, orderNumber, 'pending_payment', 'unpaid', intent.id, total, shippingAddress || '', 'card', JSON.stringify(items), req.userId ? null : guestEmail]
     );
     res.json({ clientSecret: intent.client_secret, orderNumber, total, shipping });
   } catch (e) {
@@ -381,7 +404,7 @@ const PRICES = { 1:88000,2:132000,3:7800,4:14800,5:52000,6:3800,7:42000,8:8200,9
   }
 });
 
-app.post('/api/payments/confirm', auth, async (req, res) => {
+app.post('/api/payments/confirm', optionalAuth, async (req, res) => {
   const { paymentIntentId } = req.body;
   if (!paymentIntentId) return res.status(400).json({ error: 'paymentIntentIdが必要です' });
   try {
@@ -392,11 +415,11 @@ app.post('/api/payments/confirm', auth, async (req, res) => {
     try {
       await client.query('BEGIN');
       const r = await client.query(
-        "UPDATE orders SET status='processing',payment_status='paid' WHERE payment_intent_id=$1 AND user_id=$2 RETURNING *",
+        "UPDATE orders SET status='processing',payment_status='paid' WHERE payment_intent_id=$1 AND user_id IS NOT DISTINCT FROM $2 RETURNING *",
         [paymentIntentId, req.userId]
       );
       if (!r.rows[0]) { await client.query('ROLLBACK'); return res.status(404).json({ error: '注文が見つかりません' }); }
-      await client.query('DELETE FROM carts WHERE user_id=$1', [req.userId]);
+      if (req.userId) await client.query('DELETE FROM carts WHERE user_id=$1', [req.userId]);
       await client.query('COMMIT');
       res.json({ order: r.rows[0] });
     } catch (e) { await client.query('ROLLBACK'); throw e; }

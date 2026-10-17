@@ -199,6 +199,11 @@
         ⚠️ <strong>海外配送について：</strong>別途国際送料（¥3,500〜）・関税・輸入税が発生する場合があります。配送日数は通常7〜14営業日です。
       </div>
 
+      <!-- ゲスト用メールアドレス（未ログイン時のみ表示） -->
+      <div class="form-grid" id="guestEmailWrap" style="display:none">
+        <div class="form-group full"><label data-i18n="f.email">メールアドレス <span>*</span></label><input id="g_email" type="email" placeholder="example@mail.com"><span class="error-msg" data-i18n="err.email">正しいメールアドレスを入力してください</span></div>
+      </div>
+
       <!-- DOMESTIC FORM -->
       <div id="formDomestic">
         <div class="form-grid">
@@ -424,6 +429,7 @@ const I18N = {
     'pay.loginRequired': 'カード決済にはログインが必要です。マイページからログインしてください。',
     // Errors
     'err.required': '入力してください', 'err.select': '選択してください', 'err.fill': '必須項目を入力してください',
+    'f.email': 'メールアドレス', 'err.email': '正しいメールアドレスを入力してください',
     // Buttons
     'btn.toPayment': '支払いへ →', 'btn.toConfirm': '確認へ →',
     'btn.back': '← 戻る', 'btn.placeOrder': '注文を確定する ✓',
@@ -489,6 +495,7 @@ const I18N = {
     'pay.declined':  'Payment was declined. Please check your card details.',
     'pay.loginRequired': 'Please log in to pay by card. You can log in from My Page.',
     'err.required':'Required', 'err.select': 'Please select', 'err.fill': 'Please fill in required fields',
+    'f.email': 'Email', 'err.email': 'Please enter a valid email address',
     'btn.toPayment': 'Payment →', 'btn.toConfirm': 'Review →',
     'btn.back': '← Back', 'btn.placeOrder': 'Place Order ✓',
     'review.shipTo': 'Ship to: ', 'review.payment': 'Payment: ', 'review.processing': 'Processing...',
@@ -550,6 +557,7 @@ const I18N = {
     'pay.declined':  '支付被拒绝，请检查您的卡信息。',
     'pay.loginRequired': '使用信用卡支付需要登录，请前往我的页面登录。',
     'err.required':'请填写此项', 'err.select': '请选择', 'err.fill': '请填写必填项目',
+    'f.email': '电子邮箱', 'err.email': '请输入有效的电子邮箱',
     'btn.toPayment': '前往支付 →', 'btn.toConfirm': '确认订单 →',
     'btn.back': '← 返回', 'btn.placeOrder': '提交订单 ✓',
     'review.shipTo': '收货地址：', 'review.payment': '支付方式：', 'review.processing': '处理中...',
@@ -706,6 +714,8 @@ function removeItem(id) {
 function startCheckout() {
   document.getElementById('cartView').style.display = 'none';
   document.getElementById('checkoutView').style.display = 'block';
+  // 未ログイン時はゲスト購入用にメールアドレス欄を表示
+  document.getElementById('guestEmailWrap').style.display = token ? 'none' : '';
   // Autofill from profile
   if (currentUser) {
     const set = (id,v) => { const el=document.getElementById(id); if(el&&v) el.value=v; };
@@ -768,6 +778,12 @@ function toggleCard() {
 
 function validateStep(step) {
   if (step === 1) {
+    if (!token) {
+      const el = document.getElementById('g_email');
+      const g = el?.closest('.form-group');
+      if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(el?.value.trim() || '')) { g?.classList.add('has-error'); showToast(t('err.email')); return false; }
+      g?.classList.remove('has-error');
+    }
     if (currentZone === 'domestic') {
       const fields = ['s_name','s_kana','s_tel','s_zip','s_pref','s_city','s_addr'];
       let ok = true;
@@ -795,11 +811,6 @@ function validateStep(step) {
     const g = el?.closest('.form-group');
     if (!el?.value) { g?.classList.add('has-error'); showToast(t('err.fill')); return false; }
     g?.classList.remove('has-error');
-    // カード決済はログイン必須
-    if (el.value === 'card' && !token) {
-      showToast(t('pay.loginRequired'));
-      return false;
-    }
     return true;
   }
   return true;
@@ -818,12 +829,13 @@ function goStep(n) {
 }
 
 function getShippingAddr() {
+  const v = id => document.getElementById(id)?.value || '';
   if (currentZone === 'domestic') {
-    return `${document.getElementById('s_pref')?.value||''}${document.getElementById('s_city')?.value||''}${document.getElementById('s_addr')?.value||''}`;
+    return `${v('s_name')}（${v('s_kana')}） TEL:${v('s_tel')} 〒${v('s_zip')} ${v('s_pref')}${v('s_city')}${v('s_addr')}`;
   } else {
     const country = document.getElementById('i_country');
     const countryName = country?.options[country.selectedIndex]?.text || '';
-    return `${countryName} ${document.getElementById('i_state')?.value||''} ${document.getElementById('i_city')?.value||''} ${document.getElementById('i_addr')?.value||''} ${document.getElementById('i_zip')?.value||''}`.trim();
+    return `${v('i_name')} TEL:${v('i_tel')} ${countryName} ${v('i_state')} ${v('i_city')} ${v('i_addr')} ${v('i_zip')}`.trim();
   }
 }
 
@@ -868,62 +880,62 @@ async function placeOrder() {
   try {
     let orderNum;
     const countryCode = currentZone === 'intl' ? (document.getElementById('i_country')?.value || '') : '';
-    if (token) {
-      const payMethod = document.getElementById('p_method').value;
+    // 未ログイン（ゲスト）の場合は入力されたメールアドレスを送る
+    const guestEmail = token ? undefined : document.getElementById('g_email')?.value.trim();
+    const payMethod = document.getElementById('p_method').value;
 
-      // ── カード決済：Stripe 経由 ──
-      if (payMethod === 'card') {
-        if (!stripe || !stripeCard) {
-          showToast(t('pay.cardError'));
-          btn.disabled = false; btn.textContent = t('btn.placeOrder');
-          return;
-        }
-        // 1. サーバーで PaymentIntent を作成
-        const intentRes = await api('POST','/api/payments/create-intent',{
-          items: items.map(i => ({ product_id: i.id, qty: i.qty })),
-          shippingAddress: addr,
-          shippingZone: currentZone,
-          countryCode,
-        });
-
-        // 2. Stripe にカード情報を送信して決済
-        const result = await stripe.confirmCardPayment(intentRes.clientSecret, {
-          payment_method: {
-            card: stripeCard,
-            billing_details: {
-              name: currentZone === 'domestic'
-                ? (document.getElementById('s_name')?.value || '')
-                : (document.getElementById('i_name')?.value || ''),
-              email: currentUser?.email || undefined,
-            },
-          },
-        });
-
-        if (result.error) {
-          const errEl = document.getElementById('stripeCardError');
-          if (errEl) errEl.textContent = result.error.message;
-          showToast(result.error.message || t('pay.declined'));
-          btn.disabled = false; btn.textContent = t('btn.placeOrder');
-          return;
-        }
-
-        // 3. サーバーで注文を確定
-        await api('POST','/api/payments/confirm',{ paymentIntentId: result.paymentIntent.id });
-        orderNum = intentRes.orderNumber;
-
-      // ── その他の支払い方法：従来どおり ──
-      } else {
-        const data = await api('POST','/api/orders',{
-          items, total: sub+ship,
-          shippingAddress: addr,
-          paymentMethod: payMethod,
-          shippingZone: currentZone,
-          countryCode,
-        });
-        orderNum = data.order_number;
+    // ── カード決済：Stripe 経由 ──
+    if (payMethod === 'card') {
+      if (!stripe || !stripeCard) {
+        showToast(t('pay.cardError'));
+        btn.disabled = false; btn.textContent = t('btn.placeOrder');
+        return;
       }
+      // 1. サーバーで PaymentIntent を作成
+      const intentRes = await api('POST','/api/payments/create-intent',{
+        items: items.map(i => ({ product_id: i.id, qty: i.qty })),
+        shippingAddress: addr,
+        shippingZone: currentZone,
+        countryCode,
+        guestEmail,
+      });
+
+      // 2. Stripe にカード情報を送信して決済
+      const result = await stripe.confirmCardPayment(intentRes.clientSecret, {
+        payment_method: {
+          card: stripeCard,
+          billing_details: {
+            name: currentZone === 'domestic'
+              ? (document.getElementById('s_name')?.value || '')
+              : (document.getElementById('i_name')?.value || ''),
+            email: currentUser?.email || guestEmail || undefined,
+          },
+        },
+      });
+
+      if (result.error) {
+        const errEl = document.getElementById('stripeCardError');
+        if (errEl) errEl.textContent = result.error.message;
+        showToast(result.error.message || t('pay.declined'));
+        btn.disabled = false; btn.textContent = t('btn.placeOrder');
+        return;
+      }
+
+      // 3. サーバーで注文を確定
+      await api('POST','/api/payments/confirm',{ paymentIntentId: result.paymentIntent.id });
+      orderNum = intentRes.orderNumber;
+
+    // ── その他の支払い方法：従来どおり ──
     } else {
-      orderNum = `FW-${Date.now().toString().slice(-8)}`;
+      const data = await api('POST','/api/orders',{
+        items, total: sub+ship,
+        shippingAddress: addr,
+        paymentMethod: payMethod,
+        shippingZone: currentZone,
+        countryCode,
+        guestEmail,
+      });
+      orderNum = data.order_number;
     }
     document.getElementById('orderNumBox').textContent = t('success.orderNum') + orderNum;
     // Update success delivery text for intl
